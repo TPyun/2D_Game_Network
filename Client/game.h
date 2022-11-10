@@ -14,9 +14,11 @@
 #pragma comment(lib, "ws2_32") // ws2_32.lib 링크
 using namespace std;
 
-#define WIDTH 1200
-#define HEIGHT 900
+#define WIDTH 1240
+#define HEIGHT 720
 
+//#define WIDTH 1200
+//#define HEIGHT 900
 typedef struct TWO_Floats {
 	float x;
 	float y;
@@ -44,24 +46,24 @@ private:
 	SDL_Texture* groundTex;
 	SDL_Texture* bulletTex;
 	SDL_Texture* flashTex;
-	
+
 	SDL_Texture* pistolTex;
 	SDL_Texture* rifleTex;
 	SDL_Texture* sniperTex;
-	
+
 	SDL_Texture* whiteTex;
 	SDL_Texture* greenTex;
 	SDL_Texture* yellowTex;
 	SDL_Texture* redTex;
 
 	SDL_Texture* infinity_Tex;
-	
+
 
 	SDL_Texture* pistol_ammoTex;
 	SDL_Texture* rifle_ammoTex;
 	SDL_Texture* sniper_ammoTex;
-	
-	
+
+
 	Mix_Chunk* gunsound;
 
 	SDL_AudioSpec wavSpec;
@@ -126,7 +128,7 @@ private:
 
 	int rifle_ammo = 30;
 	int sniper_ammo = 5;
-	
+
 	//메뉴화면 변수
 	string text_in = "";
 	char text_show[100]{};
@@ -135,8 +137,8 @@ private:
 
 
 	bool game_start = false;
-	
-	
+
+
 	//함수
 	void initVariables();
 	void initWindow();
@@ -176,11 +178,11 @@ public:
 	bool find_match = false;
 	bool connect_server = false; //서버와 연결했다는 것을 game.cpp에서 인지하게끔. main에서 false해버리면 game.cpp에서 진행 안됨
 	bool server_connected = false; //서버와 연결하면 connect다시 안하게끔
-	
+
 	char IPAdress[100];
 	char Port[100];
 	char Name[100];
-	
+
 	Game();
 	~Game();
 
