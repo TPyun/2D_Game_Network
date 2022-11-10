@@ -507,7 +507,8 @@ void Game::drawMenu()
 				strcpy(Port, text_in.c_str());
 			}
 			else if (text_in_height == 300) {
-				strcpy(Name, text_in.c_str());
+				if(strlen(Name) < 20)
+					strcpy(Name, text_in.c_str());
 			}
 		}
 		//Press backspace to erase
@@ -587,6 +588,21 @@ void Game::update()
 	}
 
 	updateRenderer();
+}
+
+void Game::send_name()
+{
+	/*cout << Name << endl;
+
+	char name_buf[NAMESIZE]{};
+	int retval;
+	SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
+
+	strncpy(name_buf, Name, strlen(Name));
+	retval = send(sock, name_buf, NAMESIZE, 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send_name()");
+	}*/
 }
 
 Game::Game()

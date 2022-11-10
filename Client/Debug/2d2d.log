@@ -1,3 +1,0 @@
-﻿  main.cpp
-C:\Users\YTP\source\repos\2D_Game_Network\Client\main.cpp(64,20): warning C4244: '인수': 'float'에서 'DWORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  2d2d.vcxproj -> C:\Users\YTP\source\repos\2D_Game_Network\Client\Debug\2d2d.exe

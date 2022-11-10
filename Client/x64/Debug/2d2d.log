@@ -1,2 +1,0 @@
-﻿  main.cpp
-C:\Users\YTP\source\repos\2d2d\Extra_Libs\SDL2_image-2.6.2\include\SDL_image.h(32,10): fatal  error C1083: 포함 파일을 열 수 없습니다. 'SDL.h': No such file or directory

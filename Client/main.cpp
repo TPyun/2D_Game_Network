@@ -43,6 +43,18 @@ DWORD WINAPI server_thread(LPVOID arg)
 
 				game.server_connected = true; //한번만 connect하게끔
 				cout << "서버와 연결됨" << endl;
+
+				// send_name() 
+				game.send_name();		// 이렇게 쓰고 싶음.
+				cout << game.Name << endl;
+
+				char name_buf[NAMESIZE]{};
+				
+				strncpy(name_buf, game.Name, strlen(game.Name));
+				retval = send(sock, name_buf, NAMESIZE, 0);
+				if (retval == SOCKET_ERROR) {
+					err_display("send_name()");
+				}
 			}
 			if (game.find_match) {
 				find_match(game.find_match);

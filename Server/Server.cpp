@@ -5,8 +5,9 @@
 #include<mutex>
 #include<string>
 
-#define SERVERPORT 9000
-#define BUFSIZE    4096
+#define SERVERPORT	9000
+#define BUFSIZE		4096
+#define NAMESIZE	20
 
 using namespace std;
 
@@ -24,6 +25,7 @@ DWORD WINAPI process_client(LPVOID arg)
 	char addr[INET_ADDRSTRLEN];
 	int addrlen;
 	char buf[BUFSIZE + 1];
+	char name_buf[NAMESIZE + 1];
 
 	// 클라이언트 정보 얻기
 	addrlen = sizeof(clientaddr);
@@ -33,16 +35,20 @@ DWORD WINAPI process_client(LPVOID arg)
 		addr, ntohs(clientaddr.sin_port));
 
 	while (1) {
-
-		/*retval = send(client_sock, (char*)&sun_angle, (int)sizeof(SunAngle), 0);
-		sun_angle.y += 0.2f;
-		if (sun_angle.y >= 180.f)
-			sun_angle.y = -180.f;
+		// 이름 받기
+		retval = recv(client_sock, name_buf, NAMESIZE, MSG_WAITALL);
 		if (retval == SOCKET_ERROR) {
-			err_display("send()");
+			err_display("recv()");
 			break;
-		}*/
+		}
+		else if (retval == 0)
+			break;
 
+		// 이름 출력
+		name_buf[retval] = '\0';
+		cout << "name : " << name_buf << endl;
+
+		
 	}
 
 	printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
