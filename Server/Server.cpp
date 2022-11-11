@@ -26,6 +26,7 @@ DWORD WINAPI process_client(LPVOID arg)
 	int addrlen;
 	char buf[BUFSIZE + 1];
 	char name_buf[NAMESIZE + 1];
+	bool find_match;
 
 	// 클라이언트 정보 얻기
 	addrlen = sizeof(clientaddr);
@@ -34,19 +35,37 @@ DWORD WINAPI process_client(LPVOID arg)
 	printf("[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n",
 		addr, ntohs(clientaddr.sin_port));
 
+	// 이름 받기
+	retval = recv(client_sock, name_buf, NAMESIZE, MSG_WAITALL);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+		//예외처리
+	}
+	else if (retval == 0) {
+		//예외처리
+	}
+	// 이름 출력
+	name_buf[retval] = '\0';
+	cout << "name : " << name_buf << endl;
+	
+	
+	//recv find_match
+	retval = recv(client_sock, (char*)&find_match, sizeof(bool), MSG_WAITALL);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+		//예외처리
+	}
+	else if (retval == 0) {
+		//예외처리
+	}
+	//Print find_match
+	if (find_match) {
+		cout << "Find mathch!!!!" << endl;
+		//여기서 매치 찾는 기능 넣으면 됨
+	}
+	
 	while (1) {
-		// 이름 받기
-		retval = recv(client_sock, name_buf, NAMESIZE, MSG_WAITALL);
-		if (retval == SOCKET_ERROR) {
-			err_display("recv()");
-			break;
-		}
-		else if (retval == 0)
-			break;
-
-		// 이름 출력
-		name_buf[retval] = '\0';
-		cout << "name : " << name_buf << endl;
+		
 
 		
 	}

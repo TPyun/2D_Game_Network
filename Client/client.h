@@ -45,11 +45,3 @@ void err_display(int errcode)
 	printf("[¿À·ù] %s\n", (char*)lpMsgBuf);
 	LocalFree(lpMsgBuf);
 }
-
-void find_match(bool find_match)
-{
-	retval = send(sock, (char*)&find_match, sizeof(bool), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("send()");
-	}
-}

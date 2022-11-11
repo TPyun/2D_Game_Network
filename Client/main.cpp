@@ -23,7 +23,6 @@ DWORD WINAPI server_thread(LPVOID arg)
 	SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (sock == INVALID_SOCKET) err_quit("socket()");
 
-
 	while (!game.done) {
 		if (game.curr_state == 0) {
 			if (game.connect_server && !game.server_connected) {
@@ -39,25 +38,31 @@ DWORD WINAPI server_thread(LPVOID arg)
 				inet_pton(AF_INET, game.IPAdress, &serveraddr.sin_addr);
 				serveraddr.sin_port = htons(i);
 				retval = connect(sock, (struct sockaddr*)&serveraddr, sizeof(serveraddr));
-				if (retval == SOCKET_ERROR) err_quit("connect()");
-
-				game.server_connected = true; //한번만 connect하게끔
-				cout << "서버와 연결됨" << endl;
+				if (retval == SOCKET_ERROR) {
+					//err_quit("connect()");
+					game.connect_server = false;
+					cout << "connect 못했어요. 정확한지 다시 한번 보셈" << endl;
+					continue;
+				}
+				else {
+					game.server_connected = true; //한번만 connect하게끔
+					cout << "서버와 연결됨" << endl;
+				}
 
 				// send_name() 
-				game.send_name();		// 이렇게 쓰고 싶음.
-				cout << game.Name << endl;
-
 				char name_buf[NAMESIZE]{};
-				
 				strncpy(name_buf, game.Name, strlen(game.Name));
 				retval = send(sock, name_buf, NAMESIZE, 0);
 				if (retval == SOCKET_ERROR) {
 					err_display("send_name()");
 				}
 			}
+			//find_match 보내기
 			if (game.find_match) {
-				find_match(game.find_match);
+				retval = send(sock, (char*)&find_match, sizeof(bool), 0);
+				if (retval == SOCKET_ERROR) {
+					err_display("send()");
+				}
 				game.find_match = false; //true인거 받고 false로 바꿔줌
 				cout << "find_match 전송" << endl;
 			}

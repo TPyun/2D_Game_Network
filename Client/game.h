@@ -135,8 +135,6 @@ private:
 	char text_show[100]{};
 	int text_in_height{ 100 };
 
-
-
 	bool game_start = false;
 
 
