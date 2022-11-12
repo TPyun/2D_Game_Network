@@ -175,6 +175,7 @@ public:
 	int done = 0;
 	int curr_state = 0; // 0: menu, 1: ingame
 	bool find_match = false;
+	bool waiting_match = false;
 	bool connect_server = false; //서버와 연결했다는 것을 game.cpp에서 인지하게끔. main에서 false해버리면 game.cpp에서 진행 안됨
 	bool server_connected = false; //서버와 연결하면 connect다시 안하게끔
 

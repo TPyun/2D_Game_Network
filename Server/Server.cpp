@@ -58,6 +58,10 @@ DWORD WINAPI process_client(LPVOID arg)
 	else if (retval == 0) {
 		//예외처리
 	}
+	
+	//Extra_Libs\SDL2-2.24.0\include;Extra_Libs\SDL2_image-2.6.2\include;Extra_Libs\SDL2_mixer-2.6.2\include;Extra_Libs\SDL2_ttf-2.0.15\include
+	//Extra_Libs\SDL2-2.24.0\lib\x86;Extra_Libs\SDL2_image-2.6.2\lib\x86;Extra_Libs\SDL2_mixer-2.6.2\lib\x86;Extra_Libs\SDL2_ttf-2.0.15\lib\x86
+	//SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;SDL2_ttf.lib;kernel32.lib;%(AdditionalDependencies)
 	//Print find_match
 	if (find_match) {
 		cout << "Find mathch!!!!" << endl;

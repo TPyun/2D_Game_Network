@@ -549,13 +549,19 @@ void Game::drawMenu()
 		drawText(170, 400, (char*)"Enter to connect", color);
 	}
 	else {
-		drawText(200, 100, (char*)Name, color);
-		drawText(200, 200, (char*)"Press enter to find match", color);
+		if (!waiting_match) {
+			drawText(200, 100, (char*)Name, color);
+			drawText(200, 200, (char*)"Press enter to find match", color);
 
-		if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN) {
-			find_match = true;
-			//curr_state = 1;
+			if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN) {
+				find_match = true;
+				waiting_match = true;
+				//curr_state = 1;
+			}
 		}
+	}
+	if (waiting_match) {
+		drawText(200, 200, (char*)"Finding match...", color);
 	}
 }
 void Game::drawIngame()

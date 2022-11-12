@@ -59,7 +59,7 @@ DWORD WINAPI server_thread(LPVOID arg)
 			}
 			//find_match º¸³»±â
 			if (game.find_match) {
-				retval = send(sock, (char*)&find_match, sizeof(bool), 0);
+				retval = send(sock, (char*)&game.find_match, sizeof(bool), 0);
 				if (retval == SOCKET_ERROR) {
 					err_display("send()");
 				}
