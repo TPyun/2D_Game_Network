@@ -1,18 +1,3 @@
-/.vs
-/Client/x64
-/Client/.vs
-/Server/.vs
-/Server/x64
-
-*.ilk
-*.pdb
-*.log
-*.idb
-*.tlog
-*.lastbuildstate
-*.suo
-*.db
-
 # Prerequisites
 *.d
 
@@ -44,3 +29,6 @@
 *.exe
 *.out
 *.app
+Server/.vs/Server/v17/.suo
+Server/.vs/Server/v17/Browse.VC.db
+Server/.vs/Server/project-colors.json

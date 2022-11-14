@@ -4,7 +4,7 @@
 #include<vector>
 #include<mutex>
 #include<string>
-
+#include<map>
 #define SERVERPORT	9000
 #define BUFSIZE		4096
 #define NAMESIZE	20
@@ -14,8 +14,72 @@ using namespace std;
 int len = 0;
 char buffer[BUFSIZE]; // 가변 길이 데이터
 std::mutex mylock;
+mutex find_lock;
 //들어온 순서
 int hostnum;
+
+//client 스레드 관리
+map<char*, char*> client_thread_list;
+map<char*, bool> find_match_list;
+
+
+//함수 선언
+DWORD WINAPI matching_thread(LPVOID arg);
+DWORD WINAPI process_client(LPVOID arg);
+DWORD WINAPI ingame_thread(LPVOID arg);
+bool find_match_3p();
+
+
+
+//매칭쓰레드 
+DWORD WINAPI matching_thread(LPVOID arg)
+{
+	//3player가 find_match를 눌렀는지 확인
+	while (1) {
+
+		if (!find_match_3p)
+		{
+			continue;
+		}
+		else {
+			//ingame_thread생성
+			int cnt = 0;
+			for (auto& a : find_match_list)
+			{
+				
+				if (a.second == true && cnt < 3);
+					//player의 스테이트 함수변경;
+			}
+			//인게임 쓰레드 생성
+			/*
+			HANDLE  ingamethread;
+			ingamethread = CreateThread(NULL, 0, ingame_thread,
+				0, 0, NULL);
+			find_lock.unlock();*/
+		}
+	}
+}
+
+//find_match_3p 함수
+bool find_match_3p()
+{
+	int cnt = 0;
+	find_lock.lock();
+	for (auto& a : find_match_list)
+	{
+		if (a.second == true)
+			cnt++;
+	}
+	
+	if (cnt >= 3)
+	{
+		return true;
+	}
+	else {
+		find_lock.unlock();
+		return false;
+	}
+}
 
 DWORD WINAPI process_client(LPVOID arg)
 {
@@ -47,8 +111,10 @@ DWORD WINAPI process_client(LPVOID arg)
 	// 이름 출력
 	name_buf[retval] = '\0';
 	cout << "name : " << name_buf << endl;
-	
-	
+
+	//client_thread_list에 클라이언트 추가
+	client_thread_list[addr] = name_buf;
+
 	//recv find_match
 	retval = recv(client_sock, (char*)&find_match, sizeof(bool), MSG_WAITALL);
 	if (retval == SOCKET_ERROR) {
@@ -58,20 +124,23 @@ DWORD WINAPI process_client(LPVOID arg)
 	else if (retval == 0) {
 		//예외처리
 	}
-	
+
 	//Extra_Libs\SDL2-2.24.0\include;Extra_Libs\SDL2_image-2.6.2\include;Extra_Libs\SDL2_mixer-2.6.2\include;Extra_Libs\SDL2_ttf-2.0.15\include
 	//Extra_Libs\SDL2-2.24.0\lib\x86;Extra_Libs\SDL2_image-2.6.2\lib\x86;Extra_Libs\SDL2_mixer-2.6.2\lib\x86;Extra_Libs\SDL2_ttf-2.0.15\lib\x86
 	//SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;SDL2_ttf.lib;kernel32.lib;%(AdditionalDependencies)
+
+
 	//Print find_match
 	if (find_match) {
 		cout << "Find mathch!!!!" << endl;
 		//여기서 매치 찾는 기능 넣으면 됨
+		find_match_list[addr] = find_match;
 	}
-	
+
 	while (1) {
 		
 
-		
+
 	}
 
 	printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
@@ -109,12 +178,18 @@ int main(int argc, char* argv[])
 	retval = listen(listen_sock, SOMAXCONN);
 	if (retval == SOCKET_ERROR) err_quit("listen()");
 
+	//매칭 쓰레드 생성
+	HANDLE  matchingthread;
+	matchingthread = CreateThread(NULL, 0, matching_thread,
+		0, 0, NULL);
+
+
 	// 데이터 통신에 사용할 변수
 	SOCKET client_sock;
 	struct sockaddr_in clientaddr;
 	int addrlen;
 	HANDLE client_thread;
-	
+
 	while (1) {
 		// accept()
 		addrlen = sizeof(clientaddr);

@@ -1,0 +1,5 @@
+﻿  Server.cpp
+C:\Users\kang\Desktop\2D_Game_Network\Server\Server.cpp(40,7): warning C4551: 함수 호출에 인수 목록이 없습니다.
+C:\Users\kang\Desktop\2D_Game_Network\Server\Server.cpp(50,37): warning C4390: ';': 제어된 빈 문이 있습니다. 이 문이 필요합니까?
+C:\Users\kang\Desktop\2D_Game_Network\Server\Server.cpp(91,7): warning C4101: 'buf' :참조되지 않은 지역 변수입니다.
+  Server.vcxproj -> C:\Users\kang\Desktop\2D_Game_Network\Server\x64\Debug\Server.exe
