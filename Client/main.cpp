@@ -3,6 +3,7 @@
 #include "game.h"
 #include "client.h"
 #include <sstream>
+#include<map>
 
 #define FPS 144
 #define SERVERPORT 9000
@@ -22,6 +23,9 @@ DWORD WINAPI server_thread(LPVOID arg)
 	// 소켓 생성
 	SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (sock == INVALID_SOCKET) err_quit("socket()");
+
+	PI player_info;
+	map<PI*, PS*> player_list;
 
 	while (!game.done) {
 		if (game.curr_state == 0) {
@@ -57,18 +61,46 @@ DWORD WINAPI server_thread(LPVOID arg)
 					err_display("send_name()");
 				}
 			}
-			//find_match 보내기
+			
 			if (game.find_match) {
+				//find_match 보내기, 
 				retval = send(sock, (char*)&game.find_match, sizeof(bool), 0);
 				if (retval == SOCKET_ERROR) {
 					err_display("send()");
 				}
 				game.find_match = false; //true인거 받고 false로 바꿔줌
 				cout << "find_match 전송" << endl;
+
+				//recv player_info
+				retval = recv(sock, (char*)&player_info, sizeof(PI), MSG_WAITALL);
+				if (retval == SOCKET_ERROR) {
+					err_display("recv()");
+					//예외처리
+				}
+				else if (retval == 0) {
+					//예외처리
+				}
+
+				/*cout << player_info.name[0] << endl;
+				cout << player_info.player_color[0] << endl;
+				cout << player_info.name[1] << endl;
+				cout << player_info.player_color[1] << endl;
+				cout << player_info.name[2] << endl;
+				cout << player_info.player_color[2] << endl;*/
+
+				//색깔 자기꺼에 맞게 바꿔줌
+				//아니면 서버에서 보내는 player_state에 이름 추가해야함
+					
+
+				game.curr_state = 1;
+				cout << "player_info 받음" << endl;
 			}
 		}
+		else if(game.curr_state == 1) {
+			//ingame
+			
+		}
 	}
-
 	return 0;
 }
 
@@ -80,7 +112,6 @@ int SDL_main(int argc, char* argv[])
 
 	//game 화면 강제 전환 (임시)
 	game.curr_state = 0;
-
 
 	HANDLE h_thread;
 	h_thread = CreateThread(NULL, 0, server_thread,

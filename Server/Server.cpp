@@ -5,11 +5,37 @@
 #include<mutex>
 #include<string>
 #include<map>
+
 #define SERVERPORT	9000
 #define BUFSIZE		4096
 #define NAMESIZE	20
 
 using namespace std;
+
+typedef struct TWO_Floats {
+	float x;
+	float y;
+}TF;
+
+typedef struct TWO_Ints {
+	int x;
+	int y;
+}TI;
+
+typedef struct players_state {
+	int hp;
+	int gun_type;
+	int bullet[3];
+	TI object_position;
+	TF player_position;
+	bool gun_fired;
+	int game_state;		// 0:main, 1:find_match, 2:in_game, 3:lose, 4:win
+}PS;
+
+typedef struct players_info{
+	int player_color[3];
+	char name[3][20];
+}PI;
 
 int len = 0;
 char buffer[BUFSIZE]; // 가변 길이 데이터
@@ -22,32 +48,27 @@ int hostnum;
 map<char*, char*> client_thread_list;
 map<char*, bool> find_match_list;
 
-
 //함수 선언
 DWORD WINAPI matching_thread(LPVOID arg);
 DWORD WINAPI process_client(LPVOID arg);
 DWORD WINAPI ingame_thread(LPVOID arg);
 bool find_match_3p();
 
-
-
 //매칭쓰레드 
 DWORD WINAPI matching_thread(LPVOID arg)
 {
 	//3player가 find_match를 눌렀는지 확인
 	while (1) {
-
-		if (!find_match_3p)
-		{
+		if (!find_match_3p){
 			continue;
 		}
 		else {
 			//ingame_thread생성
 			int cnt = 0;
-			for (auto& a : find_match_list)
-			{
-				
-				if (a.second == true && cnt < 3);
+			for (auto& a : find_match_list){
+				if (a.second == true && cnt < 3) {
+					cnt++;
+				}
 					//player의 스테이트 함수변경;
 			}
 			//인게임 쓰레드 생성
@@ -65,14 +86,11 @@ bool find_match_3p()
 {
 	int cnt = 0;
 	find_lock.lock();
-	for (auto& a : find_match_list)
-	{
+	for (auto& a : find_match_list){
 		if (a.second == true)
 			cnt++;
 	}
-	
-	if (cnt >= 3)
-	{
+	if (cnt >= 3){
 		return true;
 	}
 	else {
@@ -91,6 +109,7 @@ DWORD WINAPI process_client(LPVOID arg)
 	char buf[BUFSIZE + 1];
 	char name_buf[NAMESIZE + 1];
 	bool find_match;
+	PS player_state;
 
 	// 클라이언트 정보 얻기
 	addrlen = sizeof(clientaddr);
@@ -98,7 +117,7 @@ DWORD WINAPI process_client(LPVOID arg)
 	inet_ntop(AF_INET, &clientaddr.sin_addr, addr, sizeof(addr));
 	printf("[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n",
 		addr, ntohs(clientaddr.sin_port));
-
+	
 	// 이름 받기
 	retval = recv(client_sock, name_buf, NAMESIZE, MSG_WAITALL);
 	if (retval == SOCKET_ERROR) {
@@ -114,33 +133,60 @@ DWORD WINAPI process_client(LPVOID arg)
 
 	//client_thread_list에 클라이언트 추가
 	client_thread_list[addr] = name_buf;
+	
+	player_state.game_state = 0;
+	while (true) {
+		if (player_state.game_state == 0) {				// 0:main
+			//recv find_match
+			retval = recv(client_sock, (char*)&find_match, sizeof(bool), MSG_WAITALL);
+			if (retval == SOCKET_ERROR) {
+				err_display("recv()");
+				//예외처리
+			}
+			else if (retval == 0) {
+				//예외처리
+			}
 
-	//recv find_match
-	retval = recv(client_sock, (char*)&find_match, sizeof(bool), MSG_WAITALL);
-	if (retval == SOCKET_ERROR) {
-		err_display("recv()");
-		//예외처리
-	}
-	else if (retval == 0) {
-		//예외처리
-	}
+			//Print find_match
+			if (find_match) {
+				cout << "Find mathch!!!!" << endl;
+				//여기서 매치 찾는 기능 넣으면 됨
+				find_match_list[addr] = find_match;
+				player_state.game_state = 1;	//findmath합니다
+			}
+		}
+		else if (player_state.game_state == 1) {		// 1:find_match
+			
+			PI player_info;
+			//player_info에 정보 넣어줘야함
+			/*strcpy(player_info.name[0], "name1");
+			strcpy(player_info.name[1], "name2");
+			strcpy(player_info.name[2], "name3");
+			player_info.player_color[0] = 0;
+			player_info.player_color[1] = 1;
+			player_info.player_color[2] = 2;
+			
+			cout << player_info.name[0] << endl;
+			cout << player_info.player_color[0] << endl;
+			cout << player_info.name[1] << endl;
+			cout << player_info.player_color[1] << endl;
+			cout << player_info.name[2] << endl;
+			cout << player_info.player_color[2] << endl;*/
 
-	//Extra_Libs\SDL2-2.24.0\include;Extra_Libs\SDL2_image-2.6.2\include;Extra_Libs\SDL2_mixer-2.6.2\include;Extra_Libs\SDL2_ttf-2.0.15\include
-	//Extra_Libs\SDL2-2.24.0\lib\x86;Extra_Libs\SDL2_image-2.6.2\lib\x86;Extra_Libs\SDL2_mixer-2.6.2\lib\x86;Extra_Libs\SDL2_ttf-2.0.15\lib\x86
-	//SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;SDL2_ttf.lib;kernel32.lib;%(AdditionalDependencies)
+			retval = send(client_sock, (char*)&player_info, sizeof(PI), 0);
+			if (retval == SOCKET_ERROR) {
+				err_display("send()");
+			}
+		}		
+		else if (player_state.game_state == 2) {		// 2:in_game
 
+		}
+		else if (player_state.game_state == 3) {		// 3:lose
 
-	//Print find_match
-	if (find_match) {
-		cout << "Find mathch!!!!" << endl;
-		//여기서 매치 찾는 기능 넣으면 됨
-		find_match_list[addr] = find_match;
-	}
+		}
+		else if (player_state.game_state == 4) {		// 4:win
 
-	while (1) {
-		
-
-
+		}
 	}
 
 	printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
@@ -150,8 +196,6 @@ DWORD WINAPI process_client(LPVOID arg)
 
 	return 0;
 }
-
-
 
 int main(int argc, char* argv[])
 {
@@ -204,7 +248,6 @@ int main(int argc, char* argv[])
 		inet_ntop(AF_INET, &clientaddr.sin_addr, addr, sizeof(addr));
 
 		cout << addr << endl;
-
 
 		// 스레드 생성
 		client_thread = CreateThread(NULL, 0, process_client,

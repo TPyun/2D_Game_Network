@@ -20,6 +20,7 @@ using namespace std;
 
 //#define WIDTH 1200
 //#define HEIGHT 900
+
 typedef struct TWO_Floats {
 	float x;
 	float y;
@@ -29,6 +30,22 @@ typedef struct TWO_Ints {
 	int x;
 	int y;
 }TI;
+
+typedef struct players_state {
+	int hp;
+	int gun_type;
+	int bullet[3];
+	TI object_position;
+	TF player_position;
+	bool gun_fired;
+	int game_state;
+}PS;
+
+typedef struct players_info
+{
+	int player_color[3];
+	char name[3][20];
+}PI;
 
 class Game
 {
@@ -179,9 +196,9 @@ public:
 	bool connect_server = false; //서버와 연결했다는 것을 game.cpp에서 인지하게끔. main에서 false해버리면 game.cpp에서 진행 안됨
 	bool server_connected = false; //서버와 연결하면 connect다시 안하게끔
 
-	char IPAdress[100];
-	char Port[100];
-	char Name[100];
+	char IPAdress[100] = "127.0.0.1";
+	char Port[100] = "9000";
+	char Name[100] = "name";
 
 	void send_name();
 
