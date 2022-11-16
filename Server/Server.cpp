@@ -46,7 +46,7 @@ int hostnum;
 
 //client 스레드 관리
 map<char*, char*> client_thread_list;
-map<char*, bool> find_match_list;
+map<char*, PS*> find_match_list;
 
 //함수 선언
 DWORD WINAPI matching_thread(LPVOID arg);
@@ -57,17 +57,21 @@ bool find_match_3p();
 //매칭쓰레드 
 DWORD WINAPI matching_thread(LPVOID arg)
 {
+	//ingame_room map함수 관리
+	int room_num = 0;
+
 	//3player가 find_match를 눌렀는지 확인
 	while (1) {
 		if (!find_match_3p()){
-			cout << "응. 아니야." << endl;
+			cout << "\rmatching";
 			continue;
 		}
-		else if (find_match_3p()) {
+		else {
 			//ingame_thread생성
 			HANDLE  ingamethread;
 			ingamethread = CreateThread(NULL, 0, ingame_thread,
-				0, 0, NULL);
+				(LPVOID)room_num, 0, NULL);
+			room_num++;
 		}
 	}
 }
@@ -75,7 +79,8 @@ DWORD WINAPI matching_thread(LPVOID arg)
 DWORD WINAPI ingame_thread(LPVOID arg)
 {
 
-	cout << "여기는 인게임이다. 그지깽깽이들아." << endl;
+
+	cout << (int)arg <<" : 여기는 인게임이다. 그지깽깽이들아." << endl;
 	return 0;
 }
 
@@ -84,11 +89,17 @@ bool find_match_3p()
 {
 	int cnt = 0;
 	for (auto& a : find_match_list){
-		if (a.second == true)
+		if (a.second->game_state == 1)
 			cnt++;
 	}
 	if (cnt >= 1){
-		return true;
+		for (auto& a : find_match_list) {
+			if (a.second->game_state == 1)
+			{
+				a.second->game_state = 2;
+			}
+			return true;
+		}
 	}
 	else {
 		return false;
@@ -147,7 +158,7 @@ DWORD WINAPI process_client(LPVOID arg)
 			if (find_match) {
 				cout << "Find mathch!!!!" << endl;
 				//여기서 매치 찾는 기능 넣으면 됨
-				find_match_list[addr] = find_match;
+				find_match_list[addr] = &player_state;
 				player_state.game_state = 1;	//findmath합니다
 			}
 		}
