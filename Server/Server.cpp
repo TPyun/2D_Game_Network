@@ -39,8 +39,8 @@ typedef struct players_info{
 
 int len = 0;
 char buffer[BUFSIZE]; // 가변 길이 데이터
-std::mutex mylock;
-mutex find_lock;
+//std::mutex mylock;
+//mutex find_lock;
 //들어온 순서
 int hostnum;
 
@@ -59,42 +59,38 @@ DWORD WINAPI matching_thread(LPVOID arg)
 {
 	//3player가 find_match를 눌렀는지 확인
 	while (1) {
-		if (!find_match_3p){
+		if (!find_match_3p()){
+			cout << "응. 아니야." << endl;
 			continue;
 		}
-		else {
+		else if (find_match_3p()) {
 			//ingame_thread생성
-			int cnt = 0;
-			for (auto& a : find_match_list){
-				if (a.second == true && cnt < 3) {
-					cnt++;
-				}
-					//player의 스테이트 함수변경;
-			}
-			//인게임 쓰레드 생성
-			/*
 			HANDLE  ingamethread;
 			ingamethread = CreateThread(NULL, 0, ingame_thread,
 				0, 0, NULL);
-			find_lock.unlock();*/
 		}
 	}
+}
+// 인게임쓰레드
+DWORD WINAPI ingame_thread(LPVOID arg)
+{
+
+	cout << "여기는 인게임이다. 그지깽깽이들아." << endl;
+	return 0;
 }
 
 //find_match_3p 함수
 bool find_match_3p()
 {
 	int cnt = 0;
-	find_lock.lock();
 	for (auto& a : find_match_list){
 		if (a.second == true)
 			cnt++;
 	}
-	if (cnt >= 3){
+	if (cnt >= 1){
 		return true;
 	}
 	else {
-		find_lock.unlock();
 		return false;
 	}
 }
@@ -176,6 +172,7 @@ DWORD WINAPI process_client(LPVOID arg)
 			retval = send(client_sock, (char*)&player_info, sizeof(PI), 0);
 			if (retval == SOCKET_ERROR) {
 				err_display("send()");
+				break;
 			}
 		}		
 		else if (player_state.game_state == 2) {		// 2:in_game
