@@ -187,7 +187,29 @@ DWORD WINAPI process_client(LPVOID arg)
 			}
 		}		
 		else if (player_state.game_state == 2) {		// 2:in_game
+			static int first_send = true;
 
+			//초기 데이터를 보냈는지 확인
+			if (first_send)
+			{
+				//game_object 송신
+
+				//player_state 송신
+				retval = send(client_sock, (char*)&player_state, sizeof(PS), 0);
+				if (retval == SOCKET_ERROR) {
+					err_display("send()");
+					break;
+				}
+				first_send = false;
+			}
+			else
+			{
+				retval = send(client_sock, (char*)&player_state, sizeof(PS), 0);
+				if (retval == SOCKET_ERROR) {
+					err_display("send()");
+					break;
+				}
+			}
 		}
 		else if (player_state.game_state == 3) {		// 3:lose
 
