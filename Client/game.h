@@ -47,6 +47,12 @@ typedef struct players_info
 	char name[3][20];
 }PI;
 
+typedef struct created_object
+{
+	int object_type;
+	TI object_position;
+}CO;
+
 class Game
 {
 private:

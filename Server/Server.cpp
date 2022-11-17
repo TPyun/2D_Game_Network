@@ -37,6 +37,12 @@ typedef struct players_info{
 	char name[3][20];
 }PI;
 
+typedef struct created_object
+{
+	int object_type;
+	TI object_position;
+}CO;
+
 int len = 0;
 char buffer[BUFSIZE]; // 가변 길이 데이터
 //std::mutex mylock;
@@ -78,9 +84,8 @@ DWORD WINAPI matching_thread(LPVOID arg)
 // 인게임쓰레드
 DWORD WINAPI ingame_thread(LPVOID arg)
 {
-
-
 	cout << (int)arg <<" : 여기는 인게임이다. 그지깽깽이들아." << endl;
+	
 	return 0;
 }
 
@@ -94,9 +99,9 @@ bool find_match_3p()
 	}
 	if (cnt >= 1){
 		for (auto& a : find_match_list) {
-			if (a.second->game_state == 1)
-			{
+			if (a.second->game_state == 1){
 				a.second->game_state = 2;
+				
 			}
 			return true;
 		}
@@ -166,7 +171,7 @@ DWORD WINAPI process_client(LPVOID arg)
 			
 			PI player_info;
 			//player_info에 정보 넣어줘야함
-			/*strcpy(player_info.name[0], "name1");
+			strcpy(player_info.name[0], "name1");
 			strcpy(player_info.name[1], "name2");
 			strcpy(player_info.name[2], "name3");
 			player_info.player_color[0] = 0;
@@ -178,7 +183,7 @@ DWORD WINAPI process_client(LPVOID arg)
 			cout << player_info.name[1] << endl;
 			cout << player_info.player_color[1] << endl;
 			cout << player_info.name[2] << endl;
-			cout << player_info.player_color[2] << endl;*/
+			cout << player_info.player_color[2] << endl;
 
 			retval = send(client_sock, (char*)&player_info, sizeof(PI), 0);
 			if (retval == SOCKET_ERROR) {
@@ -192,8 +197,16 @@ DWORD WINAPI process_client(LPVOID arg)
 			//초기 데이터를 보냈는지 확인
 			if (first_send)
 			{
-				//game_object 송신
-
+				//created_object 송신
+				CO created_object;
+				//CO에 정보 넣어줘야함
+				//여러번 반복해서 보내야 함 for문
+				retval = send(client_sock, (char*)&created_object, sizeof(CO), 0);
+				if (retval == SOCKET_ERROR) {
+					err_display("send()");
+					break;
+				}
+				
 				//player_state 송신
 				retval = send(client_sock, (char*)&player_state, sizeof(PS), 0);
 				if (retval == SOCKET_ERROR) {

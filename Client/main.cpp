@@ -81,24 +81,31 @@ DWORD WINAPI server_thread(LPVOID arg)
 					//예외처리
 				}
 
-				/*cout << player_info.name[0] << endl;
+				cout << player_info.name[0] << endl;
 				cout << player_info.player_color[0] << endl;
 				cout << player_info.name[1] << endl;
 				cout << player_info.player_color[1] << endl;
 				cout << player_info.name[2] << endl;
-				cout << player_info.player_color[2] << endl;*/
+				cout << player_info.player_color[2] << endl;
 
 				//색깔 자기꺼에 맞게 바꿔줌
 				//아니면 서버에서 보내는 player_state에 이름 추가해야함
-					
-
-				game.curr_state = 1;
 				cout << "player_info 받음" << endl;
+
+				//created_object 수신
+				CO created_object;
+				//여러번 반복해서 받아야 함 for문
+				retval = recv(sock, (char*)&created_object, sizeof(CO), MSG_WAITALL);
+				if (retval == SOCKET_ERROR) {
+					err_display("recv()");
+					//예외처리
+				}
+				
 			}
 		}
-		else if(game.curr_state == 1) {
-			//ingame
+		else if(game.curr_state == 1) {			// 1:find_match
 			
+
 		}
 	}
 	return 0;
