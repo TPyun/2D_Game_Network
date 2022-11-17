@@ -565,6 +565,8 @@ void Game::drawMenu()
 		drawText(200, 200, (char*)"Finding match...", color);
 	}
 }
+
+
 void Game::drawIngame()
 {
 	drawBackground();

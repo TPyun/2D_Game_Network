@@ -16,7 +16,6 @@ using namespace std;
 
 #define WIDTH 1240
 #define HEIGHT 720
-#define NAMESIZE 20
 
 //#define WIDTH 1200
 //#define HEIGHT 900

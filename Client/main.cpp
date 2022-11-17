@@ -53,13 +53,8 @@ DWORD WINAPI server_thread(LPVOID arg)
 					cout << "서버와 연결됨" << endl;
 				}
 
-				// send_name() 
-				char name_buf[NAMESIZE]{};
-				strncpy(name_buf, game.Name, strlen(game.Name));
-				retval = send(sock, name_buf, NAMESIZE, 0);
-				if (retval == SOCKET_ERROR) {
-					err_display("send_name()");
-				}
+				// 플레이어 이름 보내기
+				send_name(sock, &game);
 			}
 			
 			if (game.find_match) {

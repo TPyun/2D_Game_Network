@@ -1,4 +1,6 @@
 #include "Common.h"
+#include "global.h"
+#include "ingame.h"
 #include <iostream>
 #include <fstream>
 #include<vector>
@@ -6,42 +8,7 @@
 #include<string>
 #include<map>
 
-#define SERVERPORT	9000
-#define BUFSIZE		4096
-#define NAMESIZE	20
-
 using namespace std;
-
-typedef struct TWO_Floats {
-	float x;
-	float y;
-}TF;
-
-typedef struct TWO_Ints {
-	int x;
-	int y;
-}TI;
-
-typedef struct players_state {
-	int hp;
-	int gun_type;
-	int bullet[3];
-	TI object_position;
-	TF player_position;
-	bool gun_fired;
-	int game_state;		// 0:main, 1:find_match, 2:in_game, 3:lose, 4:win
-}PS;
-
-typedef struct players_info{
-	int player_color[3];
-	char name[3][20];
-}PI;
-
-typedef struct created_object
-{
-	int object_type;
-	TI object_position;
-}CO;
 
 int len = 0;
 char buffer[BUFSIZE]; // 가변 길이 데이터
@@ -82,9 +49,11 @@ DWORD WINAPI matching_thread(LPVOID arg)
 	}
 }
 // 인게임쓰레드
+ingame create_map;
 DWORD WINAPI ingame_thread(LPVOID arg)
 {
-	cout << (int)arg <<" : 여기는 인게임이다. 그지깽깽이들아." << endl;
+	create_map.create_object();
+	cout << (int)arg <<" : 게임을 시작하지." << endl;
 	
 	return 0;
 }
@@ -196,17 +165,14 @@ DWORD WINAPI process_client(LPVOID arg)
 
 			//초기 데이터를 보냈는지 확인
 			if (first_send)
-			{
+			{	
 				//created_object 송신
-				CO created_object;
-				//CO에 정보 넣어줘야함
-				//여러번 반복해서 보내야 함 for문
-				retval = send(client_sock, (char*)&created_object, sizeof(CO), 0);
+				retval = send(client_sock, (char*)&create_map.objects, sizeof(create_map.objects), 0);
 				if (retval == SOCKET_ERROR) {
 					err_display("send()");
 					break;
 				}
-				
+			
 				//player_state 송신
 				retval = send(client_sock, (char*)&player_state, sizeof(PS), 0);
 				if (retval == SOCKET_ERROR) {
