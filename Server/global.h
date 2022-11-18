@@ -29,10 +29,11 @@ typedef struct players_info {
 	char name[3][20];
 }PI;
 
-typedef struct players_info_and_state {
+typedef struct players_profile {
 	PS player_state;
 	PI player_info;
-}IS;
+	int room_num;
+}PP;
 
 typedef struct created_object
 {

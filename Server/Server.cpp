@@ -10,6 +10,8 @@
 
 using namespace std;
 
+#define MAX_CLIENT_IN_ROOM 1
+
 int len = 0;
 char buffer[BUFSIZE]; // 가변 길이 데이터
 //std::mutex mylock;
@@ -19,13 +21,13 @@ int hostnum;
 
 //client 스레드 관리
 map<char*, char*> client_thread_list;
-map<char*, PS*> find_match_list;
+map<char*, PP*> player_list;
 
 //함수 선언
 DWORD WINAPI matching_thread(LPVOID arg);
 DWORD WINAPI process_client(LPVOID arg);
 DWORD WINAPI ingame_thread(LPVOID arg);
-bool find_match_3p();
+bool find_match_3p(int);
 
 //매칭쓰레드 
 DWORD WINAPI matching_thread(LPVOID arg)
@@ -35,15 +37,15 @@ DWORD WINAPI matching_thread(LPVOID arg)
 
 	//3player가 find_match를 눌렀는지 확인
 	while (1) {
-		if (!find_match_3p()){
+		if (!find_match_3p(room_num)){
 			cout << "\rmatching";
 			continue;
 		}
 		else {
 			//ingame_thread생성
+			
 			HANDLE  ingamethread;
-			ingamethread = CreateThread(NULL, 0, ingame_thread,
-				(LPVOID)room_num, 0, NULL);
+			ingamethread = CreateThread(NULL, 0, ingame_thread,(LPVOID)room_num, 0, NULL);
 			room_num++;
 		}
 	}
@@ -59,17 +61,19 @@ DWORD WINAPI ingame_thread(LPVOID arg)
 }
 
 //find_match_3p 함수
-bool find_match_3p()
+bool find_match_3p(int room_num)
 {
 	int cnt = 0;
-	for (auto& a : find_match_list){
-		if (a.second->game_state == 1)
+	for (auto& a : player_list){
+		if (a.second->player_state.game_state == 1)
 			cnt++;
 	}
-	if (cnt >= 1){
-		for (auto& a : find_match_list) {
-			if (a.second->game_state == 1){
-				a.second->game_state = 2;
+	if (cnt >= MAX_CLIENT_IN_ROOM){
+		for (auto& a : player_list) {
+			if (a.second->player_state.game_state == 1){
+				a.second->player_state.game_state = 2;
+				
+				a.second->room_num = room_num;	//PP에 room_num을 넣어줌
 			}
 			return true;
 		}
@@ -86,10 +90,9 @@ DWORD WINAPI process_client(LPVOID arg)
 	struct sockaddr_in clientaddr;
 	char addr[INET_ADDRSTRLEN];
 	int addrlen;
-	char buf[BUFSIZE + 1];
 	char name_buf[NAMESIZE + 1];
 	bool find_match;
-	PS player_state;
+	PP player_profile;
 
 	// 클라이언트 정보 얻기
 	addrlen = sizeof(clientaddr);
@@ -110,13 +113,14 @@ DWORD WINAPI process_client(LPVOID arg)
 	// 이름 출력
 	name_buf[retval] = '\0';
 	cout << "name : " << name_buf << endl;
-
-	//client_thread_list에 클라이언트 추가
+	strcpy(player_profile.player_info.name[0], name_buf);
+		
+	//client_thread_;list에 클라이언트 추가
 	client_thread_list[addr] = name_buf;
 	
-	player_state.game_state = 0;
+	player_profile.player_state.game_state = 0;
 	while (true) {
-		if (player_state.game_state == 0) {				// 0:main
+		if (player_profile.player_state.game_state == 0) {				// 0:main
 			//recv find_match
 			retval = recv(client_sock, (char*)&find_match, sizeof(bool), MSG_WAITALL);
 			if (retval == SOCKET_ERROR) {
@@ -131,35 +135,34 @@ DWORD WINAPI process_client(LPVOID arg)
 			if (find_match) {
 				cout << "Find mathch!!!!" << endl;
 				//여기서 매치 찾는 기능 넣으면 됨
-				find_match_list[addr] = &player_state;
-				player_state.game_state = 1;	//findmath합니다
+				player_list[addr] = &player_profile;
+				player_profile.player_state.game_state = 1;	//findmath합니다
 			}
 		}
-		else if (player_state.game_state == 1) {		// 1:find_match
-			
-			PI player_info;
-			//player_info에 정보 넣어줘야함
-			strcpy(player_info.name[0], "name1");
-			strcpy(player_info.name[1], "name2");
-			strcpy(player_info.name[2], "name3");
-			player_info.player_color[0] = 0;
-			player_info.player_color[1] = 1;
-			player_info.player_color[2] = 2;
-			
-			cout << player_info.name[0] << endl;
-			cout << player_info.player_color[0] << endl;
-			cout << player_info.name[1] << endl;
-			cout << player_info.player_color[1] << endl;
-			cout << player_info.name[2] << endl;
-			cout << player_info.player_color[2] << endl;
+		else if (player_profile.player_state.game_state == 1) {		// 1:find_match
 
-			retval = send(client_sock, (char*)&player_info, sizeof(PI), 0);
+			cout << (char*)player_profile.player_info.name << "클라이언트 방 번호: " << player_profile.room_num << endl;
+
+			int other_player_num = 0;
+			for (auto& player : player_list) {
+				if (player.second->room_num == player_profile.room_num)
+					player.second->player_info.player_color[other_player_num] = other_player_num;
+					if (player.second->player_info.name != player_profile.player_info.name) {		//본인은 [0]에 있으니 제외
+						strcpy(player_profile.player_info.name[other_player_num + 1], (char*)player.second->player_info.name);
+						other_player_num++;
+					}
+				if (other_player_num == MAX_CLIENT_IN_ROOM - 1) {
+					break;
+				}
+			}
+			
+			retval = send(client_sock, (char*)&player_profile.player_info, sizeof(PI), 0);
 			if (retval == SOCKET_ERROR) {
 				err_display("send()");
 				break;
 			}
 		}		
-		else if (player_state.game_state == 2) {		// 2:in_game
+		else if (player_profile.player_state.game_state == 2) {		// 2:in_game
 			static int first_send = true;
 
 			//초기 데이터를 보냈는지 확인
@@ -171,9 +174,8 @@ DWORD WINAPI process_client(LPVOID arg)
 					err_display("send()");
 					break;
 				}
-			
 				//player_state 송신
-				retval = send(client_sock, (char*)&player_state, sizeof(PS), 0);
+				retval = send(client_sock, (char*)&player_profile.player_state, sizeof(PS), 0);
 				if (retval == SOCKET_ERROR) {
 					err_display("send()");
 					break;
@@ -182,23 +184,26 @@ DWORD WINAPI process_client(LPVOID arg)
 			}
 			else{
 				//게임 내에서 계속 player_state 전송
-				retval = send(client_sock, (char*)&player_state, sizeof(PS), 0);
+				retval = send(client_sock, (char*)&player_profile.player_state, sizeof(PS), 0);
 				if (retval == SOCKET_ERROR) {
 					err_display("send()");
 					break;
 				}
 			}
 		}
-		else if (player_state.game_state == 3) {		// 3:lose
+		else if (player_profile.player_state.game_state == 3) {		// 3:lose
 
 		}
-		else if (player_state.game_state == 4) {		// 4:win
+		else if (player_profile.player_state.game_state == 4) {		// 4:win
 
 		}
 	}
 
-	printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
-		addr, ntohs(clientaddr.sin_port));
+	printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",addr, ntohs(clientaddr.sin_port));
+	//map에서 플레이어 제거
+	player_list.erase(addr);
+	client_thread_list.erase(addr);
+	
 	// 소켓 닫기
 	closesocket(client_sock);
 

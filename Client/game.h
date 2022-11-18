@@ -201,9 +201,9 @@ public:
 	bool connect_server = false; //서버와 연결했다는 것을 game.cpp에서 인지하게끔. main에서 false해버리면 game.cpp에서 진행 안됨
 	bool server_connected = false; //서버와 연결하면 connect다시 안하게끔
 
-	char IPAdress[100] = "127.0.0.1";
-	char Port[100] = "9000";
-	char Name[100] = "name";
+	char IPAdress[20] = "127.0.0.1";
+	char Port[10] = "9000";
+	char Name[20] = "wooyung";
 
 	void send_name();
 

@@ -26,9 +26,10 @@ DWORD WINAPI server_thread(LPVOID arg)
 
 	PI player_info;
 	map<PI*, PS*> player_list;
-
+	CO created_object;
+	
 	while (!game.done) {
-		if (game.curr_state == 0) {
+		if (game.curr_state == 0) {				// 0:menu
 			if (game.connect_server && !game.server_connected) {
 				string str(game.Port);
 				int i = 0;
@@ -76,29 +77,27 @@ DWORD WINAPI server_thread(LPVOID arg)
 					//예외처리
 				}
 
-				cout << player_info.name[0] << endl;
-				cout << player_info.player_color[0] << endl;
-				cout << player_info.name[1] << endl;
-				cout << player_info.player_color[1] << endl;
-				cout << player_info.name[2] << endl;
-				cout << player_info.player_color[2] << endl;
+				cout << "player_info 받은 정보" << endl;
+				cout << "내 이름: "<< player_info.name[0] << " 색: " << player_info.player_color[0] << endl;
+				cout << "p1 이름: " << player_info.name[1] << " 색: " << player_info.player_color[1] << endl;
+				cout << "p2 이름: " << player_info.name[2] << " 색: " << player_info.player_color[2] << endl;
+
 
 				//색깔 자기꺼에 맞게 바꿔줌
 				//아니면 서버에서 보내는 player_state에 이름 추가해야함
-				cout << "player_info 받음" << endl;
+				
 
 				//created_object 수신
-				CO created_object;
+				
 				//여러번 반복해서 받아야 함 for문
 				retval = recv(sock, (char*)&created_object, sizeof(CO), MSG_WAITALL);
 				if (retval == SOCKET_ERROR) {
 					err_display("recv()");
 					//예외처리
 				}
-				
 			}
 		}
-		else if(game.curr_state == 1) {			// 1:find_match
+		else if(game.curr_state == 1) {			// 1:ingame
 			
 		}
 	}
