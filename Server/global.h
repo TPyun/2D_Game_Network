@@ -29,6 +29,11 @@ typedef struct players_info {
 	char name[3][20];
 }PI;
 
+typedef struct players_info_and_state {
+	PS player_state;
+	PI player_info;
+}IS;
+
 typedef struct created_object
 {
 	int object_type;	// 0:바위, 1:벽, 2:아이템

@@ -70,7 +70,6 @@ bool find_match_3p()
 		for (auto& a : find_match_list) {
 			if (a.second->game_state == 1){
 				a.second->game_state = 2;
-				
 			}
 			return true;
 		}
@@ -181,8 +180,8 @@ DWORD WINAPI process_client(LPVOID arg)
 				}
 				first_send = false;
 			}
-			else
-			{
+			else{
+				//게임 내에서 계속 player_state 전송
 				retval = send(client_sock, (char*)&player_state, sizeof(PS), 0);
 				if (retval == SOCKET_ERROR) {
 					err_display("send()");
@@ -235,7 +234,6 @@ int main(int argc, char* argv[])
 	HANDLE  matchingthread;
 	matchingthread = CreateThread(NULL, 0, matching_thread,
 		0, 0, NULL);
-
 
 	// 데이터 통신에 사용할 변수
 	SOCKET client_sock;

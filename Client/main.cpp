@@ -100,7 +100,6 @@ DWORD WINAPI server_thread(LPVOID arg)
 		}
 		else if(game.curr_state == 1) {			// 1:find_match
 			
-
 		}
 	}
 	return 0;
