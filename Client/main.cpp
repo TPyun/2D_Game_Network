@@ -95,6 +95,11 @@ DWORD WINAPI server_thread(LPVOID arg)
 					err_display("recv()");
 					//예외처리
 				}
+
+				retval =recv(sock, (char*)&game.play_list, sizeof(PS) * 3, MSG_WAITALL);
+				cout << game.play_list[0].game_state << endl;
+				cout << game.play_list[1].game_state << endl;
+				cout << game.play_list[2].game_state << endl;
 			}
 		}
 		else if(game.curr_state == 1) {			// 1:ingame

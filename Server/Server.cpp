@@ -165,6 +165,9 @@ DWORD WINAPI process_client(LPVOID arg)
 		else if (player_profile.player_state.game_state == 2) {		// 2:in_game
 			static int first_send = true;
 
+			//보낼 play_list
+			PS local_player_list[3];
+
 			//초기 데이터를 보냈는지 확인
 			if (first_send)
 			{	
@@ -180,11 +183,25 @@ DWORD WINAPI process_client(LPVOID arg)
 					err_display("send()");
 					break;
 				}
+				int cnt = 0;
+				for (auto& a : player_list)
+				{
+					
+					//같은 방에 걸린 플레이어 정보 가져옴
+					if (a.second->room_num == player_profile.room_num)
+					{
+						local_player_list[cnt] = a.second->player_state;
+					}
+				}
 				first_send = false;
+
 			}
 			else{
 				//게임 내에서 계속 player_state 전송
-				retval = send(client_sock, (char*)&player_profile.player_state, sizeof(PS), 0);
+				cout << local_player_list[0].game_state << endl;
+				cout << local_player_list[1].game_state << endl;
+				cout << local_player_list[2].game_state << endl;
+				retval = send(client_sock, (char*)&local_player_list, sizeof(PS) * 3, 0);
 				if (retval == SOCKET_ERROR) {
 					err_display("send()");
 					break;
