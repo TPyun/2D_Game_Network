@@ -54,7 +54,6 @@ DWORD WINAPI matching_thread(LPVOID arg)
 ingame create_map;
 DWORD WINAPI ingame_thread(LPVOID arg)
 {
-	create_map.create_object();
 	cout << (int)arg <<" : 게임을 시작하지." << endl;
 	
 	return 0;
@@ -140,9 +139,6 @@ DWORD WINAPI process_client(LPVOID arg)
 			}
 		}
 		else if (player_profile.player_state.game_state == 1) {		// 1:find_match
-
-			
-
 			int other_player_num = 0;
 			for (auto& player : player_list) {
 				if (player.second->room_num == player_profile.room_num)
@@ -155,7 +151,6 @@ DWORD WINAPI process_client(LPVOID arg)
 					break;
 				}
 			}
-			
 			retval = send(client_sock, (char*)&player_profile.player_info, sizeof(PI), 0);
 			if (retval == SOCKET_ERROR) {
 				err_display("send()");
@@ -171,6 +166,8 @@ DWORD WINAPI process_client(LPVOID arg)
 			//초기 데이터를 보냈는지 확인
 			if (first_send)
 			{	
+				create_map.create_object();
+				
 				cout <<"\n" << (char*)player_profile.player_info.name << "클라이언트 방 번호: " << player_profile.room_num << endl;
 				//created_object 송신
 				retval = send(client_sock, (char*)&create_map.objects, sizeof(create_map.objects), 0);
@@ -208,14 +205,10 @@ DWORD WINAPI process_client(LPVOID arg)
 					err_display("send()");
 					break;
 				}
-				
-				
 				first_send = false;
 			}
 			else{
 				//게임 내에서 계속 player_state 전송
-				
-				
 				//retval = send(client_sock, (char*)&local_player_list, sizeof(PS) * 3, 0);
 				if (retval == SOCKET_ERROR) {
 					err_display("send()");
