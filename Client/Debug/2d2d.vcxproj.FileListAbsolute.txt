@@ -3,3 +3,4 @@ C:\Users\YTP\source\repos\2D_Game_Network\Debug\2d2d.exe
 D:\Projects\2D_Game_Network\Client\Debug\2d2d.exe
 C:\Users\YTP\source\repos\2D_Game_Network\Client\Debug\2d2d.exe
 C:\Users\qunie\source\repos\2D_Game_Network\Client\Debug\2d2d.exe
+C:\Users\kang\Desktop\2D_Game_Network\Client\Debug\2d2d.exe
