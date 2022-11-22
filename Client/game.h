@@ -116,11 +116,6 @@ private:
 	int window_moved_x = 0;
 	int window_moved_y = 0;
 
-	bool w_Pressed = false;
-	bool a_Pressed = false;
-	bool s_Pressed = false;
-	bool d_Pressed = false;
-
 	int mouse_X = 0;
 	int mouse_Y = 0;
 
@@ -209,9 +204,12 @@ public:
 	char Port[10] = "9000";
 	char Name[20] = "wooyung";
 
-	CO created_objects[20];
+	bool w_Pressed = false;
+	bool a_Pressed = false;
+	bool s_Pressed = false;
+	bool d_Pressed = false;
 
-	void send_name();
+	CO created_objects[20];
 
 	PS player_list[3];
 	Game();

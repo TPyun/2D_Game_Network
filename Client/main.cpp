@@ -11,7 +11,7 @@
 
 using namespace std;
 //char* SERVERIP = (char*)"127.0.0.1";
-Game game;
+//Game game;
 PS player_list[3];
 //서버 송수신용 스레드
 DWORD WINAPI server_thread(LPVOID arg)
@@ -106,7 +106,9 @@ DWORD WINAPI server_thread(LPVOID arg)
 			}
 		}
 		else if(game.curr_state == 1) {			// 1:ingame
-			
+			while (true) {
+				send_event(sock);
+			}
 		}
 	}
 	return 0;

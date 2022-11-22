@@ -462,26 +462,11 @@ void Game::update()
 	}
 	else if (curr_state == 1) {
 		mouseEvent_ingame();
-		//keyEvent_ingame();
+		keyEvent_ingame();
 		drawIngame();
 	}
 
 	updateRenderer();
-}
-
-void Game::send_name()
-{
-	/*cout << Name << endl;
-
-	char name_buf[NAMESIZE]{};
-	int retval;
-	SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
-
-	strncpy(name_buf, Name, strlen(Name));
-	retval = send(sock, name_buf, NAMESIZE, 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("send_name()");
-	}*/
 }
 
 Game::Game()
@@ -556,7 +541,7 @@ void Game::mouseEvent_ingame()
 	my_char_angle = calcAngleFromPoints(mouse_point, middle_pos);
 
 	//마우스 왼 버튼 누르면 발사
-	/*if (event.type == SDL_MOUSEBUTTONDOWN) {
+	if (event.type == SDL_MOUSEBUTTONDOWN) {
 		if (event.button.button == SDL_BUTTON_LEFT && gun_fired == false) {
 			gun_fired = true;
 			fired_time = clock();
@@ -566,7 +551,7 @@ void Game::mouseEvent_ingame()
 
 			Mix_PlayChannel(-1, gunsound, 0);
 		}
-	}*/
+	}
 	//총이 발사되고 타이머 작동시켜서 1초 뒤 다시 발사 가능
 	/*if (gun_fired) {
 		if (Timer(fired_time, 100) == 1) {
@@ -576,126 +561,126 @@ void Game::mouseEvent_ingame()
 	}*/
 }
 
-//void Game::keyEvent_ingame()
-//{
-//	//123으로 weapon_type 변경
-//	if (event.type == SDL_KEYDOWN) {
-//		if (event.key.keysym.sym == SDLK_1) {
-//			weapon_type = 0;
-//		}
-//		else if (event.key.keysym.sym == SDLK_2) {
-//			weapon_type = 1;
-//		}
-//		else if (event.key.keysym.sym == SDLK_3) {
-//			weapon_type = 2;
-//		}
-//	}
-//
-//	//Fix keyboard status when key pressed
-//	if (event.type == SDL_KEYDOWN) {
-//		if (event.key.keysym.sym == SDLK_w) {
-//			w_Pressed = true;
-//		}
-//		if (event.key.keysym.sym == SDLK_a) {
-//			a_Pressed = true;
-//		}
-//		if (event.key.keysym.sym == SDLK_s) {
-//			s_Pressed = true;
-//		}
-//		if (event.key.keysym.sym == SDLK_d) {
-//			d_Pressed = true;
-//		}
-//	}
-//	if (event.type == SDL_KEYUP) {
-//		if (event.key.keysym.sym == SDLK_w) {
-//			w_Pressed = false;
-//		}
-//		if (event.key.keysym.sym == SDLK_a) {
-//			a_Pressed = false;
-//		}
-//		if (event.key.keysym.sym == SDLK_s) {
-//			s_Pressed = false;
-//		}
-//		if (event.key.keysym.sym == SDLK_d) {
-//			d_Pressed = false;
-//		}
-//	}
-//
-//	//Add speed to character by status of key
-//	float minimun_movement = 5.f * delayTime;
-//	if (w_Pressed) {
-//		MyVelo.y -= minimun_movement;
-//	}
-//	if (s_Pressed) {
-//		MyVelo.y += minimun_movement;
-//	}
-//	if (a_Pressed) {
-//		MyVelo.x -= minimun_movement;
-//	}
-//	if (d_Pressed) {
-//		MyVelo.x += minimun_movement;
-//	}
-//
-//	float MaxVelo = 200.f * delayTime;
-//	float MinVelo = -200.f * delayTime;
-//
-//	//Limit Velocity
-//	if (MyVelo.x > MaxVelo) {
-//		MyVelo.x = MaxVelo;
-//	}
-//	if (MyVelo.x < MinVelo) {
-//		MyVelo.x = MinVelo;
-//	}
-//	if (MyVelo.y > MaxVelo) {
-//		MyVelo.y = MaxVelo;
-//	}
-//	if (MyVelo.y < MinVelo) {
-//		MyVelo.y = MinVelo;
-//	}
-//
-//	//Character Speed Friction
-//	float friction = 2.f * delayTime;
-//
-//	if (MyVelo.x > 0) {
-//		MyVelo.x -= friction;
-//	}
-//	if (MyVelo.x < 0) {
-//		MyVelo.x += friction;
-//	}
-//	if (MyVelo.y > 0) {
-//		MyVelo.y -= friction;
-//	}
-//	if (MyVelo.y < 0) {
-//		MyVelo.y += friction;
-//	}
-//
-//	//offset ignorable velocity
-//	if (-minimun_movement / 2 <= MyVelo.x && MyVelo.x <= minimun_movement / 2) {
-//		MyVelo.x = 0;
-//	}
-//	if (-minimun_movement / 2 <= MyVelo.y && MyVelo.y <= minimun_movement / 2) {
-//		MyVelo.y = 0;
-//	}
-//
-//	//Keep Character Visible in Window
-//	if (MyCharPos.x > ground_size / 2 - player_size / 2) {
-//		MyCharPos.x = ground_size / 2 - player_size / 2;
-//		MyVelo.x = 0;
-//	}
-//	else if (MyCharPos.x < -ground_size / 2 + player_size / 2) {
-//		MyCharPos.x = -ground_size / 2 + player_size / 2;
-//		MyVelo.x = 0;
-//	}
-//	if (MyCharPos.y > ground_size / 2 - player_size / 2) {
-//		MyCharPos.y = ground_size / 2 - player_size / 2;
-//		MyVelo.y = 0;
-//	}
-//	else if (MyCharPos.y < -ground_size / 2 + player_size / 2) {
-//		MyCharPos.y = -ground_size / 2 + player_size / 2;
-//		MyVelo.y = 0;
-//	}
-//	//add velocity to XY coordinates
-//	MyCharPos.x += MyVelo.x;
-//	MyCharPos.y += MyVelo.y;
-//}
+void Game::keyEvent_ingame()
+{
+	//123으로 weapon_type 변경
+	if (event.type == SDL_KEYDOWN) {
+		if (event.key.keysym.sym == SDLK_1) {
+			weapon_type = 0;
+		}
+		else if (event.key.keysym.sym == SDLK_2) {
+			weapon_type = 1;
+		}
+		else if (event.key.keysym.sym == SDLK_3) {
+			weapon_type = 2;
+		}
+	}
+
+	//Fix keyboard status when key pressed
+	if (event.type == SDL_KEYDOWN) {
+		if (event.key.keysym.sym == SDLK_w) {
+			w_Pressed = true;
+		}
+		if (event.key.keysym.sym == SDLK_a) {
+			a_Pressed = true;
+		}
+		if (event.key.keysym.sym == SDLK_s) {
+			s_Pressed = true;
+		}
+		if (event.key.keysym.sym == SDLK_d) {
+			d_Pressed = true;
+		}
+	}
+	if (event.type == SDL_KEYUP) {
+		if (event.key.keysym.sym == SDLK_w) {
+			w_Pressed = false;
+		}
+		if (event.key.keysym.sym == SDLK_a) {
+			a_Pressed = false;
+		}
+		if (event.key.keysym.sym == SDLK_s) {
+			s_Pressed = false;
+		}
+		if (event.key.keysym.sym == SDLK_d) {
+			d_Pressed = false;
+		}
+	}
+
+	////Add speed to character by status of key
+	//float minimun_movement = 5.f * delayTime;
+	//if (w_Pressed) {
+	//	MyVelo.y -= minimun_movement;
+	//}
+	//if (s_Pressed) {
+	//	MyVelo.y += minimun_movement;
+	//}
+	//if (a_Pressed) {
+	//	MyVelo.x -= minimun_movement;
+	//}
+	//if (d_Pressed) {
+	//	MyVelo.x += minimun_movement;
+	//}
+
+	//float MaxVelo = 200.f * delayTime;
+	//float MinVelo = -200.f * delayTime;
+
+	////Limit Velocity
+	//if (MyVelo.x > MaxVelo) {
+	//	MyVelo.x = MaxVelo;
+	//}
+	//if (MyVelo.x < MinVelo) {
+	//	MyVelo.x = MinVelo;
+	//}
+	//if (MyVelo.y > MaxVelo) {
+	//	MyVelo.y = MaxVelo;
+	//}
+	//if (MyVelo.y < MinVelo) {
+	//	MyVelo.y = MinVelo;
+	//}
+
+	////Character Speed Friction
+	//float friction = 2.f * delayTime;
+
+	//if (MyVelo.x > 0) {
+	//	MyVelo.x -= friction;
+	//}
+	//if (MyVelo.x < 0) {
+	//	MyVelo.x += friction;
+	//}
+	//if (MyVelo.y > 0) {
+	//	MyVelo.y -= friction;
+	//}
+	//if (MyVelo.y < 0) {
+	//	MyVelo.y += friction;
+	//}
+
+	////offset ignorable velocity
+	//if (-minimun_movement / 2 <= MyVelo.x && MyVelo.x <= minimun_movement / 2) {
+	//	MyVelo.x = 0;
+	//}
+	//if (-minimun_movement / 2 <= MyVelo.y && MyVelo.y <= minimun_movement / 2) {
+	//	MyVelo.y = 0;
+	//}
+
+	////Keep Character Visible in Window
+	//if (MyCharPos.x > ground_size / 2 - player_size / 2) {
+	//	MyCharPos.x = ground_size / 2 - player_size / 2;
+	//	MyVelo.x = 0;
+	//}
+	//else if (MyCharPos.x < -ground_size / 2 + player_size / 2) {
+	//	MyCharPos.x = -ground_size / 2 + player_size / 2;
+	//	MyVelo.x = 0;
+	//}
+	//if (MyCharPos.y > ground_size / 2 - player_size / 2) {
+	//	MyCharPos.y = ground_size / 2 - player_size / 2;
+	//	MyVelo.y = 0;
+	//}
+	//else if (MyCharPos.y < -ground_size / 2 + player_size / 2) {
+	//	MyCharPos.y = -ground_size / 2 + player_size / 2;
+	//	MyVelo.y = 0;
+	//}
+	////add velocity to XY coordinates
+	//MyCharPos.x += MyVelo.x;
+	//MyCharPos.y += MyVelo.y;
+}
 
