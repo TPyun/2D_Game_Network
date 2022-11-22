@@ -207,7 +207,7 @@ public:
 
 	void send_name();
 
-	PS play_list[3];
+	PS player_list[3];
 	Game();
 	~Game();
 

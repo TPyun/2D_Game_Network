@@ -83,10 +83,6 @@ DWORD WINAPI server_thread(LPVOID arg)
 				cout << "p2 이름: " << player_info.name[2] << " 색: " << player_info.player_color[2] << endl;
 
 
-				//색깔 자기꺼에 맞게 바꿔줌
-				//아니면 서버에서 보내는 player_state에 이름 추가해야함
-				
-
 				//created_object 수신
 				
 				//여러번 반복해서 받아야 함 for문
@@ -95,11 +91,12 @@ DWORD WINAPI server_thread(LPVOID arg)
 					err_display("recv()");
 					//예외처리
 				}
+				cout << "created object 수신 완료" << endl;
 
-				retval =recv(sock, (char*)&game.play_list, sizeof(PS) * 3, MSG_WAITALL);
-				cout << game.play_list[0].game_state << endl;
-				cout << game.play_list[1].game_state << endl;
-				cout << game.play_list[2].game_state << endl;
+				retval = recv(sock, (char*)&game.player_list, sizeof(PS) * 3, MSG_WAITALL);
+				cout << game.player_list[0].game_state << endl;
+				cout << game.player_list[1].game_state << endl;
+				cout << game.player_list[2].game_state << endl;
 			}
 		}
 		else if(game.curr_state == 1) {			// 1:ingame
