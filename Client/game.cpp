@@ -479,6 +479,33 @@ void Game::drawWeaponList()
 
 }
 
+void Game::drawObstacle()
+{
+	for (int i = 0; i < 20; i++) {
+		destR.x = WIDTH / 2 - 100 / 2 - MyCharPos.x + created_objects[i].object_position.x;
+		destR.y = HEIGHT / 2 - 100 / 2 - MyCharPos.y + created_objects[i].object_position.y;
+		
+		//cout << created_objects[i].object_position.x << " | " << created_objects[i].object_position.y << endl;
+		//cout << MyCharPos.x << " / " << MyCharPos.y << endl;
+		
+		if (created_objects[i].object_type == 0) {		//rock
+			destR.w = 74;
+			destR.h = 74;
+			SDL_RenderCopy(renderer, rock_Tex, NULL, &destR);
+		}
+		else if (created_objects[i].object_type == 1) {		//wall 1
+			destR.w = 23;
+			destR.h = 95;			
+			SDL_RenderCopy(renderer, wall1_Tex, NULL, &destR);
+		}
+		else if (created_objects[i].object_type == 2){		//wall 2
+			destR.w = 95;
+			destR.h = 23;
+			SDL_RenderCopy(renderer, wall2_Tex, NULL, &destR);
+		}
+	}
+}
+
 void Game::drawMenu()
 {
 	SDL_Color color = { 255, 255, 255 };
@@ -571,6 +598,7 @@ void Game::drawIngame()
 {
 	drawBackground();
 	drawGround();
+	drawObstacle();
 	drawBullet();
 	drawFlash();
 	drawCharacter();
@@ -643,7 +671,10 @@ Game::Game()
 	sniper_ammoTex = this->loadImage("Images/Sniper_ammo.png");
 
 	infinity_Tex = this->loadImage("Images/Infinity.png");
-	
+
+	rock_Tex = this->loadImage("Images/Rock.png");
+	wall1_Tex = this->loadImage("Images/Wall1.png");
+	wall2_Tex = this->loadImage("Images/Wall2.png");
 	
 	this->loadWavs();
 	this->loadFont();

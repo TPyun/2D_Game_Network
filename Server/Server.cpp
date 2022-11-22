@@ -173,14 +173,16 @@ DWORD WINAPI process_client(LPVOID arg)
 			{	
 				cout <<"\n" << (char*)player_profile.player_info.name << "클라이언트 방 번호: " << player_profile.room_num << endl;
 				//created_object 송신
-				// // 이거 바이트 클라랑 다름
-				//retval = send(client_sock, (char*)&create_map.objects, sizeof(create_map.objects), 0);
+				retval = send(client_sock, (char*)&create_map.objects, sizeof(create_map.objects), 0);
 				if (retval == SOCKET_ERROR) {
 					err_display("send()");
 					break;
 				}
 				cout << "보내는 byte : " << sizeof(create_map.objects) << endl;
 				cout << "sent first created objects" << endl;
+				for (int i = 0; i < 20; ++i) {
+					cout << "받은 created_objects[" << i << "] : " << create_map.objects[i].object_position.x << " / " << create_map.objects[i].object_position.y << endl;
+				}
 
 				//player_state 송신
 				int cnt = 0;

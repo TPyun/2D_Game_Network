@@ -12,7 +12,7 @@ public:
 
 private:
 	// 화면 크기에 따라 조정 필요
-	std::uniform_int_distribution<int> uid{ 0, 1000 };
+	std::uniform_int_distribution<int> uid{ -900, 900 };
 	std::default_random_engine dre;
 };
 

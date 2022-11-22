@@ -86,6 +86,9 @@ private:
 	SDL_Texture* rifle_ammoTex;
 	SDL_Texture* sniper_ammoTex;
 
+	SDL_Texture* rock_Tex;
+	SDL_Texture* wall1_Tex;
+	SDL_Texture* wall2_Tex;
 
 	Mix_Chunk* gunsound;
 
@@ -186,6 +189,7 @@ private:
 	void drawCrosshair();
 	void drawText(int x, int y, char[], SDL_Color);
 	void drawWeaponList();
+	void drawObstacle();
 
 	void drawMenu();
 	void drawIngame();
@@ -204,6 +208,8 @@ public:
 	char IPAdress[20] = "127.0.0.1";
 	char Port[10] = "9000";
 	char Name[20] = "wooyung";
+
+	CO created_objects[20];
 
 	void send_name();
 

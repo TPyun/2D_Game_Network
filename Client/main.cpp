@@ -25,7 +25,6 @@ DWORD WINAPI server_thread(LPVOID arg)
 	if (sock == INVALID_SOCKET) err_quit("socket()");
 
 	PI player_info;
-	CO created_object;
 	
 	while (!game.done) {
 		if (game.curr_state == 0) {				// 0:menu
@@ -81,16 +80,15 @@ DWORD WINAPI server_thread(LPVOID arg)
 				cout << "p1 이름: " << player_info.name[1] << " 색: " << player_info.player_color[1] << endl;
 				cout << "p2 이름: " << player_info.name[2] << " 색: " << player_info.player_color[2] << endl;
 
-
 				//created_object 수신
-				
-				//여러번 반복해서 받아야 함 for문
-				// 이거 바이트 서버랑 다름
-				//retval = recv(sock, (char*)&created_object, sizeof(CO), MSG_WAITALL);
-				cout << "받는 byte : " << sizeof(CO) << endl;
+				retval = recv(sock, (char*)&game.created_objects, sizeof(game.created_objects), MSG_WAITALL);
+				cout << "받는 byte : " << sizeof(game.created_objects) << endl;
 				if (retval == SOCKET_ERROR) {
 					err_display("recv()");
 					//예외처리
+				}
+				for (int i = 0; i < 20; ++i) {
+					cout << "받은 created_objects[" << i << "] : " << game.created_objects[i].object_position.x << " / " << game.created_objects[i].object_position.y << endl;
 				}
 				
 				cout << "created object 수신 완료" << endl;
