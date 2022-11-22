@@ -12,7 +12,7 @@
 using namespace std;
 //char* SERVERIP = (char*)"127.0.0.1";
 Game game;
-
+PS player_list[3];
 //서버 송수신용 스레드
 DWORD WINAPI server_thread(LPVOID arg)
 {
@@ -25,7 +25,6 @@ DWORD WINAPI server_thread(LPVOID arg)
 	if (sock == INVALID_SOCKET) err_quit("socket()");
 
 	PI player_info;
-	map<PI*, PS*> player_list;
 	CO created_object;
 	
 	while (!game.done) {
@@ -46,12 +45,12 @@ DWORD WINAPI server_thread(LPVOID arg)
 				if (retval == SOCKET_ERROR) {
 					//err_quit("connect()");
 					game.connect_server = false;
-					cout << "connect 못했어요. 정확한지 다시 한번 보셈" << endl;
+					cout << "\nconnect 못했어요. 정확한지 다시 한번 보셈" << endl;
 					continue;
 				}
 				else {
 					game.server_connected = true; //한번만 connect하게끔
-					cout << "서버와 연결됨" << endl;
+					cout << "\n서버와 연결됨" << endl;
 				}
 
 				// 플레이어 이름 보내기
@@ -65,7 +64,7 @@ DWORD WINAPI server_thread(LPVOID arg)
 					err_display("send()");
 				}
 				game.find_match = false; //true인거 받고 false로 바꿔줌
-				cout << "find_match 전송" << endl;
+				cout << "\nfind_match 전송" << endl;
 
 				//recv player_info
 				retval = recv(sock, (char*)&player_info, sizeof(PI), MSG_WAITALL);
@@ -77,7 +76,7 @@ DWORD WINAPI server_thread(LPVOID arg)
 					//예외처리
 				}
 
-				cout << "player_info 받은 정보" << endl;
+				cout << "\nplayer_info 받은 정보" << endl;
 				cout << "내 이름: "<< player_info.name[0] << " 색: " << player_info.player_color[0] << endl;
 				cout << "p1 이름: " << player_info.name[1] << " 색: " << player_info.player_color[1] << endl;
 				cout << "p2 이름: " << player_info.name[2] << " 색: " << player_info.player_color[2] << endl;
@@ -86,17 +85,26 @@ DWORD WINAPI server_thread(LPVOID arg)
 				//created_object 수신
 				
 				//여러번 반복해서 받아야 함 for문
-				retval = recv(sock, (char*)&created_object, sizeof(CO), MSG_WAITALL);
+				// 이거 바이트 서버랑 다름
+				//retval = recv(sock, (char*)&created_object, sizeof(CO), MSG_WAITALL);
+				cout << "받는 byte : " << sizeof(CO) << endl;
 				if (retval == SOCKET_ERROR) {
 					err_display("recv()");
 					//예외처리
 				}
+				
 				cout << "created object 수신 완료" << endl;
 
-				retval = recv(sock, (char*)&game.player_list, sizeof(PS) * 3, MSG_WAITALL);
-				cout << game.player_list[0].game_state << endl;
-				cout << game.player_list[1].game_state << endl;
-				cout << game.player_list[2].game_state << endl;
+				retval = recv(sock, (char*)&player_list, sizeof(PS) * 3, MSG_WAITALL);
+				if (retval == SOCKET_ERROR) {
+					err_display("recv()");
+					//예외처리
+				}
+				cout << "recv first player state" << endl;
+				cout << player_list[0].game_state << endl;
+				cout << player_list[1].game_state << endl;
+				cout << player_list[2].game_state << endl;
+				game.curr_state = 1;
 			}
 		}
 		else if(game.curr_state == 1) {			// 1:ingame

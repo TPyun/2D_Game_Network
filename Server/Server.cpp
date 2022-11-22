@@ -33,12 +33,12 @@ bool find_match_3p(int);
 DWORD WINAPI matching_thread(LPVOID arg)
 {
 	//ingame_room map함수 관리
-	int room_num = 0;
+	int room_num = 1;
 
 	//3player가 find_match를 눌렀는지 확인
 	while (1) {
 		if (!find_match_3p(room_num)){
-			cout << "\rmatching";
+			cout << "\r";
 			continue;
 		}
 		else {
@@ -141,7 +141,7 @@ DWORD WINAPI process_client(LPVOID arg)
 		}
 		else if (player_profile.player_state.game_state == 1) {		// 1:find_match
 
-			cout << (char*)player_profile.player_info.name << "클라이언트 방 번호: " << player_profile.room_num << endl;
+			
 
 			int other_player_num = 0;
 			for (auto& player : player_list) {
@@ -164,47 +164,57 @@ DWORD WINAPI process_client(LPVOID arg)
 		}		
 		else if (player_profile.player_state.game_state == 2) {		// 2:in_game
 			static int first_send = true;
-
+			
 			//보낼 player_list
 			PS local_player_list[3];
 
 			//초기 데이터를 보냈는지 확인
 			if (first_send)
 			{	
+				cout <<"\n" << (char*)player_profile.player_info.name << "클라이언트 방 번호: " << player_profile.room_num << endl;
 				//created_object 송신
-				retval = send(client_sock, (char*)&create_map.objects, sizeof(create_map.objects), 0);
+				// // 이거 바이트 클라랑 다름
+				//retval = send(client_sock, (char*)&create_map.objects, sizeof(create_map.objects), 0);
 				if (retval == SOCKET_ERROR) {
 					err_display("send()");
 					break;
 				}
+				cout << "보내는 byte : " << sizeof(create_map.objects) << endl;
 				cout << "sent first created objects" << endl;
 
 				//player_state 송신
-				retval = send(client_sock, (char*)&player_profile.player_state, sizeof(PS), 0);
+				int cnt = 0;
+				for (auto& a : player_list)
+				{
+
+					//같은 방에 걸린 플레이어 정보 가져옴
+					if (a.second->room_num == player_profile.room_num) {
+						local_player_list[cnt++] = a.second->player_state;
+					}
+				}
+				//임시 
+				local_player_list[1].game_state = 2;
+				local_player_list[2].game_state = 2;
+
+				cout << "sent first player state" << endl;
+				cout << local_player_list[0].game_state << endl;
+				cout << local_player_list[1].game_state << endl;
+				cout << local_player_list[2].game_state << endl;
+
+				retval = send(client_sock, (char*)&local_player_list, sizeof(PS) * 3, 0);
 				if (retval == SOCKET_ERROR) {
 					err_display("send()");
 					break;
 				}
-				cout << "sent first player state" << endl;
-
-				int cnt = 0;
-				for (auto& a : player_list)
-				{
-					
-					//같은 방에 걸린 플레이어 정보 가져옴
-					if (a.second->room_num == player_profile.room_num){
-						local_player_list[cnt] = a.second->player_state;
-					}
-				}
+				
+				
 				first_send = false;
 			}
 			else{
 				//게임 내에서 계속 player_state 전송
-				cout << local_player_list[0].game_state << endl;
-				cout << local_player_list[1].game_state << endl;
-				cout << local_player_list[2].game_state << endl;
 				
-				retval = send(client_sock, (char*)&local_player_list, sizeof(PS) * 3, 0);
+				
+				//retval = send(client_sock, (char*)&local_player_list, sizeof(PS) * 3, 0);
 				if (retval == SOCKET_ERROR) {
 					err_display("send()");
 					break;
