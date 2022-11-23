@@ -55,7 +55,8 @@ ingame create_map;
 DWORD WINAPI ingame_thread(LPVOID arg)
 {
 	cout << (int)arg <<" : 게임을 시작하지." << endl;
-	
+	create_map.create_object();
+
 	return 0;
 }
 
@@ -138,83 +139,71 @@ DWORD WINAPI process_client(LPVOID arg)
 				player_profile.player_state.game_state = 1;	//findmath합니다
 			}
 		}
-		else if (player_profile.player_state.game_state == 1) {		// 1:find_match
+		else if (player_profile.player_state.game_state == 1) {		// 1:finding_match
+
+		}
+		else if (player_profile.player_state.game_state == 2) {		// 2:loading
+			//보낼 player_list
+			PS local_player_list[3];
+
+			//초기 데이터를 보냈는지 확인
 			int other_player_num = 0;
 			for (auto& player : player_list) {
 				if (player.second->room_num == player_profile.room_num)
 					player.second->player_info.player_color[other_player_num] = other_player_num;
-					if (player.second->player_info.name != player_profile.player_info.name) {		//본인은 [0]에 있으니 제외
-						strcpy(player_profile.player_info.name[other_player_num + 1], (char*)player.second->player_info.name);
-						other_player_num++;
-					}
+				if (player.second->player_info.name != player_profile.player_info.name) {		//본인은 [0]에 있으니 제외
+					strcpy(player_profile.player_info.name[other_player_num + 1], (char*)player.second->player_info.name);
+					other_player_num++;
+				}
 				if (other_player_num == MAX_CLIENT_IN_ROOM - 1) {
 					break;
 				}
 			}
+
 			retval = send(client_sock, (char*)&player_profile.player_info, sizeof(PI), 0);
 			if (retval == SOCKET_ERROR) {
 				err_display("send()");
 				break;
 			}
-		}		
-		else if (player_profile.player_state.game_state == 2) {		// 2:in_game
-			static int first_send = true;
+
+			cout << "\n" << (char*)player_profile.player_info.name << "클라이언트 방 번호: " << player_profile.room_num << endl;
+			//created_object 송신
+			retval = send(client_sock, (char*)&create_map.objects, sizeof(create_map.objects), 0);
+			if (retval == SOCKET_ERROR) {
+				err_display("send()");
+				break;
+			}
+			cout << "보내는 byte : " << sizeof(create_map.objects) << endl;
+			cout << "sent first created objects" << endl;
+			for (int i = 0; i < 20; ++i) {
+				cout << "받은 created_objects[" << i << "] : " << create_map.objects[i].object_position.x << " / " << create_map.objects[i].object_position.y << endl;
+			}
+
+			//player_state 송신
+			int cnt = 0;
+			for (auto& a : player_list) {
+
+				//같은 방에 걸린 플레이어 정보 가져옴
+				if (a.second->room_num == player_profile.room_num) {
+					local_player_list[cnt++] = a.second->player_state;
+				}
+			}
+			//임시 
+			local_player_list[1].game_state = 2;
+			local_player_list[2].game_state = 2;
+
+			cout << "sent first player state" << endl;
+			cout << local_player_list[0].game_state << endl;
+			cout << local_player_list[1].game_state << endl;
+			cout << local_player_list[2].game_state << endl;
+
+			retval = send(client_sock, (char*)&local_player_list, sizeof(PS) * 3, 0);
+			if (retval == SOCKET_ERROR) {
+				err_display("send()");
+				break;
+			}
 			
-			//보낼 player_list
-			PS local_player_list[3];
-
-			//초기 데이터를 보냈는지 확인
-			if (first_send)
-			{	
-				create_map.create_object();
-				
-				cout <<"\n" << (char*)player_profile.player_info.name << "클라이언트 방 번호: " << player_profile.room_num << endl;
-				//created_object 송신
-				retval = send(client_sock, (char*)&create_map.objects, sizeof(create_map.objects), 0);
-				if (retval == SOCKET_ERROR) {
-					err_display("send()");
-					break;
-				}
-				cout << "보내는 byte : " << sizeof(create_map.objects) << endl;
-				cout << "sent first created objects" << endl;
-				for (int i = 0; i < 20; ++i) {
-					cout << "받은 created_objects[" << i << "] : " << create_map.objects[i].object_position.x << " / " << create_map.objects[i].object_position.y << endl;
-				}
-
-				//player_state 송신
-				int cnt = 0;
-				for (auto& a : player_list)
-				{
-
-					//같은 방에 걸린 플레이어 정보 가져옴
-					if (a.second->room_num == player_profile.room_num) {
-						local_player_list[cnt++] = a.second->player_state;
-					}
-				}
-				//임시 
-				local_player_list[1].game_state = 2;
-				local_player_list[2].game_state = 2;
-
-				cout << "sent first player state" << endl;
-				cout << local_player_list[0].game_state << endl;
-				cout << local_player_list[1].game_state << endl;
-				cout << local_player_list[2].game_state << endl;
-
-				retval = send(client_sock, (char*)&local_player_list, sizeof(PS) * 3, 0);
-				if (retval == SOCKET_ERROR) {
-					err_display("send()");
-					break;
-				}
-				first_send = false;
-			}
-			else{
-				//게임 내에서 계속 player_state 전송
-				//retval = send(client_sock, (char*)&local_player_list, sizeof(PS) * 3, 0);
-				if (retval == SOCKET_ERROR) {
-					err_display("send()");
-					break;
-				}
-			}
+			player_profile.player_state.game_state = 3;
 		}
 		else if (player_profile.player_state.game_state == 3) {		// 3:lose
 
@@ -223,8 +212,7 @@ DWORD WINAPI process_client(LPVOID arg)
 
 		}
 	}
-
-	printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",addr, ntohs(clientaddr.sin_port));
+	printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n", addr, ntohs(clientaddr.sin_port));
 	//map에서 플레이어 제거
 	player_list.erase(addr);
 	client_thread_list.erase(addr);
