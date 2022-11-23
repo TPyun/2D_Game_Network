@@ -3,7 +3,6 @@
 #include "game.h"
 #include "client.h"
 #include <sstream>
-#include<map>
 
 #define FPS 144
 #define SERVERPORT 9000

@@ -1,5 +1,4 @@
 #pragma once
-
 #define SERVERPORT	9000
 #define BUFSIZE		4096
 #define NAMESIZE	20
@@ -40,4 +39,3 @@ typedef struct created_object
 	int object_type;	// 0:바위, 1:벽, 2:아이템
 	TI object_position;
 }CO;
-

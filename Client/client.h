@@ -1,6 +1,7 @@
 #include <winsock2.h> // 윈속2 메인 헤더
 #include <ws2tcpip.h> // 윈속2 확장 헤더
 #include <iostream>
+#include<map>
 #include "game.h"
 
 WSADATA wsa;
@@ -66,31 +67,33 @@ bool w_check = true;
 bool a_check = true;
 bool s_check = true;
 bool d_check = true;
+char key = '0';
 void send_event(SOCKET sock)
 {
 	// key input for player move
-	if (game.w_Pressed == true && w_check == false )
-	{
+	if (game.w_Pressed == true && w_check == false){
 		cout << "w.Pressed!" << endl;
-		retval = send(sock, (char*)&game.w_Pressed, sizeof(bool), 0);
+		key = 'w';
+		retval = send(sock, (char*)&key, sizeof(char), 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("key_pressed()");
 		}
 		w_check = true;
 	}
-	else if ( game.w_Pressed == false && w_check == true ) {
+	else if (game.w_Pressed == false && w_check == true) {
 		cout << "w.Pressed UP!" << endl;
-		retval = send(sock, (char*)&game.w_Pressed, sizeof(bool), 0);
+		key = 'w';
+		retval = send(sock, (char*)&key, sizeof(char), 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("key_pressed()");
 		}
 		w_check = false;
 	}
 
-	if (game.a_Pressed == true && a_check == false)
-	{
+	if (game.a_Pressed == true && a_check == false){
 		cout << "a.Pressed!" << endl;
-		retval = send(sock, (char*)&game.a_Pressed, sizeof(bool), 0);
+		key = 'a';
+		retval = send(sock, (char*)&key, sizeof(char), 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("key_pressed()");
 		}
@@ -98,17 +101,18 @@ void send_event(SOCKET sock)
 	}
 	else if (game.a_Pressed == false && a_check == true) {
 		cout << "a.Pressed UP!" << endl;
-		retval = send(sock, (char*)&game.a_Pressed, sizeof(bool), 0);
+		key = 'a';
+		retval = send(sock, (char*)&key, sizeof(char), 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("key_pressed()");
 		}
 		a_check = false;
 	}
 
-	if (game.s_Pressed == true && s_check == false)
-	{
+	if (game.s_Pressed == true && s_check == false){
 		cout << "s.Pressed!" << endl;
-		retval = send(sock, (char*)&game.s_Pressed, sizeof(bool), 0);
+		key = 's';
+		retval = send(sock, (char*)&key, sizeof(char), 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("key_pressed()");
 		}
@@ -116,17 +120,18 @@ void send_event(SOCKET sock)
 	}
 	else if (game.s_Pressed == false && s_check == true) {
 		cout << "s.Pressed UP!" << endl;
-		retval = send(sock, (char*)&game.s_Pressed, sizeof(bool), 0);
+		key = 's';
+		retval = send(sock, (char*)&key, sizeof(char), 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("key_pressed()");
 		}
 		s_check = false;
 	}
 
-	if (game.d_Pressed == true && d_check == false)
-	{
+	if (game.d_Pressed == true && d_check == false){
 		cout << "d.Pressed!" << endl;
-		retval = send(sock, (char*)&game.d_Pressed, sizeof(bool), 0);
+		key = 'd';
+		retval = send(sock, (char*)&key, sizeof(char), 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("key_pressed()");
 		}
@@ -134,7 +139,8 @@ void send_event(SOCKET sock)
 	}
 	else if (game.d_Pressed == false && d_check == true) {
 		cout << "d.Pressed UP!" << endl;
-		retval = send(sock, (char*)&game.d_Pressed, sizeof(bool), 0);
+		key = 'd';
+		retval = send(sock, (char*)&key, sizeof(char), 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("key_pressed()");
 		}

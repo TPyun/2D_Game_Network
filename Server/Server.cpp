@@ -18,6 +18,7 @@ char buffer[BUFSIZE]; // 가변 길이 데이터
 //mutex find_lock;
 //들어온 순서
 int hostnum;
+char key_check;
 
 //client 스레드 관리
 map<char*, char*> client_thread_list;
@@ -205,10 +206,22 @@ DWORD WINAPI process_client(LPVOID arg)
 			
 			player_profile.player_state.game_state = 3;
 		}
-		else if (player_profile.player_state.game_state == 3) {		// 3:lose
+		else if (player_profile.player_state.game_state == 3) {		// 3:ingame
+			// 키입력 받기
+			retval = recv(client_sock, (char*)&key_check, sizeof(char), MSG_WAITALL);
+			if (retval == SOCKET_ERROR) {
+				err_display("recv()");
+				//예외처리
+			}
+			else if (retval == 0) {
+				//예외처리
+			}
+			cout << key_check << endl;
+		}
+		else if (player_profile.player_state.game_state == 4) {		// 4:lose
 
 		}
-		else if (player_profile.player_state.game_state == 4) {		// 4:win
+		else if (player_profile.player_state.game_state == 5) {		// 5:win
 
 		}
 	}
