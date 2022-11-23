@@ -12,6 +12,14 @@ int retval;
 char* SERVERIP = (char*)"127.0.0.1";
 #define NAMESIZE 20
 
+// 전역변수 for event
+bool w_check = true;
+bool a_check = true;
+bool s_check = true;
+bool d_check = true;
+int gun_type = 0;
+char key = '0';
+
 // 소켓 함수 오류 출력 후 종료
 void err_quit(const char* msg)
 {
@@ -62,14 +70,24 @@ void send_name(SOCKET sock, Game* game)	// 플레이어 이름 보내기
 	}
 }
 
+void gun_change(SOCKET sock, int gun)	// 총 종류 보내기
+{
+	char cgun = gun + '0';
+	cout << "건 타입은 " << cgun << endl;
+	retval = send(sock, (char*)&cgun, sizeof(char), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("gun_change()");
+	}
+	gun_type = gun;
+}
+
 // 클라이언트 인게임에서의 입력
-bool w_check = true;
-bool a_check = true;
-bool s_check = true;
-bool d_check = true;
-char key = '0';
 void send_event(SOCKET sock)
 {
+	// key input for gun changing
+	if(gun_type != game.weapon_type)
+		gun_change(sock, game.weapon_type);
+
 	// key input for player move
 	if (game.w_Pressed == true && w_check == false){
 		cout << "w.Pressed!" << endl;

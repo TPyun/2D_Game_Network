@@ -141,7 +141,6 @@ private:
 	int flash_sprite_w = 1667;
 	int flash_sprite_h = 875;
 
-	int weapon_type = 0; // 0: pistol, 1: rifle, 2: sniper
 
 	int my_health = 100;
 	int enemy1_health = 100;
@@ -208,6 +207,8 @@ public:
 	bool a_Pressed = false;
 	bool s_Pressed = false;
 	bool d_Pressed = false;
+
+	int weapon_type = 0; // 0: pistol, 1: rifle, 2: sniper
 
 	CO created_objects[20];
 
