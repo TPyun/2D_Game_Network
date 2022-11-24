@@ -1,16 +1,10 @@
 #include "Common.h"
 #include "global.h"
 #include "ingame.h"
-#include <iostream>
-#include <fstream>
-#include<vector>
-#include<mutex>
-#include<string>
-#include<map>
 
-using namespace std;
 
 #define MAX_CLIENT_IN_ROOM 1
+using namespace std;
 
 int len = 0;
 char buffer[BUFSIZE]; // 가변 길이 데이터
@@ -18,9 +12,9 @@ char buffer[BUFSIZE]; // 가변 길이 데이터
 //mutex find_lock;
 //들어온 순서
 int hostnum;
-char key_check;
+char key_check; 
 
-//client 스레드 관리
+
 map<char*, char*> client_thread_list;
 map<char*, PP*> player_list;
 
@@ -52,12 +46,21 @@ DWORD WINAPI matching_thread(LPVOID arg)
 	}
 }
 // 인게임쓰레드
-ingame create_map;
-DWORD WINAPI ingame_thread(LPVOID arg)
+Ingame ingame;
+DWORD WINAPI ingame_thread(LPVOID room_num)
 {
-	cout << (int)arg <<" : 게임을 시작하지." << endl;
-	create_map.create_object();
+	cout << (int)room_num <<" : 게임을 시작하지." << endl;
+	ingame.create_object();
+	while (1) {
+		for (auto& player : player_list) {
+			if (player.second->room_num == (int)room_num) {
+				ingame.character_movement(player.second->player_key_mouse.key, player.second->player_state.player_position);
+				//cout << player.second->player_state.player_position.x << " " << player.second->player_state.player_position.y << endl;
+				Sleep(10);	//조절해야함
 
+			}
+		}
+	}
 	return 0;
 }
 
@@ -118,7 +121,10 @@ DWORD WINAPI process_client(LPVOID arg)
 		
 	//client_thread_;list에 클라이언트 추가
 	client_thread_list[addr] = name_buf;
-	
+
+	//보낼 player_list
+	PS local_player_list[3];
+
 	player_profile.player_state.game_state = 0;
 	while (true) {
 		if (player_profile.player_state.game_state == 0) {				// 0:main
@@ -144,8 +150,7 @@ DWORD WINAPI process_client(LPVOID arg)
 
 		}
 		else if (player_profile.player_state.game_state == 2) {		// 2:loading
-			//보낼 player_list
-			PS local_player_list[3];
+			
 
 			//초기 데이터를 보냈는지 확인
 			int other_player_num = 0;
@@ -169,15 +174,15 @@ DWORD WINAPI process_client(LPVOID arg)
 
 			cout << "\n" << (char*)player_profile.player_info.name << "클라이언트 방 번호: " << player_profile.room_num << endl;
 			//created_object 송신
-			retval = send(client_sock, (char*)&create_map.objects, sizeof(create_map.objects), 0);
+			retval = send(client_sock, (char*)&ingame.objects, sizeof(ingame.objects), 0);
 			if (retval == SOCKET_ERROR) {
 				err_display("send()");
 				break;
 			}
-			cout << "보내는 byte : " << sizeof(create_map.objects) << endl;
+			cout << "보내는 byte : " << sizeof(ingame.objects) << endl;
 			cout << "sent first created objects" << endl;
 			for (int i = 0; i < 20; ++i) {
-				cout << "받은 created_objects[" << i << "] : " << create_map.objects[i].object_position.x << " / " << create_map.objects[i].object_position.y << endl;
+				cout << "받은 created_objects[" << i << "] : " << ingame.objects[i].object_position.x << " / " << ingame.objects[i].object_position.y << endl;
 			}
 
 			//player_state 송신
@@ -212,11 +217,33 @@ DWORD WINAPI process_client(LPVOID arg)
 			if (retval == SOCKET_ERROR) {
 				err_display("recv()");
 				//예외처리
+				break;
 			}
 			else if (retval == 0) {
 				//예외처리
 			}
-			cout << key_check << endl;
+			if (key_check != '0') {
+				player_profile.player_key_mouse.key = key_check;
+
+			}
+			
+
+			//local에 현재 pp에 있는 ps 넣어주기
+			local_player_list[0] = player_profile.player_state;
+			int i = 1;
+			for (auto& player : player_list) {
+				if (player.second->room_num == (int)player_profile.room_num) {
+					local_player_list[i] = player.second->player_state;
+				}
+			}
+			//player state보내주기
+			retval = send(client_sock, (char*)&local_player_list, sizeof(PS) * 3, 0);
+			if (retval == SOCKET_ERROR) {
+				err_display("send()");
+				break;
+			}
+			cout << local_player_list[0].player_position.x << " / " << local_player_list[0].player_position.y << endl;
+
 		}
 		else if (player_profile.player_state.game_state == 4) {		// 4:lose
 

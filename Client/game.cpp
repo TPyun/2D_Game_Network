@@ -552,7 +552,7 @@ void Game::mouseEvent_ingame()
 			Mix_PlayChannel(-1, gunsound, 0);
 		}
 	}
-	//총이 발사되고 타이머 작동시켜서 1초 뒤 다시 발사 가능
+	//총이 발사되고 타이머 작동시켜서 1초 뒤 다시 발사 가능awd
 	/*if (gun_fired) {
 		if (Timer(fired_time, 100) == 1) {
 			gun_fired = false;

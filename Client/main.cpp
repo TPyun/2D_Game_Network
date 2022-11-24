@@ -11,7 +11,6 @@
 using namespace std;
 //char* SERVERIP = (char*)"127.0.0.1";
 //Game game;
-PS player_list[3];
 //서버 송수신용 스레드
 DWORD WINAPI server_thread(LPVOID arg)
 {
@@ -92,22 +91,31 @@ DWORD WINAPI server_thread(LPVOID arg)
 				
 				cout << "created object 수신 완료" << endl;
 
-				retval = recv(sock, (char*)&player_list, sizeof(PS) * 3, MSG_WAITALL);
+				retval = recv(sock, (char*)&game.player_list, sizeof(PS) * 3, MSG_WAITALL);
 				if (retval == SOCKET_ERROR) {
 					err_display("recv()");
 					//예외처리
 				}
 				cout << "recv first player state" << endl;
-				cout << player_list[0].game_state << endl;
-				cout << player_list[1].game_state << endl;
-				cout << player_list[2].game_state << endl;
+				cout << game.player_list[0].game_state << endl;
+				cout << game.player_list[1].game_state << endl;
+				cout << game.player_list[2].game_state << endl;
 				game.curr_state = 1;
 			}
 		}
 		else if(game.curr_state == 1) {			// 1:ingame
-			while (true) {
-				send_event(sock);
+			//이벤트 전송
+			send_event(sock);
+				
+			//플레이어 상태 받기
+			retval = recv(sock, (char*)&game.player_list, sizeof(PS) * 3, MSG_WAITALL);
+			if (retval == SOCKET_ERROR) {
+				err_display("recv()");
+				//예외처리
+				return 0;
 			}
+			cout << game.player_list[0].player_position.x << " / " << game.player_list[0].player_position.y << endl;
+			game.MyCharPos = game.player_list[0].player_position;
 		}
 	}
 	return 0;
@@ -135,7 +143,6 @@ int SDL_main(int argc, char* argv[])
 		endTime = clock();
 		game.delayTime = (endTime - startTime) / 1000.f;
 	}
-
 
 	//종료
 	cout << "End\n" << endl;

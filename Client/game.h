@@ -52,6 +52,7 @@ typedef struct created_object
 	TI object_position;
 }CO;
 
+
 class Game
 {
 private:
@@ -81,7 +82,6 @@ private:
 
 	SDL_Texture* infinity_Tex;
 
-
 	SDL_Texture* pistol_ammoTex;
 	SDL_Texture* rifle_ammoTex;
 	SDL_Texture* sniper_ammoTex;
@@ -98,7 +98,6 @@ private:
 
 	TTF_Font* font;
 
-	TF MyCharPos;
 	TF MyVelo;
 	TF mouse_point;
 	TF middle_pos;
@@ -140,7 +139,6 @@ private:
 
 	int flash_sprite_w = 1667;
 	int flash_sprite_h = 875;
-
 
 	int my_health = 100;
 	int enemy1_health = 100;
@@ -209,10 +207,11 @@ public:
 	bool d_Pressed = false;
 
 	int weapon_type = 0; // 0: pistol, 1: rifle, 2: sniper
+	TF MyCharPos;
 
 	CO created_objects[20];
-
 	PS player_list[3];
+
 	Game();
 	~Game();
 

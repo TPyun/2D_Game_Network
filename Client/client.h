@@ -85,13 +85,13 @@ void gun_change(SOCKET sock, int gun)	// 총 종류 보내기
 void send_event(SOCKET sock)
 {
 	// key input for gun changing
-	if(gun_type != game.weapon_type)
+	if (gun_type != game.weapon_type)
 		gun_change(sock, game.weapon_type);
 
 	// key input for player move
-	if (game.w_Pressed == true && w_check == false){
+	if (game.w_Pressed == true && w_check == false) {
 		cout << "w.Pressed!" << endl;
-		key = 'w';
+		key = 'W';
 		retval = send(sock, (char*)&key, sizeof(char), 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("key_pressed()");
@@ -108,9 +108,9 @@ void send_event(SOCKET sock)
 		w_check = false;
 	}
 
-	if (game.a_Pressed == true && a_check == false){
+	if (game.a_Pressed == true && a_check == false) {
 		cout << "a.Pressed!" << endl;
-		key = 'a';
+		key = 'A';
 		retval = send(sock, (char*)&key, sizeof(char), 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("key_pressed()");
@@ -127,9 +127,9 @@ void send_event(SOCKET sock)
 		a_check = false;
 	}
 
-	if (game.s_Pressed == true && s_check == false){
+	if (game.s_Pressed == true && s_check == false) {
 		cout << "s.Pressed!" << endl;
-		key = 's';
+		key = 'S';
 		retval = send(sock, (char*)&key, sizeof(char), 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("key_pressed()");
@@ -146,9 +146,9 @@ void send_event(SOCKET sock)
 		s_check = false;
 	}
 
-	if (game.d_Pressed == true && d_check == false){
+	if (game.d_Pressed == true && d_check == false) {
 		cout << "d.Pressed!" << endl;
-		key = 'd';
+		key = 'D';
 		retval = send(sock, (char*)&key, sizeof(char), 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("key_pressed()");
@@ -163,6 +163,14 @@ void send_event(SOCKET sock)
 			err_display("key_pressed()");
 		}
 		d_check = false;
+	}
+	
+	else {
+		key = '0';
+		retval = send(sock, (char*)&key, sizeof(char), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("key_pressed()");
+		}
 	}
 
 	// mouse_input
