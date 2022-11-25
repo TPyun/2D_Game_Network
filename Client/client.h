@@ -111,88 +111,10 @@ void send_event(SOCKET sock)
 		gun_change(sock, game.weapon_type);
 
 	// key input for player move
-	if (game.w_Pressed == true && w_check == false) {
-		cout << "w.Pressed!" << endl;
-		key = 'W';
-		retval = send(sock, (char*)&key, sizeof(char), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("key_pressed()");
-		}
-		w_check = true;
-	}
-	else if (game.w_Pressed == false && w_check == true) {
-		cout << "w.Pressed UP!" << endl;
-		key = 'w';
-		retval = send(sock, (char*)&key, sizeof(char), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("key_pressed()");
-		}
-		w_check = false;
-	}
-
-	if (game.a_Pressed == true && a_check == false) {
-		cout << "a.Pressed!" << endl;
-		key = 'A';
-		retval = send(sock, (char*)&key, sizeof(char), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("key_pressed()");
-		}
-		a_check = true;
-	}
-	else if (game.a_Pressed == false && a_check == true) {
-		cout << "a.Pressed UP!" << endl;
-		key = 'a';
-		retval = send(sock, (char*)&key, sizeof(char), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("key_pressed()");
-		}
-		a_check = false;
-	}
-
-	if (game.s_Pressed == true && s_check == false) {
-		cout << "s.Pressed!" << endl;
-		key = 'S';
-		retval = send(sock, (char*)&key, sizeof(char), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("key_pressed()");
-		}
-		s_check = true;
-	}
-	else if (game.s_Pressed == false && s_check == true) {
-		cout << "s.Pressed UP!" << endl;
-		key = 's';
-		retval = send(sock, (char*)&key, sizeof(char), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("key_pressed()");
-		}
-		s_check = false;
-	}
-
-	if (game.d_Pressed == true && d_check == false) {
-		cout << "d.Pressed!" << endl;
-		key = 'D';
-		retval = send(sock, (char*)&key, sizeof(char), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("key_pressed()");
-		}
-		d_check = true;
-	}
-	else if (game.d_Pressed == false && d_check == true) {
-		cout << "d.Pressed UP!" << endl;
-		key = 'd';
-		retval = send(sock, (char*)&key, sizeof(char), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("key_pressed()");
-		}
-		d_check = false;
-	}
 	
-	else {
-		key = '0';
-		retval = send(sock, (char*)&key, sizeof(char), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("key_pressed()");
-		}
+	retval = send(sock, (char*)&game.key_pressed, sizeof(key_presseds), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("key_pressed()");
 	}
 
 	// mouse_input for gun fire

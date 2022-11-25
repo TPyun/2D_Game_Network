@@ -1,6 +1,8 @@
 #include "ingame.h"
 #include "global.h"
 
+
+
 void Ingame::create_object()		// ÃÊ±â ¸Ê ·£´ı »ı¼ºÇÏ´Â ÇÔ¼ö (¹ÙÀ§, º®, ¾ÆÀÌÅÛ, ÇÃ·¹ÀÌ¾î »ö±ò µî)
 {
 	std::cout << "create_map ½ÇÇà" << std::endl;
@@ -30,31 +32,6 @@ void Ingame::create_object()		// ÃÊ±â ¸Ê ·£´ı »ı¼ºÇÏ´Â ÇÔ¼ö (¹ÙÀ§, º®, ¾ÆÀÌÅÛ, Ç
 void Ingame::character_movement(char input, TF &pos)
 {
 
-	if (input == 'W') {
-		w_pressed = true;
-	}
-	if (input == 'w') {
-		w_pressed = false;
-	}
-	if (input == 'A') {
-		a_pressed = true;
-	}
-	if (input == 'a') {
-		a_pressed = false;
-	}
-	if (input == 'S') {
-		s_pressed = true;
-	}
-	if (input == 's') {
-		s_pressed = false;
-	}
-	if (input == 'D') {
-		d_pressed = true;
-	}
-	if (input == 'd') {
-		d_pressed = false;
-	}
-
 	//cout << "W: " << w_pressed << ", A: " << a_pressed << ", S: " << s_pressed << ", D: " << d_pressed << endl;
 
 	float minimun_movement = 10.f;
@@ -62,16 +39,16 @@ void Ingame::character_movement(char input, TF &pos)
 	velo.x = 0.f;
 	velo.y = 0.f;
 
-	if (w_pressed) {
+	if (key_pressed.w_Pressed) {
 		velo.y -= minimun_movement;
 	}
-	if (s_pressed) {
+	if (key_pressed.s_Pressed) {
 		velo.y += minimun_movement;
 	}
-	if (a_pressed) {
+	if (key_pressed.a_Pressed) {
 		velo.x -= minimun_movement;
 	}
-	if (d_pressed) {
+	if (key_pressed.d_Pressed) {
 		velo.x += minimun_movement;
 	}
 
@@ -144,4 +121,5 @@ void Ingame::character_movement(char input, TF &pos)
 	//cout << "velo: " << velo.x << ", " << velo.y << endl;
 	//cout << "ÇÃ·¹ÀÌ¾î À§Ä¡: " << pos.x << ", " << pos.y << endl;
 }
+
 

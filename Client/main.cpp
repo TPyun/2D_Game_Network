@@ -12,6 +12,8 @@ using namespace std;
 //char* SERVERIP = (char*)"127.0.0.1";
 //Game game;
 //서버 송수신용 스레드
+
+
 DWORD WINAPI server_thread(LPVOID arg)
 {
 	// 윈속 초기화

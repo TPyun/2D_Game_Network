@@ -23,6 +23,7 @@ DWORD WINAPI matching_thread(LPVOID arg);
 DWORD WINAPI process_client(LPVOID arg);
 DWORD WINAPI ingame_thread(LPVOID arg);
 bool find_match_3p(int);
+void collider_checker(PP*);
 
 //매칭쓰레드 
 DWORD WINAPI matching_thread(LPVOID arg)
@@ -54,6 +55,7 @@ DWORD WINAPI ingame_thread(LPVOID room_num)
 	while (1) {
 		for (auto& player : player_list) {
 			if (player.second->room_num == (int)room_num) {
+				//collider_checker(player.second);
 				ingame.character_movement(player.second->player_key_mouse.key, player.second->player_state.player_position);
 				//cout << player.second->player_state.player_position.x << " " << player.second->player_state.player_position.y << endl;
 				Sleep(10);	//조절해야함
@@ -84,6 +86,33 @@ bool find_match_3p(int room_num)
 	}
 	else {
 		return false;
+	}
+}
+
+void collider_checker(PP* player_collider) {
+
+
+	for (auto& obj : ingame.objects)
+	{
+		//돌
+		if (obj.object_type == 0)
+		{
+			if (obj.object_position.x - player_collider->player_state.player_position.x < 74 && obj.object_position.y - player_collider->player_state.player_position.y < 74)
+			{
+				//player_collider->player_key_mouse.key;
+			}
+		}
+		//벽1
+		if (obj.object_type == 1)
+		{
+
+		}
+		//벽2
+		if (obj.object_type == 2)
+		{
+
+		}
+		cout << obj.object_type << " : " << obj.object_position.x << ", " << obj.object_position.y << endl;
 	}
 }
 
@@ -213,7 +242,7 @@ DWORD WINAPI process_client(LPVOID arg)
 		}
 		else if (player_profile.player_state.game_state == 3) {		// 3:ingame
 			// 키입력 받기
-			retval = recv(client_sock, (char*)&key_check, sizeof(char), MSG_WAITALL);
+			retval = recv(client_sock, (char*)&ingame.key_pressed, sizeof(key_presseds), MSG_WAITALL);
 			if (retval == SOCKET_ERROR) {
 				err_display("recv()");
 				//예외처리

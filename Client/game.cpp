@@ -579,108 +579,32 @@ void Game::keyEvent_ingame()
 	//Fix keyboard status when key pressed
 	if (event.type == SDL_KEYDOWN) {
 		if (event.key.keysym.sym == SDLK_w) {
-			w_Pressed = true;
+			key_pressed.w_Pressed = true;
 		}
 		if (event.key.keysym.sym == SDLK_a) {
-			a_Pressed = true;
+			key_pressed.a_Pressed = true;
 		}
 		if (event.key.keysym.sym == SDLK_s) {
-			s_Pressed = true;
+			key_pressed.s_Pressed = true;
 		}
 		if (event.key.keysym.sym == SDLK_d) {
-			d_Pressed = true;
+			key_pressed.d_Pressed = true;
 		}
 	}
 	if (event.type == SDL_KEYUP) {
 		if (event.key.keysym.sym == SDLK_w) {
-			w_Pressed = false;
+			key_pressed.w_Pressed = false;
 		}
 		if (event.key.keysym.sym == SDLK_a) {
-			a_Pressed = false;
+			key_pressed.a_Pressed = false;
 		}
 		if (event.key.keysym.sym == SDLK_s) {
-			s_Pressed = false;
+			key_pressed.s_Pressed = false;
 		}
 		if (event.key.keysym.sym == SDLK_d) {
-			d_Pressed = false;
+			key_pressed.d_Pressed = false;
 		}
 	}
 
-	////Add speed to character by status of key
-	//float minimun_movement = 5.f * delayTime;
-	//if (w_Pressed) {
-	//	MyVelo.y -= minimun_movement;
-	//}
-	//if (s_Pressed) {
-	//	MyVelo.y += minimun_movement;
-	//}
-	//if (a_Pressed) {
-	//	MyVelo.x -= minimun_movement;
-	//}
-	//if (d_Pressed) {
-	//	MyVelo.x += minimun_movement;
-	//}
-
-	//float MaxVelo = 200.f * delayTime;
-	//float MinVelo = -200.f * delayTime;
-
-	////Limit Velocity
-	//if (MyVelo.x > MaxVelo) {
-	//	MyVelo.x = MaxVelo;
-	//}
-	//if (MyVelo.x < MinVelo) {
-	//	MyVelo.x = MinVelo;
-	//}
-	//if (MyVelo.y > MaxVelo) {
-	//	MyVelo.y = MaxVelo;
-	//}
-	//if (MyVelo.y < MinVelo) {
-	//	MyVelo.y = MinVelo;
-	//}
-
-	////Character Speed Friction
-	//float friction = 2.f * delayTime;
-
-	//if (MyVelo.x > 0) {
-	//	MyVelo.x -= friction;
-	//}
-	//if (MyVelo.x < 0) {
-	//	MyVelo.x += friction;
-	//}
-	//if (MyVelo.y > 0) {
-	//	MyVelo.y -= friction;
-	//}
-	//if (MyVelo.y < 0) {
-	//	MyVelo.y += friction;
-	//}
-
-	////offset ignorable velocity
-	//if (-minimun_movement / 2 <= MyVelo.x && MyVelo.x <= minimun_movement / 2) {
-	//	MyVelo.x = 0;
-	//}
-	//if (-minimun_movement / 2 <= MyVelo.y && MyVelo.y <= minimun_movement / 2) {
-	//	MyVelo.y = 0;
-	//}
-
-	////Keep Character Visible in Window
-	//if (MyCharPos.x > ground_size / 2 - player_size / 2) {
-	//	MyCharPos.x = ground_size / 2 - player_size / 2;
-	//	MyVelo.x = 0;
-	//}
-	//else if (MyCharPos.x < -ground_size / 2 + player_size / 2) {
-	//	MyCharPos.x = -ground_size / 2 + player_size / 2;
-	//	MyVelo.x = 0;
-	//}
-	//if (MyCharPos.y > ground_size / 2 - player_size / 2) {
-	//	MyCharPos.y = ground_size / 2 - player_size / 2;
-	//	MyVelo.y = 0;
-	//}
-	//else if (MyCharPos.y < -ground_size / 2 + player_size / 2) {
-	//	MyCharPos.y = -ground_size / 2 + player_size / 2;
-	//	MyVelo.y = 0;
-	//}
-	////add velocity to XY coordinates
-	//MyCharPos.x += MyVelo.x;
-	//MyCharPos.y += MyVelo.y;
 }
 

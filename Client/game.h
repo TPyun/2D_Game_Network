@@ -52,6 +52,13 @@ typedef struct created_object
 	TI object_position;
 }CO;
 
+struct key_presseds {
+	bool w_Pressed;
+	bool a_Pressed;
+	bool s_Pressed;
+	bool d_Pressed;
+};
+
 
 class Game
 {
@@ -201,10 +208,7 @@ public:
 
 	int weapon_type = 0; // 0: pistol, 1: rifle, 2: sniper
 
-	bool w_Pressed = false;
-	bool a_Pressed = false;
-	bool s_Pressed = false;
-	bool d_Pressed = false;
+	
 
 	bool gun_fired = false;
 	TF mouse_point;
@@ -213,9 +217,12 @@ public:
 
 	CO created_objects[20];
 	PS player_list[3];
+	key_presseds key_pressed;
 
 	Game();
 	~Game();
 
 	void update();
 };
+
+
