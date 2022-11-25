@@ -33,8 +33,8 @@ typedef struct players_state {
 }PS;
 
 typedef struct players_info {
-	int player_color[3];
-	char name[3][20];
+	int player_color[3]{0};
+	char name[3][20]{ 0 };
 }PI;
 
 typedef struct player_key_mouse {
@@ -43,7 +43,7 @@ typedef struct player_key_mouse {
 }PKM;
 
 typedef struct players_profile {
-	int room_num;
+	int room_num = 0;
 	PI player_info;
 	PS player_state;
 	PKM player_key_mouse;

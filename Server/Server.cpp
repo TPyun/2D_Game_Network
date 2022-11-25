@@ -3,7 +3,7 @@
 #include "ingame.h"
 
 
-#define MAX_CLIENT_IN_ROOM 1
+#define MAX_CLIENT_IN_ROOM 2
 using namespace std;
 
 int len = 0;
@@ -34,7 +34,8 @@ DWORD WINAPI matching_thread(LPVOID arg)
 	//3player가 find_match를 눌렀는지 확인
 	while (1) {
 		if (!find_match_3p(room_num)){
-			cout << "\r";
+			//cout << "\r";
+			Sleep(100);
 			continue;
 		}
 		else {
@@ -59,7 +60,6 @@ DWORD WINAPI ingame_thread(LPVOID room_num)
 				ingame.character_movement(player.second->player_key_mouse.key, player.second->player_state.player_position);
 				//cout << player.second->player_state.player_position.x << " " << player.second->player_state.player_position.y << endl;
 				Sleep(10);	//조절해야함
-
 			}
 		}
 	}
@@ -80,9 +80,12 @@ bool find_match_3p(int room_num)
 				a.second->player_state.game_state = 2;
 				
 				a.second->room_num = room_num;	//PP에 room_num을 넣어줌
+
+				cout << a.second->player_info.name << endl;
 			}
-			return true;
 		}
+		return true;
+
 	}
 	else {
 		return false;
@@ -215,17 +218,24 @@ DWORD WINAPI process_client(LPVOID arg)
 			}
 
 			//player_state 송신
-			int cnt = 0;
+			int cnt = 1;
 			for (auto& a : player_list) {
-
 				//같은 방에 걸린 플레이어 정보 가져옴
 				if (a.second->room_num == player_profile.room_num) {
-					local_player_list[cnt++] = a.second->player_state;
+					if (a.second->player_info.name == player_profile.player_info.name) {
+						local_player_list[0] = a.second->player_state;
+						cout << a.second->player_info.name << a.second->player_state.game_state << " 넣음" << endl;
+
+					}
+					else {
+						cout << a.second->player_info.name << "에 " << a.second->player_state.game_state << " 넣음" << endl;
+						local_player_list[cnt++] = a.second->player_state;
+					}
 				}
 			}
-			//임시 
-			local_player_list[1].game_state = 2;
-			local_player_list[2].game_state = 2;
+			////임시 
+			//local_player_list[1].game_state = 2;
+			//local_player_list[2].game_state = 2;
 
 			cout << "sent first player state" << endl;
 			cout << local_player_list[0].game_state << endl;
