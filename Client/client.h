@@ -19,6 +19,8 @@ bool s_check = true;
 bool d_check = true;
 int gun_type = 0;
 char key = '0';
+char bullet = 'b';
+bool shoot_check = true;
 
 // 소켓 함수 오류 출력 후 종료
 void err_quit(const char* msg)
@@ -79,6 +81,26 @@ void gun_change(SOCKET sock, int gun)	// 총 종류 보내기
 		err_display("gun_change()");
 	}
 	gun_type = gun;
+}
+
+void mouse_input(SOCKET sock)
+{
+	if (game.gun_fired == true && shoot_check == true) {
+		cout << "shoot!" << endl;
+		retval = send(sock, (char*)&bullet, sizeof(char), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("mouse_pressed()");
+		}
+		retval = send(sock, (char*)&game.mouse_point, sizeof(TF), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("mouse_pressed()");
+		}
+
+	}
+	shoot_check = false;
+	if (game.gun_fired == false && shoot_check == false) {
+		shoot_check = true;
+	}
 }
 
 // 클라이언트 인게임에서의 입력
@@ -173,5 +195,6 @@ void send_event(SOCKET sock)
 		}
 	}
 
-	// mouse_input
+	// mouse_input for gun fire
+	mouse_input(sock);
 }

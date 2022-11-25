@@ -114,7 +114,7 @@ DWORD WINAPI server_thread(LPVOID arg)
 				//예외처리
 				return 0;
 			}
-			cout << game.player_list[0].player_position.x << " / " << game.player_list[0].player_position.y << endl;
+			// cout << game.player_list[0].player_position.x << " / " << game.player_list[0].player_position.y << endl;
 			game.MyCharPos = game.player_list[0].player_position;
 		}
 	}

@@ -13,7 +13,7 @@ char buffer[BUFSIZE]; // 가변 길이 데이터
 //들어온 순서
 int hostnum;
 char key_check; 
-
+TF mouse_point;
 
 map<char*, char*> client_thread_list;
 map<char*, PP*> player_list;
@@ -224,7 +224,19 @@ DWORD WINAPI process_client(LPVOID arg)
 			}
 			if (key_check != '0') {
 				player_profile.player_key_mouse.key = key_check;
-
+			}
+			// 총입력 확인
+			if (key_check == 'b') {
+				retval = recv(client_sock, (char*)&mouse_point, sizeof(TF), MSG_WAITALL);
+				cout << mouse_point.x << " : " << mouse_point.y << endl;
+				if (retval == SOCKET_ERROR) {
+					err_display("recv()");
+					//예외처리
+					break;
+				}
+				else if (retval == 0) {
+					//예외처리
+				}
 			}
 			
 
@@ -242,7 +254,7 @@ DWORD WINAPI process_client(LPVOID arg)
 				err_display("send()");
 				break;
 			}
-			cout << local_player_list[0].player_position.x << " / " << local_player_list[0].player_position.y << endl;
+			// cout << local_player_list[0].player_position.x << " / " << local_player_list[0].player_position.y << endl;
 
 		}
 		else if (player_profile.player_state.game_state == 4) {		// 4:lose

@@ -55,6 +55,5 @@ typedef struct created_object
 	TI object_position;
 }CO;
 
-
 extern map<char*, char*> client_thread_list;
 extern map<char*, PP*> player_list;

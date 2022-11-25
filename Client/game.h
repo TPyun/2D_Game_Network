@@ -99,7 +99,6 @@ private:
 	TTF_Font* font;
 
 	TF MyVelo;
-	TF mouse_point;
 	TF middle_pos;
 	TF myBulletPos;
 	TF myBulletVelo;
@@ -118,7 +117,6 @@ private:
 	int mouse_X = 0;
 	int mouse_Y = 0;
 
-	bool gun_fired = false;
 	bool show_bullet = false;
 	bool gun_flash = false;
 	int flash_i;
@@ -201,12 +199,16 @@ public:
 	char Port[10] = "9000";
 	char Name[20] = "wooyung";
 
+	int weapon_type = 0; // 0: pistol, 1: rifle, 2: sniper
+
 	bool w_Pressed = false;
 	bool a_Pressed = false;
 	bool s_Pressed = false;
 	bool d_Pressed = false;
 
-	int weapon_type = 0; // 0: pistol, 1: rifle, 2: sniper
+	bool gun_fired = false;
+	TF mouse_point;
+
 	TF MyCharPos;
 
 	CO created_objects[20];
