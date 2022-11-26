@@ -37,16 +37,21 @@ typedef struct players_info {
 	char name[3][20]{ 0 };
 }PI;
 
-typedef struct player_key_mouse {
-	char key = ' ';
-	TF mouse_coordinates;
-}PKM;
+typedef struct client_input {
+	bool w_Pressed;
+	bool a_Pressed;
+	bool s_Pressed;
+	bool d_Pressed;
+
+	bool mouse_clicked;
+	TF mouse_pos;
+}CI;
 
 typedef struct players_profile {
 	int room_num = 0;
 	PI player_info;
 	PS player_state;
-	PKM player_key_mouse;
+	CI input;
 }PP;
 
 typedef struct created_object
@@ -55,5 +60,6 @@ typedef struct created_object
 	TI object_position;
 }CO;
 
-extern map<char*, char*> client_thread_list;
-extern map<char*, PP*> player_list;
+
+extern map<unsigned short*, char*> client_thread_list;
+extern map<unsigned short*, PP*> player_list;

@@ -1,8 +1,6 @@
 #include "ingame.h"
 #include "global.h"
 
-
-
 void Ingame::create_object()		// ÃÊ±â ¸Ê ·£´ı »ı¼ºÇÏ´Â ÇÔ¼ö (¹ÙÀ§, º®, ¾ÆÀÌÅÛ, ÇÃ·¹ÀÌ¾î »ö±ò µî)
 {
 	std::cout << "create_map ½ÇÇà" << std::endl;
@@ -29,7 +27,7 @@ void Ingame::create_object()		// ÃÊ±â ¸Ê ·£´ı »ı¼ºÇÏ´Â ÇÔ¼ö (¹ÙÀ§, º®, ¾ÆÀÌÅÛ, Ç
 	std::cout << "create_map »ı¼º ¿Ï·á" << std::endl;
 }
 
-void Ingame::character_movement(char input, TF &pos)
+void Ingame::character_movement(CI input, TF &pos)
 {
 
 	//cout << "W: " << w_pressed << ", A: " << a_pressed << ", S: " << s_pressed << ", D: " << d_pressed << endl;
@@ -39,16 +37,16 @@ void Ingame::character_movement(char input, TF &pos)
 	velo.x = 0.f;
 	velo.y = 0.f;
 
-	if (key_pressed.w_Pressed) {
+	if (input.w_Pressed) {
 		velo.y -= minimun_movement;
 	}
-	if (key_pressed.s_Pressed) {
+	if (input.s_Pressed) {
 		velo.y += minimun_movement;
 	}
-	if (key_pressed.a_Pressed) {
+	if (input.a_Pressed) {
 		velo.x -= minimun_movement;
 	}
-	if (key_pressed.d_Pressed) {
+	if (input.d_Pressed) {
 		velo.x += minimun_movement;
 	}
 

@@ -12,11 +12,9 @@ char buffer[BUFSIZE]; // 가변 길이 데이터
 //mutex find_lock;
 //들어온 순서
 int hostnum;
-char key_check; 
-TF mouse_point;
 
-map<char*, char*> client_thread_list;
-map<char*, PP*> player_list;
+map<unsigned short*, char*> client_thread_list;
+map<unsigned short*, PP*> player_list;
 
 //함수 선언
 DWORD WINAPI matching_thread(LPVOID arg);
@@ -57,7 +55,7 @@ DWORD WINAPI ingame_thread(LPVOID room_num)
 		for (auto& player : player_list) {
 			if (player.second->room_num == (int)room_num) {
 				//collider_checker(player.second);
-				ingame.character_movement(player.second->player_key_mouse.key, player.second->player_state.player_position);
+				ingame.character_movement(player.second->input, player.second->player_state.player_position);
 				//cout << player.second->player_state.player_position.x << " " << player.second->player_state.player_position.y << endl;
 				Sleep(10);	//조절해야함
 			}
@@ -134,8 +132,7 @@ DWORD WINAPI process_client(LPVOID arg)
 	addrlen = sizeof(clientaddr);
 	getpeername(client_sock, (struct sockaddr*)&clientaddr, &addrlen);
 	inet_ntop(AF_INET, &clientaddr.sin_addr, addr, sizeof(addr));
-	printf("[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n",
-		addr, ntohs(clientaddr.sin_port));
+	printf("[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n",addr, ntohs(clientaddr.sin_port));
 	
 	// 이름 받기
 	retval = recv(client_sock, name_buf, NAMESIZE, MSG_WAITALL);
@@ -152,7 +149,7 @@ DWORD WINAPI process_client(LPVOID arg)
 	strcpy(player_profile.player_info.name[0], name_buf);
 		
 	//client_thread_;list에 클라이언트 추가
-	client_thread_list[addr] = name_buf;
+	client_thread_list[&clientaddr.sin_port] = name_buf;
 
 	//보낼 player_list
 	PS local_player_list[3];
@@ -174,7 +171,7 @@ DWORD WINAPI process_client(LPVOID arg)
 			if (find_match) {
 				cout << "Find mathch!!!!" << endl;
 				//여기서 매치 찾는 기능 넣으면 됨
-				player_list[addr] = &player_profile;
+				player_list[&clientaddr.sin_port] = &player_profile;
 				player_profile.player_state.game_state = 1;	//findmath합니다
 			}
 		}
@@ -183,12 +180,11 @@ DWORD WINAPI process_client(LPVOID arg)
 		}
 		else if (player_profile.player_state.game_state == 2) {		// 2:loading
 			
-
-			//초기 데이터를 보냈는지 확인
+			//같은 방 사람 정보 넣기
 			int other_player_num = 0;
 			for (auto& player : player_list) {
-				if (player.second->room_num == player_profile.room_num)
-					player.second->player_info.player_color[other_player_num] = other_player_num;
+				if (player.second->room_num == player_profile.room_num)		//같은 방에 있는 사람
+					player.second->player_info.player_color[other_player_num] = other_player_num;		//색깔 넣기
 				if (player.second->player_info.name != player_profile.player_info.name) {		//본인은 [0]에 있으니 제외
 					strcpy(player_profile.player_info.name[other_player_num + 1], (char*)player.second->player_info.name);
 					other_player_num++;
@@ -197,7 +193,15 @@ DWORD WINAPI process_client(LPVOID arg)
 					break;
 				}
 			}
+			
+			//같은 방 사람 출력
+			cout << endl << "같은 방에 있는 사람 목록" << endl;
+			for (int i = 0; i < MAX_CLIENT_IN_ROOM; ++i) {
+				cout << "이름: " << player_profile.player_info.name[i] << ", 색: " << player_profile.player_info.player_color[i];
+			}
+			cout << endl;
 
+			//같은 방 사람 정보 보내기
 			retval = send(client_sock, (char*)&player_profile.player_info, sizeof(PI), 0);
 			if (retval == SOCKET_ERROR) {
 				err_display("send()");
@@ -205,6 +209,7 @@ DWORD WINAPI process_client(LPVOID arg)
 			}
 
 			cout << "\n" << (char*)player_profile.player_info.name << "클라이언트 방 번호: " << player_profile.room_num << endl;
+			
 			//created_object 송신
 			retval = send(client_sock, (char*)&ingame.objects, sizeof(ingame.objects), 0);
 			if (retval == SOCKET_ERROR) {
@@ -214,7 +219,7 @@ DWORD WINAPI process_client(LPVOID arg)
 			cout << "보내는 byte : " << sizeof(ingame.objects) << endl;
 			cout << "sent first created objects" << endl;
 			for (int i = 0; i < 20; ++i) {
-				cout << "받은 created_objects[" << i << "] : " << ingame.objects[i].object_position.x << " / " << ingame.objects[i].object_position.y << endl;
+				cout << "보낸 obj[" << i << "] : " << ingame.objects[i].object_position.x << " / " << ingame.objects[i].object_position.y << endl;
 			}
 
 			//player_state 송신
@@ -222,37 +227,25 @@ DWORD WINAPI process_client(LPVOID arg)
 			for (auto& a : player_list) {
 				//같은 방에 걸린 플레이어 정보 가져옴
 				if (a.second->room_num == player_profile.room_num) {
-					if (a.second->player_info.name == player_profile.player_info.name) {
+					if (a.second->player_info.name[0] == player_profile.player_info.name[0]) {
 						local_player_list[0] = a.second->player_state;
-						cout << a.second->player_info.name << a.second->player_state.game_state << " 넣음" << endl;
-
 					}
 					else {
-						cout << a.second->player_info.name << "에 " << a.second->player_state.game_state << " 넣음" << endl;
 						local_player_list[cnt++] = a.second->player_state;
 					}
 				}
 			}
-			////임시 
-			//local_player_list[1].game_state = 2;
-			//local_player_list[2].game_state = 2;
-
-			cout << "sent first player state" << endl;
-			cout << local_player_list[0].game_state << endl;
-			cout << local_player_list[1].game_state << endl;
-			cout << local_player_list[2].game_state << endl;
 
 			retval = send(client_sock, (char*)&local_player_list, sizeof(PS) * 3, 0);
 			if (retval == SOCKET_ERROR) {
 				err_display("send()");
 				break;
 			}
-			
 			player_profile.player_state.game_state = 3;
 		}
 		else if (player_profile.player_state.game_state == 3) {		// 3:ingame
 			// 키입력 받기
-			retval = recv(client_sock, (char*)&ingame.key_pressed, sizeof(key_presseds), MSG_WAITALL);
+			retval = recv(client_sock, (char*)&player_profile.input, sizeof(CI), MSG_WAITALL);
 			if (retval == SOCKET_ERROR) {
 				err_display("recv()");
 				//예외처리
@@ -261,29 +254,12 @@ DWORD WINAPI process_client(LPVOID arg)
 			else if (retval == 0) {
 				//예외처리
 			}
-			if (key_check != '0') {
-				player_profile.player_key_mouse.key = key_check;
-			}
-			// 총입력 확인
-			if (key_check == 'b') {
-				retval = recv(client_sock, (char*)&mouse_point, sizeof(TF), MSG_WAITALL);
-				cout << mouse_point.x << " : " << mouse_point.y << endl;
-				if (retval == SOCKET_ERROR) {
-					err_display("recv()");
-					//예외처리
-					break;
-				}
-				else if (retval == 0) {
-					//예외처리
-				}
-			}
-			
 
 			//local에 현재 pp에 있는 ps 넣어주기
 			local_player_list[0] = player_profile.player_state;
 			int i = 1;
 			for (auto& player : player_list) {
-				if (player.second->room_num == (int)player_profile.room_num) {
+				if (player.second->room_num == (int)player_profile.room_num && player.second->player_info.name != player_profile.player_info.name) {
 					local_player_list[i] = player.second->player_state;
 				}
 			}
@@ -293,7 +269,7 @@ DWORD WINAPI process_client(LPVOID arg)
 				err_display("send()");
 				break;
 			}
-			// cout << local_player_list[0].player_position.x << " / " << local_player_list[0].player_position.y << endl;
+			cout << local_player_list[0].player_position.x << " / " << local_player_list[0].player_position.y << endl;
 
 		}
 		else if (player_profile.player_state.game_state == 4) {		// 4:lose
@@ -305,8 +281,8 @@ DWORD WINAPI process_client(LPVOID arg)
 	}
 	printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n", addr, ntohs(clientaddr.sin_port));
 	//map에서 플레이어 제거
-	player_list.erase(addr);
-	client_thread_list.erase(addr);
+	player_list.erase(&clientaddr.sin_port);
+	client_thread_list.erase(&clientaddr.sin_port);
 	
 	// 소켓 닫기
 	closesocket(client_sock);

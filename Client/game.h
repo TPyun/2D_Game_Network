@@ -52,13 +52,15 @@ typedef struct created_object
 	TI object_position;
 }CO;
 
-struct key_presseds {
+typedef struct client_input {
 	bool w_Pressed;
 	bool a_Pressed;
 	bool s_Pressed;
 	bool d_Pressed;
-};
 
+	bool mouse_clicked;
+	TF mouse_pos;
+}CI;
 
 class Game
 {
@@ -217,7 +219,7 @@ public:
 
 	CO created_objects[20];
 	PS player_list[3];
-	key_presseds key_pressed;
+	client_input input;
 
 	Game();
 	~Game();

@@ -71,52 +71,44 @@ void send_name(SOCKET sock, Game* game)	// 플레이어 이름 보내기
 		err_display("send_name()");
 	}
 }
+//
+//void gun_change(SOCKET sock, int gun)	// 총 종류 보내기
+//{
+//	char cgun = gun + '0';
+//	cout << "건 타입은 " << cgun << endl;
+//	retval = send(sock, (char*)&cgun, sizeof(char), 0);
+//	if (retval == SOCKET_ERROR) {
+//		err_display("gun_change()");
+//	}
+//	gun_type = gun;
+//}
 
-void gun_change(SOCKET sock, int gun)	// 총 종류 보내기
-{
-	char cgun = gun + '0';
-	cout << "건 타입은 " << cgun << endl;
-	retval = send(sock, (char*)&cgun, sizeof(char), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("gun_change()");
-	}
-	gun_type = gun;
-}
-
-void mouse_input(SOCKET sock)
-{
-	if (game.gun_fired == true && shoot_check == true) {
-		cout << "shoot!" << endl;
-		retval = send(sock, (char*)&bullet, sizeof(char), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("mouse_pressed()");
-		}
-		retval = send(sock, (char*)&game.mouse_point, sizeof(TF), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("mouse_pressed()");
-		}
-
-	}
-	shoot_check = false;
-	if (game.gun_fired == false && shoot_check == false) {
-		shoot_check = true;
-	}
-}
+//void mouse_input(SOCKET sock)
+//{
+//	if (game.gun_fired == true && shoot_check == true) {
+//		cout << "shoot!" << endl;
+//		retval = send(sock, (char*)&bullet, sizeof(char), 0);
+//		if (retval == SOCKET_ERROR) {
+//			err_display("mouse_pressed()");
+//		}
+//		retval = send(sock, (char*)&game.mouse_point, sizeof(TF), 0);
+//		if (retval == SOCKET_ERROR) {
+//			err_display("mouse_pressed()");
+//		}
+//	}
+//	shoot_check = false;
+//	if (game.gun_fired == false && shoot_check == false) {
+//		shoot_check = true;
+//	}
+//}
 
 // 클라이언트 인게임에서의 입력
 void send_event(SOCKET sock)
 {
-	// key input for gun changing
-	if (gun_type != game.weapon_type)
-		gun_change(sock, game.weapon_type);
-
 	// key input for player move
-	
-	retval = send(sock, (char*)&game.key_pressed, sizeof(key_presseds), 0);
+	retval = send(sock, (char*)&game.input, sizeof(CI), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("key_pressed()");
 	}
 
-	// mouse_input for gun fire
-	mouse_input(sock);
 }

@@ -579,30 +579,30 @@ void Game::keyEvent_ingame()
 	//Fix keyboard status when key pressed
 	if (event.type == SDL_KEYDOWN) {
 		if (event.key.keysym.sym == SDLK_w) {
-			key_pressed.w_Pressed = true;
+			input.w_Pressed = true;
 		}
 		if (event.key.keysym.sym == SDLK_a) {
-			key_pressed.a_Pressed = true;
+			input.a_Pressed = true;
 		}
 		if (event.key.keysym.sym == SDLK_s) {
-			key_pressed.s_Pressed = true;
+			input.s_Pressed = true;
 		}
 		if (event.key.keysym.sym == SDLK_d) {
-			key_pressed.d_Pressed = true;
+			input.d_Pressed = true;
 		}
 	}
 	if (event.type == SDL_KEYUP) {
 		if (event.key.keysym.sym == SDLK_w) {
-			key_pressed.w_Pressed = false;
+			input.w_Pressed = false;
 		}
 		if (event.key.keysym.sym == SDLK_a) {
-			key_pressed.a_Pressed = false;
+			input.a_Pressed = false;
 		}
 		if (event.key.keysym.sym == SDLK_s) {
-			key_pressed.s_Pressed = false;
+			input.s_Pressed = false;
 		}
 		if (event.key.keysym.sym == SDLK_d) {
-			key_pressed.d_Pressed = false;
+			input.d_Pressed = false;
 		}
 	}
 
