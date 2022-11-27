@@ -16,6 +16,7 @@ using namespace std;
 
 #define WIDTH 1240
 #define HEIGHT 720
+#define MAXITEM 20
 
 //#define WIDTH 1200
 //#define HEIGHT 900
@@ -217,7 +218,7 @@ public:
 
 	TF MyCharPos;
 
-	CO created_objects[20];
+	CO created_objects[MAXITEM];
 	PS player_list[3];
 	client_input input;
 

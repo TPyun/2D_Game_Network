@@ -32,7 +32,8 @@ void Ingame::character_movement(CI input, TF &pos)
 
 	//cout << "W: " << w_pressed << ", A: " << a_pressed << ", S: " << s_pressed << ", D: " << d_pressed << endl;
 
-	float minimun_movement = 10.f;
+	//float minimun_movement = 10.f;
+	float minimun_movement = 5.f;
 	TF velo;
 	velo.x = 0.f;
 	velo.y = 0.f;

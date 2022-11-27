@@ -87,7 +87,7 @@ DWORD WINAPI server_thread(LPVOID arg)
 					err_display("recv()");
 					//예외처리
 				}
-				for (int i = 0; i < 20; ++i) {
+				for (int i = 0; i < MAXITEM; ++i) {
 					cout << "받은 created_objects[" << i << "] : " << game.created_objects[i].object_position.x << " / " << game.created_objects[i].object_position.y << endl;
 				}
 				

@@ -9,7 +9,7 @@
 class Ingame
 {
 public:
-	CO objects[20]{};
+	CO objects[MAXITEM]{};
 	void create_object();
 	void character_movement(CI, TF&);
 

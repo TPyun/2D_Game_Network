@@ -3,7 +3,7 @@
 #include "ingame.h"
 
 
-#define MAX_CLIENT_IN_ROOM 2
+#define MAX_CLIENT_IN_ROOM 1
 using namespace std;
 
 int len = 0;
@@ -21,7 +21,7 @@ DWORD WINAPI matching_thread(LPVOID arg);
 DWORD WINAPI process_client(LPVOID arg);
 DWORD WINAPI ingame_thread(LPVOID arg);
 bool find_match_3p(int);
-void collider_checker(PP*);
+void collider_checker(CI*, PP*);
 
 //매칭쓰레드 
 DWORD WINAPI matching_thread(LPVOID arg)
@@ -54,8 +54,9 @@ DWORD WINAPI ingame_thread(LPVOID room_num)
 	while (1) {
 		for (auto& player : player_list) {
 			if (player.second->room_num == (int)room_num) {
-				//collider_checker(player.second);
-				ingame.character_movement(player.second->input, player.second->player_state.player_position);
+				CI local_input = player.second->input;
+				collider_checker(&local_input,player.second);
+				ingame.character_movement(local_input, player.second->player_state.player_position);
 				//cout << player.second->player_state.player_position.x << " " << player.second->player_state.player_position.y << endl;
 				Sleep(10);	//조절해야함
 			}
@@ -90,30 +91,70 @@ bool find_match_3p(int room_num)
 	}
 }
 
-void collider_checker(PP* player_collider) {
+void collider_checker(CI* local_input, PP* player_collider) {
 
 
 	for (auto& obj : ingame.objects)
 	{
-		//돌
-		if (obj.object_type == 0)
+		if (abs(obj.object_position.x - player_collider->player_state.player_position.x) < 100
+			&& abs(obj.object_position.y - player_collider->player_state.player_position.y) < 100)
 		{
-			if (obj.object_position.x - player_collider->player_state.player_position.x < 74 && obj.object_position.y - player_collider->player_state.player_position.y < 74)
+			
+			//돌
+			if (obj.object_type == 0)
 			{
-				//player_collider->player_key_mouse.key;
+				if(obj.object_position.x - player_collider->player_state.player_position.x < 53 &&
+					obj.object_position.x - player_collider->player_state.player_position.x > -28)
+				{
+					if (obj.object_position.y - player_collider->player_state.player_position.y < 62
+						&& obj.object_position.y - player_collider->player_state.player_position.y > 0)
+						local_input->s_Pressed = false;
+					if (obj.object_position.y - player_collider->player_state.player_position.y > -35
+						&& obj.object_position.y - player_collider->player_state.player_position.y < 0)
+						local_input->w_Pressed = false;
+				}
+				if (obj.object_position.y - player_collider->player_state.player_position.y < 53 &&
+					obj.object_position.y - player_collider->player_state.player_position.y > -28)
+				{
+					if (obj.object_position.x - player_collider->player_state.player_position.x < 62
+						&& obj.object_position.x - player_collider->player_state.player_position.x > 0)
+						local_input->d_Pressed = false;
+					if (obj.object_position.x - player_collider->player_state.player_position.x > -37
+						&& obj.object_position.x - player_collider->player_state.player_position.x < 0)
+						local_input->a_Pressed = false;
+				}
+			}
+			//벽1
+			if (obj.object_type == 1)
+			{
+				cout << obj.object_position.x << " / " << obj.object_position.y << endl;
+				if (obj.object_position.x - player_collider->player_state.player_position.x < 64 &&
+					obj.object_position.x - player_collider->player_state.player_position.x > 8)
+				{
+					if (obj.object_position.y - player_collider->player_state.player_position.y < 72
+						&& obj.object_position.y - player_collider->player_state.player_position.y > 0)
+						local_input->s_Pressed = false;
+					if (obj.object_position.y - player_collider->player_state.player_position.y > -72
+						&& obj.object_position.y - player_collider->player_state.player_position.y < 0)
+						local_input->w_Pressed = false;
+				}
+				if (obj.object_position.y - player_collider->player_state.player_position.y < 64 &&
+					obj.object_position.y - player_collider->player_state.player_position.y > -64)
+				{
+					if (obj.object_position.x - player_collider->player_state.player_position.x < 72
+						&& obj.object_position.x - player_collider->player_state.player_position.x > 0)
+						local_input->d_Pressed = false;
+					if (obj.object_position.x - player_collider->player_state.player_position.x > 5
+						&& obj.object_position.x - player_collider->player_state.player_position.x < 20)
+						local_input->a_Pressed = false;
+				}
+			}
+			//벽2
+			if (obj.object_type == 2)
+			{
+				
 			}
 		}
-		//벽1
-		if (obj.object_type == 1)
-		{
-
-		}
-		//벽2
-		if (obj.object_type == 2)
-		{
-
-		}
-		cout << obj.object_type << " : " << obj.object_position.x << ", " << obj.object_position.y << endl;
 	}
 }
 
@@ -211,6 +252,9 @@ DWORD WINAPI process_client(LPVOID arg)
 			cout << "\n" << (char*)player_profile.player_info.name << "클라이언트 방 번호: " << player_profile.room_num << endl;
 			
 			//created_object 송신
+			//완료되기전에 보내는거 방지(개선해야함)
+			Sleep(100);
+
 			retval = send(client_sock, (char*)&ingame.objects, sizeof(ingame.objects), 0);
 			if (retval == SOCKET_ERROR) {
 				err_display("send()");
@@ -218,7 +262,7 @@ DWORD WINAPI process_client(LPVOID arg)
 			}
 			cout << "보내는 byte : " << sizeof(ingame.objects) << endl;
 			cout << "sent first created objects" << endl;
-			for (int i = 0; i < 20; ++i) {
+			for (int i = 0; i < MAXITEM; ++i) {
 				cout << "보낸 obj[" << i << "] : " << ingame.objects[i].object_position.x << " / " << ingame.objects[i].object_position.y << endl;
 			}
 

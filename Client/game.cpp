@@ -323,7 +323,7 @@ void Game::drawWeaponList()
 
 void Game::drawObstacle()
 {
-	for (int i = 0; i < 20; i++) {
+	for (int i = 0; i < MAXITEM; i++) {
 		destR.x = WIDTH / 2 - 100 / 2 - MyCharPos.x + created_objects[i].object_position.x;
 		destR.y = HEIGHT / 2 - 100 / 2 - MyCharPos.y + created_objects[i].object_position.y;
 		
