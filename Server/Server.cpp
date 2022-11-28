@@ -127,7 +127,7 @@ void collider_checker(CI* local_input, PP* player_collider) {
 			//º®1
 			if (obj.object_type == 1)
 			{
-				cout << obj.object_position.x << " / " << obj.object_position.y << endl;
+				//cout << obj.object_position.x << " / " << obj.object_position.y << endl;
 				if (obj.object_position.x - player_collider->player_state.player_position.x < 64 &&
 					obj.object_position.x - player_collider->player_state.player_position.x > 8)
 				{
@@ -152,7 +152,26 @@ void collider_checker(CI* local_input, PP* player_collider) {
 			//º®2
 			if (obj.object_type == 2)
 			{
-				
+				if (obj.object_position.y - player_collider->player_state.player_position.y < 64 &&
+					obj.object_position.y - player_collider->player_state.player_position.y > 8)
+				{
+					if (obj.object_position.x - player_collider->player_state.player_position.x < 72
+						&& obj.object_position.x - player_collider->player_state.player_position.x > 0)
+						local_input->d_Pressed = false;
+					if (obj.object_position.x - player_collider->player_state.player_position.x > -72
+						&& obj.object_position.x - player_collider->player_state.player_position.x < 0)
+						local_input->a_Pressed = false;
+				}
+				if (obj.object_position.x - player_collider->player_state.player_position.x < 64 &&
+					obj.object_position.x - player_collider->player_state.player_position.x > -64)
+				{
+					if (obj.object_position.y - player_collider->player_state.player_position.y < 72
+						&& obj.object_position.y - player_collider->player_state.player_position.y > 30)
+						local_input->s_Pressed = false;
+					if (obj.object_position.y - player_collider->player_state.player_position.y > 5
+						&& obj.object_position.y - player_collider->player_state.player_position.y < 20)
+						local_input->w_Pressed = false;
+				}
 			}
 		}
 	}
@@ -313,7 +332,7 @@ DWORD WINAPI process_client(LPVOID arg)
 				err_display("send()");
 				break;
 			}
-			cout << local_player_list[0].player_position.x << " / " << local_player_list[0].player_position.y << endl;
+			//cout << local_player_list[0].player_position.x << " / " << local_player_list[0].player_position.y << endl;
 
 		}
 		else if (player_profile.player_state.game_state == 4) {		// 4:lose

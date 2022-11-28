@@ -11,7 +11,7 @@ using namespace std;
 #define SERVERPORT	9000
 #define BUFSIZE		4096
 #define NAMESIZE	20
-#define MAXITEM		20
+#define MAXITEM		30
 
 typedef struct TWO_Floats {
 	float x = 0;
