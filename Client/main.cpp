@@ -118,6 +118,8 @@ DWORD WINAPI server_thread(LPVOID arg)
 			}
 			//cout << game.player_list[0].player_position.x << " / " << game.player_list[0].player_position.y << endl;
 			game.MyCharPos = game.player_list[0].player_position;
+			game.p1_pos = game.player_list[1].player_position;
+			game.p2_pos = game.player_list[2].player_position;
 		}
 	}
 	return 0;

@@ -136,13 +136,30 @@ void Game::drawGround()
 }
 void Game::drawCharacter()
 {
+	
 	destR.w = player_size;
 	destR.h = player_size;
-	destR.x = WIDTH / 2 - player_size / 2; //MyCharPos.x - player_size / 2;
-	destR.y = HEIGHT / 2 - player_size / 2; //MyCharPos.y - player_size / 2;
-
 	center.x = player_size / 2;
 	center.y = player_size / 2;
+
+	//draw p1
+	destR.x = WIDTH / 2 - player_size / 2 + p1_pos.x-MyCharPos.x - player_size / 2;
+	destR.y = HEIGHT / 2 - player_size / 2 + p1_pos.y-MyCharPos.y - player_size / 2;
+
+	SDL_RenderCopyEx(renderer, red_playerTex, NULL, &destR, my_char_angle + 90, &center, SDL_FLIP_NONE);
+
+	
+	//draw p2
+
+	destR.x = WIDTH / 2 - player_size / 2 + p2_pos.x-MyCharPos.x - player_size / 2;
+	destR.y = HEIGHT / 2 - player_size / 2 + p2_pos.y-MyCharPos.y - player_size / 2;
+
+	SDL_RenderCopyEx(renderer, blue_playerTex, NULL, &destR, my_char_angle + 90, &center, SDL_FLIP_NONE);
+
+
+	//draw my chracter
+	destR.x = WIDTH / 2 - player_size / 2; //MyCharPos.x - player_size / 2;
+	destR.y = HEIGHT / 2 - player_size / 2; //MyCharPos.y - player_size / 2;
 
 	SDL_RenderCopyEx(renderer, black_playerTex, NULL, &destR, my_char_angle + 90, &center, SDL_FLIP_NONE);
 }

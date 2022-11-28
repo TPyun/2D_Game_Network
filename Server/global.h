@@ -62,5 +62,5 @@ typedef struct created_object
 }CO;
 
 
-extern map<unsigned short*, char*> client_thread_list;
-extern map<unsigned short*, PP*> player_list;
+extern map<int, char*> client_thread_list;
+extern map<int, PP*> player_list;

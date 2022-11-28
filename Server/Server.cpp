@@ -2,8 +2,7 @@
 #include "global.h"
 #include "ingame.h"
 
-
-#define MAX_CLIENT_IN_ROOM 1
+#define MAX_CLIENT_IN_ROOM 2
 using namespace std;
 
 int len = 0;
@@ -13,8 +12,8 @@ char buffer[BUFSIZE]; // 가변 길이 데이터
 //들어온 순서
 int hostnum;
 
-map<unsigned short*, char*> client_thread_list;
-map<unsigned short*, PP*> player_list;
+map<int, char*> client_thread_list;
+map<int, PP*> player_list;
 
 //함수 선언
 DWORD WINAPI matching_thread(LPVOID arg);
@@ -80,7 +79,7 @@ bool find_match_3p(int room_num)
 				
 				a.second->room_num = room_num;	//PP에 room_num을 넣어줌
 
-				cout << a.second->player_info.name << endl;
+				cout << "플레이어 이름: " << *a.second->player_info.name << endl;
 			}
 		}
 		return true;
@@ -193,6 +192,8 @@ DWORD WINAPI process_client(LPVOID arg)
 	getpeername(client_sock, (struct sockaddr*)&clientaddr, &addrlen);
 	inet_ntop(AF_INET, &clientaddr.sin_addr, addr, sizeof(addr));
 	printf("[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n",addr, ntohs(clientaddr.sin_port));
+	int port = ntohs(clientaddr.sin_port);
+	cout << "나의 포트번호: " << port << endl;
 	
 	// 이름 받기
 	retval = recv(client_sock, name_buf, NAMESIZE, MSG_WAITALL);
@@ -209,7 +210,7 @@ DWORD WINAPI process_client(LPVOID arg)
 	strcpy(player_profile.player_info.name[0], name_buf);
 		
 	//client_thread_;list에 클라이언트 추가
-	client_thread_list[&clientaddr.sin_port] = name_buf;
+	client_thread_list[port] = name_buf;
 
 	//보낼 player_list
 	PS local_player_list[3];
@@ -231,7 +232,7 @@ DWORD WINAPI process_client(LPVOID arg)
 			if (find_match) {
 				cout << "Find mathch!!!!" << endl;
 				//여기서 매치 찾는 기능 넣으면 됨
-				player_list[&clientaddr.sin_port] = &player_profile;
+				player_list[port] = &player_profile;
 				player_profile.player_state.game_state = 1;	//findmath합니다
 			}
 		}
@@ -239,10 +240,11 @@ DWORD WINAPI process_client(LPVOID arg)
 
 		}
 		else if (player_profile.player_state.game_state == 2) {		// 2:loading
-			
+			cout<<"나의 포트번호: " << port << endl;
 			//같은 방 사람 정보 넣기
 			int other_player_num = 0;
 			for (auto& player : player_list) {
+				cout <<"존재하는 포트번호 " << (int)player.first << endl;
 				if (player.second->room_num == player_profile.room_num)		//같은 방에 있는 사람
 					player.second->player_info.player_color[other_player_num] = other_player_num;		//색깔 넣기
 				if (player.second->player_info.name != player_profile.player_info.name) {		//본인은 [0]에 있으니 제외
@@ -344,8 +346,8 @@ DWORD WINAPI process_client(LPVOID arg)
 	}
 	printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n", addr, ntohs(clientaddr.sin_port));
 	//map에서 플레이어 제거
-	player_list.erase(&clientaddr.sin_port);
-	client_thread_list.erase(&clientaddr.sin_port);
+	player_list.erase(port);
+	client_thread_list.erase(port);
 	
 	// 소켓 닫기
 	closesocket(client_sock);

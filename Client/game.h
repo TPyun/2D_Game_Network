@@ -217,6 +217,8 @@ public:
 	TF mouse_point;
 
 	TF MyCharPos;
+	TF p1_pos;
+	TF p2_pos;
 
 	CO created_objects[MAXITEM];
 	PS player_list[3];
