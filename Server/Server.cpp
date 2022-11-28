@@ -142,7 +142,7 @@ void collider_checker(CI* local_input, PP* player_collider) {
 					obj.object_position.y - player_collider->player_state.player_position.y > -64)
 				{
 					if (obj.object_position.x - player_collider->player_state.player_position.x < 72
-						&& obj.object_position.x - player_collider->player_state.player_position.x > 0)
+						&& obj.object_position.x - player_collider->player_state.player_position.x > 30)
 						local_input->d_Pressed = false;
 					if (obj.object_position.x - player_collider->player_state.player_position.x > 5
 						&& obj.object_position.x - player_collider->player_state.player_position.x < 20)
