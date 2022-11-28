@@ -50,6 +50,25 @@ DWORD WINAPI ingame_thread(LPVOID room_num)
 {
 	cout << (int)room_num <<" : 게임을 시작하지." << endl;
 	ingame.create_object();
+	int i = 0;
+	for (auto& player : player_list) {
+		if (player.second->room_num == (int)room_num) {
+			if (i == 0) {
+				player.second->player_state.player_position.x = 0;
+				player.second->player_state.player_position.y = -600;
+			}
+			else if (i == 1) {
+				player.second->player_state.player_position.x = -600;
+				player.second->player_state.player_position.y = 200;
+			}
+			else if (i == 2) {
+				player.second->player_state.player_position.x = 600;
+				player.second->player_state.player_position.y = 200;
+			}
+			++i;
+		}
+	}
+	
 	while (1) {
 		for (auto& player : player_list) {
 			if (player.second->room_num == (int)room_num) {
@@ -83,7 +102,6 @@ bool find_match_3p(int room_num)
 			}
 		}
 		return true;
-
 	}
 	else {
 		return false;
@@ -98,7 +116,6 @@ void collider_checker(CI* local_input, PP* player_collider) {
 		if (abs(obj.object_position.x - player_collider->player_state.player_position.x) < 100
 			&& abs(obj.object_position.y - player_collider->player_state.player_position.y) < 100)
 		{
-			
 			//돌
 			if (obj.object_type == 0)
 			{
@@ -300,7 +317,6 @@ DWORD WINAPI process_client(LPVOID arg)
 					}
 				}
 			}
-
 			retval = send(client_sock, (char*)&local_player_list, sizeof(PS) * 3, 0);
 			if (retval == SOCKET_ERROR) {
 				err_display("send()");
