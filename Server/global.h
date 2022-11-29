@@ -29,6 +29,7 @@ typedef struct players_state {
 	int bullet[3];
 	TI object_position;
 	TF player_position;
+	float player_rotation;
 	bool gun_fired;
 	int game_state;		// 0:main, 1:find_match, 2:in_game, 3:lose, 4:win
 }PS;
@@ -43,9 +44,8 @@ typedef struct client_input {
 	bool a_Pressed;
 	bool s_Pressed;
 	bool d_Pressed;
-
-	bool mouse_clicked;
-	TF mouse_pos;
+	bool clicked;
+	float mouse_rotation;
 }CI;
 
 typedef struct players_profile {

@@ -12,15 +12,7 @@ int retval;
 char* SERVERIP = (char*)"127.0.0.1";
 #define NAMESIZE 20
 
-// 전역변수 for event
-bool w_check = true;
-bool a_check = true;
-bool s_check = true;
-bool d_check = true;
-int gun_type = 0;
-char key = '0';
-char bullet = 'b';
-bool shoot_check = true;
+
 
 // 소켓 함수 오류 출력 후 종료
 void err_quit(const char* msg)
@@ -110,5 +102,6 @@ void send_event(SOCKET sock)
 	if (retval == SOCKET_ERROR) {
 		err_display("key_pressed()");
 	}
+	game.input.clicked = false;
 
 }

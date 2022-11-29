@@ -2,7 +2,7 @@
 #include "global.h"
 #include "ingame.h"
 
-#define MAX_CLIENT_IN_ROOM 2
+#define MAX_CLIENT_IN_ROOM 3
 using namespace std;
 
 int len = 0;
@@ -52,7 +52,7 @@ DWORD WINAPI ingame_thread(LPVOID room_num)
 	ingame.create_object();
 	int i = 0;
 	for (auto& player : player_list) {
-		if (player.second->room_num == (int)room_num) {
+		/*if (player.second->room_num == (int)room_num) {
 			if (i == 0) {
 				player.second->player_state.player_position.x = 0;
 				player.second->player_state.player_position.y = -600;
@@ -66,7 +66,7 @@ DWORD WINAPI ingame_thread(LPVOID room_num)
 				player.second->player_state.player_position.y = 200;
 			}
 			++i;
-		}
+		}*/
 	}
 	
 	while (1) {
@@ -257,6 +257,7 @@ DWORD WINAPI process_client(LPVOID arg)
 
 		}
 		else if (player_profile.player_state.game_state == 2) {		// 2:loading
+			Sleep(500);
 			cout<<"나의 포트번호: " << port << endl;
 			//같은 방 사람 정보 넣기
 			int other_player_num = 0;
@@ -317,6 +318,8 @@ DWORD WINAPI process_client(LPVOID arg)
 					}
 				}
 			}
+			
+			
 			retval = send(client_sock, (char*)&local_player_list, sizeof(PS) * 3, 0);
 			if (retval == SOCKET_ERROR) {
 				err_display("send()");
@@ -336,22 +339,27 @@ DWORD WINAPI process_client(LPVOID arg)
 				//예외처리
 			}
 
+			//cout << player_profile.input.clicked << "    "<< player_profile.input.mouse_rotation << endl;
+			player_profile.player_state.player_rotation = player_profile.input.mouse_rotation;
+
+			
 			//local에 현재 pp에 있는 ps 넣어주기
 			local_player_list[0] = player_profile.player_state;
 			int i = 1;
 			for (auto& player : player_list) {
-				if (player.second->room_num == (int)player_profile.room_num && player.second->player_info.name != player_profile.player_info.name) {
+				if (player.second->room_num == (int)player_profile.room_num && player.second->player_info.name[0] != player_profile.player_info.name[0]) {
 					local_player_list[i] = player.second->player_state;
+					++i;
 				}
 			}
-			//player state보내주기
+
+			
 			retval = send(client_sock, (char*)&local_player_list, sizeof(PS) * 3, 0);
 			if (retval == SOCKET_ERROR) {
 				err_display("send()");
 				break;
 			}
 			//cout << local_player_list[0].player_position.x << " / " << local_player_list[0].player_position.y << endl;
-
 		}
 		else if (player_profile.player_state.game_state == 4) {		// 4:lose
 
