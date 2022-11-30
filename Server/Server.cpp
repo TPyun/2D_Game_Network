@@ -1,8 +1,8 @@
 #include "Common.h"
 #include "global.h"
 #include "ingame.h"
+#include "matching.h"
 
-#define MAX_CLIENT_IN_ROOM 3
 using namespace std;
 
 int len = 0;
@@ -12,6 +12,9 @@ char buffer[BUFSIZE]; // 가변 길이 데이터
 //들어온 순서
 int hostnum;
 
+Ingame ingame;
+Matching matching;
+
 map<int, char*> client_thread_list;
 map<int, PP*> player_list;
 
@@ -19,7 +22,6 @@ map<int, PP*> player_list;
 DWORD WINAPI matching_thread(LPVOID arg);
 DWORD WINAPI process_client(LPVOID arg);
 DWORD WINAPI ingame_thread(LPVOID arg);
-bool find_match_3p(int);
 void collider_checker(CI*, PP*);
 
 //매칭쓰레드 
@@ -30,7 +32,7 @@ DWORD WINAPI matching_thread(LPVOID arg)
 
 	//3player가 find_match를 눌렀는지 확인
 	while (1) {
-		if (!find_match_3p(room_num)){
+		if (!matching.find_match_3p(room_num)){
 			//cout << "\r";
 			Sleep(100);
 			continue;
@@ -45,7 +47,6 @@ DWORD WINAPI matching_thread(LPVOID arg)
 	}
 }
 // 인게임쓰레드
-Ingame ingame;
 DWORD WINAPI ingame_thread(LPVOID room_num)
 {
 	cout << (int)room_num <<" : 게임을 시작하지." << endl;
@@ -83,34 +84,8 @@ DWORD WINAPI ingame_thread(LPVOID room_num)
 	return 0;
 }
 
-//find_match_3p 함수
-bool find_match_3p(int room_num)
-{
-	int cnt = 0;
-	for (auto& a : player_list){
-		if (a.second->player_state.game_state == 1)
-			cnt++;
-	}
-	if (cnt >= MAX_CLIENT_IN_ROOM){
-		for (auto& a : player_list) {
-			if (a.second->player_state.game_state == 1){
-				a.second->player_state.game_state = 2;
-				
-				a.second->room_num = room_num;	//PP에 room_num을 넣어줌
-
-				cout << "플레이어 이름: " << *a.second->player_info.name << endl;
-			}
-		}
-		return true;
-	}
-	else {
-		return false;
-	}
-}
 
 void collider_checker(CI* local_input, PP* player_collider) {
-
-
 	for (auto& obj : ingame.objects)
 	{
 		if (abs(obj.object_position.x - player_collider->player_state.player_position.x) < 100
