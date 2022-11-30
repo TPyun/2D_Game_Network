@@ -2,7 +2,7 @@
 #include "global.h"
 #include "ingame.h"
 #include "matching.h"
-
+#define FPS 200
 using namespace std;
 
 int len = 0;
@@ -49,7 +49,7 @@ DWORD WINAPI matching_thread(LPVOID arg)
 // 인게임쓰레드
 DWORD WINAPI ingame_thread(LPVOID room_num)
 {
-	cout << (int)room_num <<" : 게임을 시작하지." << endl;
+	cout << (int)room_num << " : 게임을 시작하지." << endl;
 	ingame.create_object();
 	int i = 0;
 	for (auto& player : player_list) {
@@ -69,25 +69,33 @@ DWORD WINAPI ingame_thread(LPVOID room_num)
 			++i;
 		}*/
 	}
-	
+	int startTime, endTime, delayTime{};
+
 	while (1) {
 		for (auto& player : player_list) {
 			if (player.second->room_num == (int)room_num) {
+				startTime = clock();
+				
+
+				
 				CI local_input = player.second->input;
-				collider_checker(&local_input,player.second);
+				collider_checker(&local_input, player.second);
 				ingame.character_movement(local_input, player.second->player_state.player_position);
 				//cout << player.second->player_state.player_position.x << " " << player.second->player_state.player_position.y << endl;
-				Sleep(10);	//조절해야함
+				//Sleep(1);	//조절해야함
+
+
+				
+				Sleep(1000 / FPS - delayTime);
+				endTime = clock();
+				delayTime = (endTime - startTime) / 1000.f;
 			}
 		}
 	}
 	return 0;
 }
 
-
 void collider_checker(CI* local_input, PP* player_collider) {
-
-
 	for (auto& obj : ingame.objects)
 	{
 		if (abs(obj.object_position.x - player_collider->player_state.player_position.x) < 100
@@ -133,6 +141,7 @@ void collider_checker(CI* local_input, PP* player_collider) {
 				}
 				if (obj.object_position.y - player_collider->player_state.player_position.y < 64 &&
 					obj.object_position.y - player_collider->player_state.player_position.y > -64)
+
 				{
 					if (obj.object_position.x - player_collider->player_state.player_position.x < 72
 						&& obj.object_position.x - player_collider->player_state.player_position.x > 30)
@@ -337,6 +346,7 @@ DWORD WINAPI process_client(LPVOID arg)
 				break;
 			}
 			//cout << local_player_list[0].player_position.x << " / " << local_player_list[0].player_position.y << endl;
+
 		}
 		else if (player_profile.player_state.game_state == 4) {		// 4:lose
 
