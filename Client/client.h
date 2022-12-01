@@ -94,6 +94,21 @@ void send_name(SOCKET sock, Game* game)	// 플레이어 이름 보내기
 //	}
 //}
 
+void recv_creat_object(SOCKET sock)
+{
+	retval = recv(sock, (char*)&game.created_objects, sizeof(game.created_objects), MSG_WAITALL);
+	cout << "받는 byte : " << sizeof(game.created_objects) << endl;
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+		//예외처리
+	}
+	for (int i = 0; i < MAXITEM; ++i) {
+		cout << "받은 created_objects[" << i << "] : " << game.created_objects[i].object_position.x << " / " << game.created_objects[i].object_position.y << endl;
+	}
+
+	cout << "created object 수신 완료" << endl;
+}
+
 // 클라이언트 인게임에서의 입력
 void send_event(SOCKET sock)
 {
@@ -102,6 +117,29 @@ void send_event(SOCKET sock)
 	if (retval == SOCKET_ERROR) {
 		err_display("key_pressed()");
 	}
-	game.input.clicked = false;
 
+}
+
+// 서버에서 다른 플레이어 이벤트 recv
+void recv_event(SOCKET sock)
+{
+	//플레이어 상태 받기
+	retval = recv(sock, (char*)&game.player_list, sizeof(PS) * 3, MSG_WAITALL);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+		//예외처리
+	}
+}
+
+void gun_interact(bool shoot_check)
+{
+	if (game.player_list[1].gun_fired == true && shoot_check == true) {
+		cout << game.player_list[1].gun_fired;
+		cout << game.player_list[1].player_rotation << endl;
+	}
+	shoot_check = false;
+	if (game.player_list[1].gun_fired == false && shoot_check == false) {
+		shoot_check = true;
+		cout << game.player_list[1].gun_fired << endl;
+	}
 }

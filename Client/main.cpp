@@ -25,6 +25,7 @@ DWORD WINAPI server_thread(LPVOID arg)
 	if (sock == INVALID_SOCKET) err_quit("socket()");
 
 	PI player_info;
+	bool shoot_check = true;
 	
 	while (!game.done) {
 		if (game.curr_state == 0) {				// 0:menu
@@ -76,22 +77,13 @@ DWORD WINAPI server_thread(LPVOID arg)
 				}
 
 				cout << "\nplayer_info 받은 정보" << endl;
-				cout << "내 이름: "<< player_info.name[0] << " 색: " << player_info.player_color[0] << endl;
-				cout << "p1 이름: " << player_info.name[1] << " 색: " << player_info.player_color[1] << endl;
-				cout << "p2 이름: " << player_info.name[2] << " 색: " << player_info.player_color[2] << endl;
+				for (int i = 0; i <= 3; ++i)
+				{
+					cout << "플레이어 " << i << " 이름: " << player_info.name[i] << " 색: " << player_info.player_color[i] << endl;
+				}
 
 				//created_object 수신
-				retval = recv(sock, (char*)&game.created_objects, sizeof(game.created_objects), MSG_WAITALL);
-				cout << "받는 byte : " << sizeof(game.created_objects) << endl;
-				if (retval == SOCKET_ERROR) {
-					err_display("recv()");
-					//예외처리
-				}
-				for (int i = 0; i < MAXITEM; ++i) {
-					cout << "받은 created_objects[" << i << "] : " << game.created_objects[i].object_position.x << " / " << game.created_objects[i].object_position.y << endl;
-				}
-				
-				cout << "created object 수신 완료" << endl;
+				recv_creat_object(sock);
 
 				retval = recv(sock, (char*)&game.player_list, sizeof(PS) * 3, MSG_WAITALL);
 				if (retval == SOCKET_ERROR) {
@@ -102,24 +94,26 @@ DWORD WINAPI server_thread(LPVOID arg)
 				cout << game.player_list[0].game_state << endl;
 				cout << game.player_list[1].game_state << endl;
 				cout << game.player_list[2].game_state << endl;
+				
 				game.curr_state = 1;
 			}
 		}
 		else if(game.curr_state == 1) {			// 1:ingame
 			//이벤트 전송
 			send_event(sock);
-				
-			//플레이어 상태 받기
-			retval = recv(sock, (char*)&game.player_list, sizeof(PS) * 3, MSG_WAITALL);
-			if (retval == SOCKET_ERROR) {
-				err_display("recv()");
-				//예외처리
-				return 0;
-			}
+
+			//이벤트 받기
+			recv_event(sock);
+			
+			// test용
+			gun_interact(shoot_check);
+
+			
 			//cout << game.player_list[0].player_position.x << " / " << game.player_list[0].player_position.y << endl;
 			game.MyCharPos = game.player_list[0].player_position;
 			game.p1_pos = game.player_list[1].player_position;
-			game.p2_pos = game.player_list[2].player_position;
+			//game.p2_pos = game.player_list[2].player_position;
+
 		}
 	}
 	return 0;

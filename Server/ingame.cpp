@@ -32,6 +32,17 @@ void Ingame::create_object()		// ÃÊ±â ¸Ê ·£´ı »ı¼ºÇÏ´Â ÇÔ¼ö (¹ÙÀ§, º®, ¾ÆÀÌÅÛ, Ç
 		std::cout << "y : " << objects[i].object_position.y << std::endl;*/
 	}
 
+	// object °ãÄ§ Ã¼Å©
+	for (int i = 0; i <= MAXITEM-1; ++i) {
+		for (int j = i+1; j <= MAXITEM; ++j) {
+			if (objects[i].object_position.x == objects[j].object_position.x && objects[i].object_position.y == objects[j].object_position.y) {
+				objects[i].object_position.x = uid(dre);
+				objects[i].object_position.y = uid(dre);
+			}
+				
+		}
+	}
+
 	std::cout << "create_map »ı¼º ¿Ï·á" << std::endl;
 }
 
@@ -129,4 +140,136 @@ void Ingame::character_movement(CI input, TF &pos)
 	//cout << "ÇÃ·¹ÀÌ¾î À§Ä¡: " << pos.x << ", " << pos.y << endl;
 }
 
+void Ingame::collide_check(PP* player, CI* input, TF bullet)
+{
+	// ÇÃ·¹ÀÌ¾î¿Í objects °£ÀÇ collide_check
+	for (auto& obj : objects)
+	{
+		if (abs(obj.object_position.x - player->player_state.player_position.x) < 100
+			&& abs(obj.object_position.y - player->player_state.player_position.y) < 100)
+		{
+			//µ¹
+			if (obj.object_type == 0)
+			{
+				if (obj.object_position.x - player->player_state.player_position.x < 53 &&
+					obj.object_position.x - player->player_state.player_position.x > -28)
+				{
+					if (obj.object_position.y - player->player_state.player_position.y < 62
+						&& obj.object_position.y - player->player_state.player_position.y > 0)
+						input->s_Pressed = false;
+					if (obj.object_position.y - player->player_state.player_position.y > -35
+						&& obj.object_position.y - player->player_state.player_position.y < 0)
+						input->w_Pressed = false;
+				}
+				if (obj.object_position.y - player->player_state.player_position.y < 53 &&
+					obj.object_position.y - player->player_state.player_position.y > -28)
+				{
+					if (obj.object_position.x - player->player_state.player_position.x < 62
+						&& obj.object_position.x - player->player_state.player_position.x > 0)
+						input->d_Pressed = false;
+					if (obj.object_position.x - player->player_state.player_position.x > -37
+						&& obj.object_position.x - player->player_state.player_position.x < 0)
+						input->a_Pressed = false;
+				}
+			}
+			//º®1
+			if (obj.object_type == 1)
+			{
+				//cout << obj.object_position.x << " / " << obj.object_position.y << endl;
+				if (obj.object_position.x - player->player_state.player_position.x < 64 &&
+					obj.object_position.x - player->player_state.player_position.x > 8)
+				{
+					if (obj.object_position.y - player->player_state.player_position.y < 72
+						&& obj.object_position.y - player->player_state.player_position.y > 0)
+						input->s_Pressed = false;
+					if (obj.object_position.y - player->player_state.player_position.y > -72
+						&& obj.object_position.y - player->player_state.player_position.y < 0)
+						input->w_Pressed = false;
+				}
+				if (obj.object_position.y - player->player_state.player_position.y < 64 &&
+					obj.object_position.y - player->player_state.player_position.y > -64)
 
+				{
+					if (obj.object_position.x - player->player_state.player_position.x < 72
+						&& obj.object_position.x - player->player_state.player_position.x > 30)
+						input->d_Pressed = false;
+					if (obj.object_position.x - player->player_state.player_position.x > 5
+						&& obj.object_position.x - player->player_state.player_position.x < 20)
+						input->a_Pressed = false;
+				}
+			}
+			//º®2
+			if (obj.object_type == 2)
+			{
+				if (obj.object_position.y - player->player_state.player_position.y < 64 &&
+					obj.object_position.y - player->player_state.player_position.y > 8)
+				{
+					if (obj.object_position.x - player->player_state.player_position.x < 72
+						&& obj.object_position.x - player->player_state.player_position.x > 57)
+						input->d_Pressed = false;
+					if (obj.object_position.x - player->player_state.player_position.x > -72
+						&& obj.object_position.x - player->player_state.player_position.x < -57)
+						input->a_Pressed = false;
+				}
+				if (obj.object_position.x - player->player_state.player_position.x < 64 &&
+					obj.object_position.x - player->player_state.player_position.x > -64)
+				{
+					if (obj.object_position.y - player->player_state.player_position.y < 72
+						&& obj.object_position.y - player->player_state.player_position.y > 30)
+						input->s_Pressed = false;
+					if (obj.object_position.y - player->player_state.player_position.y > 5
+						&& obj.object_position.y - player->player_state.player_position.y < 20)
+						input->w_Pressed = false;
+				}
+			}
+		}
+	}
+
+	// ÇÃ·¹ÀÌ¾î¿Í bullet °£ÀÇ collide_check
+	
+
+	// bullet°ú objects °£ÀÇ collidecheck
+	for(auto& obj : objects)
+	{ }
+}
+
+//void Ingame::mouseEvent_ingame()
+//{
+//	//get mouse coordinates 
+//	SDL_GetGlobalMouseState(&mouse_X, &mouse_Y);
+//
+//	mouse_point.x = mouse_X;
+//	mouse_point.y = mouse_Y;
+//
+//	//¸ğ´ÏÅÍ ÇØ»óµµ ÁÂÇ¥¸¦ °ÔÀÓ °ÔÀÓ Ã¢ ÁÂÇ¥ ±âÁØÀ¸·Î º¯È¯½ÃÅ´
+//	SDL_GetWindowPosition(window, &window_moved_x, &window_moved_y);
+//	mouse_point.x -= window_moved_x;
+//	mouse_point.y -= window_moved_y;
+//
+//	//Get Character Angle by Mouse's Coordinates
+//	my_char_angle = calcAngleFromPoints(mouse_point, middle_pos);
+//
+//	//¼­¹ö¿¡ Àü¼ÛÇÒ struct º¯¼ö¿¡ ¸¶¿ì½º ÁÂÇ¥ ÀúÀå, clicked
+//	input.mouse_rotation = my_char_angle;
+//	//¸¶¿ì½º ¿Ş ¹öÆ° ´©¸£¸é ¹ß»ç
+//	if (event.type == SDL_MOUSEBUTTONDOWN) {
+//		input.clicked = true;
+//		if (event.button.button == SDL_BUTTON_LEFT && gun_fired == false) {
+//			gun_fired = true;
+//			fired_time = clock();
+//
+//			show_bullet = true;
+//			gun_flash = true;
+//
+//			Mix_PlayChannel(-1, gunsound, 0);
+//		}
+//	}
+//
+//	//ÃÑÀÌ ¹ß»çµÇ°í Å¸ÀÌ¸Ó ÀÛµ¿½ÃÄÑ¼­ 1ÃÊ µÚ ´Ù½Ã ¹ß»ç °¡´Éawd
+//	if (gun_fired) {
+//		if (Timer(fired_time, 100) == 1) {
+//			gun_fired = false;
+//			fired_time = 0;
+//		}
+//	}
+//}

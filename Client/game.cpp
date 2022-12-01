@@ -557,12 +557,12 @@ void Game::mouseEvent_ingame()
 	//Get Character Angle by Mouse's Coordinates
 	my_char_angle = calcAngleFromPoints(mouse_point, middle_pos);
 
-	//서버에 전송할 struct 변수에 마우스 좌표 저장, clicked
-	input.mouse_rotation = my_char_angle;
 	//마우스 왼 버튼 누르면 발사
 	if (event.type == SDL_MOUSEBUTTONDOWN) {
-		input.clicked = true;
+		//서버에 전송할 struct 변수에 마우스 좌표 저장, clicked
+		input.mouse_rotation = my_char_angle;
 		if (event.button.button == SDL_BUTTON_LEFT && gun_fired == false) {
+			input.clicked = true;
 			gun_fired = true;
 			fired_time = clock();
 
@@ -576,6 +576,7 @@ void Game::mouseEvent_ingame()
 	//총이 발사되고 타이머 작동시켜서 1초 뒤 다시 발사 가능awd
 	if (gun_fired) {
 		if (Timer(fired_time, 100) == 1) {
+			input.clicked = false;
 			gun_fired = false;
 			fired_time = 0;
 		}

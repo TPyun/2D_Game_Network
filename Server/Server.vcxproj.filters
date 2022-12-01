@@ -7,7 +7,9 @@
     <ClCompile Include="Server.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="matching.cpp" />
+    <ClCompile Include="matching.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h">
@@ -19,7 +21,9 @@
     <ClInclude Include="ingame.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="matching.h" />
+    <ClInclude Include="matching.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="소스 파일">

@@ -8,7 +8,7 @@
 
 using namespace std;
 
-#define MAX_CLIENT_IN_ROOM 3
+#define MAX_CLIENT_IN_ROOM 2
 #define SERVERPORT	9000
 #define BUFSIZE		4096
 #define NAMESIZE	20
@@ -26,13 +26,13 @@ typedef struct TWO_Ints {
 
 typedef struct players_state {
 	int hp = 100;
-	int gun_type = 0;
-	int bullet[3];
-	TI object_position;
-	TF player_position;
-	float player_rotation;
-	bool gun_fired;
-	int game_state;		// 0:main, 1:find_match, 2:in_game, 3:lose, 4:win
+	int gun_type{};
+	int bullet[3]{};
+	TI object_position{};
+	TF player_position{};
+	float player_rotation{};
+	bool gun_fired{};
+	int game_state{};		// 0:main, 1:find_match, 2:in_game, 3:lose, 4:win
 }PS;
 
 typedef struct players_info {

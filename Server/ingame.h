@@ -12,6 +12,8 @@ public:
 	CO objects[MAXITEM]{};
 	void create_object();
 	void character_movement(CI, TF&);
+	void collide_check(PP*, CI*, TF);	// player_input, player, bullet_posion
+	// void mouseEvent_ingame();
 
 private:
 	// 화면 크기에 따라 조정 필요

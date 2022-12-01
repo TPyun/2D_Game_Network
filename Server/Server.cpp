@@ -22,7 +22,6 @@ map<int, PP*> player_list;
 DWORD WINAPI matching_thread(LPVOID arg);
 DWORD WINAPI process_client(LPVOID arg);
 DWORD WINAPI ingame_thread(LPVOID arg);
-void collider_checker(CI*, PP*);
 
 //매칭쓰레드 
 DWORD WINAPI matching_thread(LPVOID arg)
@@ -46,6 +45,9 @@ DWORD WINAPI matching_thread(LPVOID arg)
 		}
 	}
 }
+
+TF bullet;
+
 // 인게임쓰레드
 DWORD WINAPI ingame_thread(LPVOID room_num)
 {
@@ -79,11 +81,11 @@ DWORD WINAPI ingame_thread(LPVOID room_num)
 
 				
 				CI local_input = player.second->input;
-				collider_checker(&local_input, player.second);
+				ingame.collide_check(player.second, &local_input, bullet);
 				ingame.character_movement(local_input, player.second->player_state.player_position);
 				//cout << player.second->player_state.player_position.x << " " << player.second->player_state.player_position.y << endl;
 				//Sleep(1);	//조절해야함
-
+				// ingame.collide_bullet_check(player.second, );
 
 				
 				Sleep(1000 / FPS - delayTime);
@@ -93,90 +95,6 @@ DWORD WINAPI ingame_thread(LPVOID room_num)
 		}
 	}
 	return 0;
-}
-
-void collider_checker(CI* local_input, PP* player_collider) {
-	for (auto& obj : ingame.objects)
-	{
-		if (abs(obj.object_position.x - player_collider->player_state.player_position.x) < 100
-			&& abs(obj.object_position.y - player_collider->player_state.player_position.y) < 100)
-		{
-			//돌
-			if (obj.object_type == 0)
-			{
-				if (obj.object_position.x - player_collider->player_state.player_position.x < 53 &&
-					obj.object_position.x - player_collider->player_state.player_position.x > -28)
-				{
-					if (obj.object_position.y - player_collider->player_state.player_position.y < 62
-						&& obj.object_position.y - player_collider->player_state.player_position.y > 0)
-						local_input->s_Pressed = false;
-					if (obj.object_position.y - player_collider->player_state.player_position.y > -35
-						&& obj.object_position.y - player_collider->player_state.player_position.y < 0)
-						local_input->w_Pressed = false;
-				}
-				if (obj.object_position.y - player_collider->player_state.player_position.y < 53 &&
-					obj.object_position.y - player_collider->player_state.player_position.y > -28)
-				{
-					if (obj.object_position.x - player_collider->player_state.player_position.x < 62
-						&& obj.object_position.x - player_collider->player_state.player_position.x > 0)
-						local_input->d_Pressed = false;
-					if (obj.object_position.x - player_collider->player_state.player_position.x > -37
-						&& obj.object_position.x - player_collider->player_state.player_position.x < 0)
-						local_input->a_Pressed = false;
-				}
-			}
-			//벽1
-			if (obj.object_type == 1)
-			{
-				//cout << obj.object_position.x << " / " << obj.object_position.y << endl;
-				if (obj.object_position.x - player_collider->player_state.player_position.x < 64 &&
-					obj.object_position.x - player_collider->player_state.player_position.x > 8)
-				{
-					if (obj.object_position.y - player_collider->player_state.player_position.y < 72
-						&& obj.object_position.y - player_collider->player_state.player_position.y > 0)
-						local_input->s_Pressed = false;
-					if (obj.object_position.y - player_collider->player_state.player_position.y > -72
-						&& obj.object_position.y - player_collider->player_state.player_position.y < 0)
-						local_input->w_Pressed = false;
-				}
-				if (obj.object_position.y - player_collider->player_state.player_position.y < 64 &&
-					obj.object_position.y - player_collider->player_state.player_position.y > -64)
-
-				{
-					if (obj.object_position.x - player_collider->player_state.player_position.x < 72
-						&& obj.object_position.x - player_collider->player_state.player_position.x > 30)
-						local_input->d_Pressed = false;
-					if (obj.object_position.x - player_collider->player_state.player_position.x > 5
-						&& obj.object_position.x - player_collider->player_state.player_position.x < 20)
-						local_input->a_Pressed = false;
-				}
-			}
-			//벽2
-			if (obj.object_type == 2)
-			{
-				if (obj.object_position.y - player_collider->player_state.player_position.y < 64 &&
-					obj.object_position.y - player_collider->player_state.player_position.y > 8)
-				{
-					if (obj.object_position.x - player_collider->player_state.player_position.x < 72
-						&& obj.object_position.x - player_collider->player_state.player_position.x > 57)
-						local_input->d_Pressed = false;
-					if (obj.object_position.x - player_collider->player_state.player_position.x > -72
-						&& obj.object_position.x - player_collider->player_state.player_position.x < -57)
-						local_input->a_Pressed = false;
-				}
-				if (obj.object_position.x - player_collider->player_state.player_position.x < 64 &&
-					obj.object_position.x - player_collider->player_state.player_position.x > -64)
-				{
-					if (obj.object_position.y - player_collider->player_state.player_position.y < 72
-						&& obj.object_position.y - player_collider->player_state.player_position.y > 30)
-						local_input->s_Pressed = false;
-					if (obj.object_position.y - player_collider->player_state.player_position.y > 5
-						&& obj.object_position.y - player_collider->player_state.player_position.y < 20)
-						local_input->w_Pressed = false;
-				}
-			}
-		}
-	}
 }
 
 DWORD WINAPI process_client(LPVOID arg)
@@ -324,9 +242,14 @@ DWORD WINAPI process_client(LPVOID arg)
 			else if (retval == 0) {
 				//예외처리
 			}
-
-			//cout << player_profile.input.clicked << "    "<< player_profile.input.mouse_rotation << endl;
+			// 마우스 클릭 확인 출력
+			player_profile.player_state.gun_fired = player_profile.input.clicked;
 			player_profile.player_state.player_rotation = player_profile.input.mouse_rotation;
+
+			if (player_profile.input.clicked == true) {
+				cout << "clicked! " << player_profile.player_state.player_rotation << endl;
+			}
+			//cout << player_profile.input.clicked << "    "<< player_profile.input.mouse_rotation << endl;
 
 			
 			//local에 현재 pp에 있는 ps 넣어주기
@@ -339,7 +262,6 @@ DWORD WINAPI process_client(LPVOID arg)
 				}
 			}
 
-			
 			retval = send(client_sock, (char*)&local_player_list, sizeof(PS) * 3, 0);
 			if (retval == SOCKET_ERROR) {
 				err_display("send()");

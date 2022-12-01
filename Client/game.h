@@ -32,14 +32,14 @@ typedef struct TWO_Ints {
 }TI;
 
 typedef struct players_state {
-	int hp;
-	int gun_type;
-	int bullet[3];
-	TI object_position;
-	TF player_position;
-	float player_rotation;
-	bool gun_fired;
-	int game_state;
+	int hp = 100;
+	int gun_type{};
+	int bullet[3]{};
+	TI object_position{};
+	TF player_position{};
+	float player_rotation{};
+	bool gun_fired{};
+	int game_state{};
 }PS;
 
 typedef struct players_info
