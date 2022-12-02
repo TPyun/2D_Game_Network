@@ -77,9 +77,7 @@ DWORD WINAPI ingame_thread(LPVOID room_num)
 		for (auto& player : player_list) {
 			if (player.second->room_num == (int)room_num) {
 				startTime = clock();
-				
-
-				
+		
 				CI local_input = player.second->input;
 				ingame.collide_check(player.second, &local_input, bullet);
 				ingame.character_movement(local_input, player.second->player_state.player_position);
@@ -125,6 +123,7 @@ DWORD WINAPI process_client(LPVOID arg)
 	else if (retval == 0) {
 		//예외처리
 	}
+	
 	// 이름 출력
 	name_buf[retval] = '\0';
 	cout << "name : " << name_buf << endl;
@@ -157,10 +156,17 @@ DWORD WINAPI process_client(LPVOID arg)
 				player_profile.player_state.game_state = 1;	//findmath합니다
 			}
 		}
-		else if (player_profile.player_state.game_state == 1) {		// 1:finding_match
+
+		
+		//1: finding_match ==================================================================================================================
+		else if (player_profile.player_state.game_state == 1) {	
 
 		}
-		else if (player_profile.player_state.game_state == 2) {		// 2:loading
+
+		
+		
+		//2: loading ==================================================================================================================
+		else if (player_profile.player_state.game_state == 2) {	
 			Sleep(500);
 			cout<<"나의 포트번호: " << port << endl;
 			//같은 방 사람 정보 넣기
@@ -191,7 +197,6 @@ DWORD WINAPI process_client(LPVOID arg)
 				err_display("send()");
 				break;
 			}
-
 			cout << "\n" << (char*)player_profile.player_info.name << "클라이언트 방 번호: " << player_profile.room_num << endl;
 			
 			//created_object 송신
@@ -222,8 +227,6 @@ DWORD WINAPI process_client(LPVOID arg)
 					}
 				}
 			}
-			
-			
 			retval = send(client_sock, (char*)&local_player_list, sizeof(PS) * 3, 0);
 			if (retval == SOCKET_ERROR) {
 				err_display("send()");
@@ -231,7 +234,11 @@ DWORD WINAPI process_client(LPVOID arg)
 			}
 			player_profile.player_state.game_state = 3;
 		}
-		else if (player_profile.player_state.game_state == 3) {		// 3:ingame
+
+		
+
+		//3:ingame ==================================================================================================================
+		else if (player_profile.player_state.game_state == 3) {
 			// 키입력 받기
 			retval = recv(client_sock, (char*)&player_profile.input, sizeof(CI), MSG_WAITALL);
 			if (retval == SOCKET_ERROR) {
@@ -242,15 +249,15 @@ DWORD WINAPI process_client(LPVOID arg)
 			else if (retval == 0) {
 				//예외처리
 			}
+
 			// 마우스 클릭 확인 출력
 			player_profile.player_state.gun_fired = player_profile.input.clicked;
 			player_profile.player_state.player_rotation = player_profile.input.mouse_rotation;
 
 			if (player_profile.input.clicked == true) {
-				cout << "clicked! " << player_profile.player_state.player_rotation << endl;
+				//cout << "clicked! " << player_profile.player_state.player_rotation << endl;
 			}
-			//cout << player_profile.input.clicked << "    "<< player_profile.input.mouse_rotation << endl;
-
+			cout << player_profile.input.clicked << "    "<< player_profile.input.mouse_rotation << endl;
 			
 			//local에 현재 pp에 있는 ps 넣어주기
 			local_player_list[0] = player_profile.player_state;
@@ -269,11 +276,28 @@ DWORD WINAPI process_client(LPVOID arg)
 			}
 			//cout << local_player_list[0].player_position.x << " / " << local_player_list[0].player_position.y << endl;
 
+
+			
 		}
-		else if (player_profile.player_state.game_state == 4) {		// 4:lose
+
+
+
+		//4:lose ==================================================================================================================
+		else if (player_profile.player_state.game_state == 4) {
 
 		}
-		else if (player_profile.player_state.game_state == 5) {		// 5:win
+
+
+		
+		//5: win ==================================================================================================================
+		else if (player_profile.player_state.game_state == 5) {
+
+		}
+
+
+		
+		//6: exit 쓰레드에서 map erase 해줘야함 ==================================================================================================================
+		else if (player_profile.player_state.game_state == 5) {	
 
 		}
 	}

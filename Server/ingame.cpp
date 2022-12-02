@@ -39,7 +39,6 @@ void Ingame::create_object()		// ÃÊ±â ¸Ê ·£´ı »ı¼ºÇÏ´Â ÇÔ¼ö (¹ÙÀ§, º®, ¾ÆÀÌÅÛ, Ç
 				objects[i].object_position.x = uid(dre);
 				objects[i].object_position.y = uid(dre);
 			}
-				
 		}
 	}
 

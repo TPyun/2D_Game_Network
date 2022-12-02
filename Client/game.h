@@ -196,6 +196,7 @@ private:
 
 	void mouseEvent_menu();
 	void collide_check(float a, float b, float c, float d, float e, float f, float g, float h);
+	
 public:
 	float delayTime;
 	int done = 0;
@@ -211,14 +212,14 @@ public:
 
 	int weapon_type = 0; // 0: pistol, 1: rifle, 2: sniper
 
-	
-
 	bool gun_fired = false;
 	TF mouse_point;
 
 	TF MyCharPos;
 	TF p1_pos;
 	TF p2_pos;
+	float p1_rotation;
+	float p2_rotation;
 
 	CO created_objects[MAXITEM];
 	PS player_list[3];
@@ -229,5 +230,3 @@ public:
 
 	void update();
 };
-
-

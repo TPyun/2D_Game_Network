@@ -12,8 +12,6 @@ int retval;
 char* SERVERIP = (char*)"127.0.0.1";
 #define NAMESIZE 20
 
-
-
 // 소켓 함수 오류 출력 후 종료
 void err_quit(const char* msg)
 {
@@ -94,7 +92,7 @@ void send_name(SOCKET sock, Game* game)	// 플레이어 이름 보내기
 //	}
 //}
 
-void recv_creat_object(SOCKET sock)
+void recv_created_object(SOCKET sock)
 {
 	retval = recv(sock, (char*)&game.created_objects, sizeof(game.created_objects), MSG_WAITALL);
 	cout << "받는 byte : " << sizeof(game.created_objects) << endl;
@@ -117,7 +115,6 @@ void send_event(SOCKET sock)
 	if (retval == SOCKET_ERROR) {
 		err_display("key_pressed()");
 	}
-
 }
 
 // 서버에서 다른 플레이어 이벤트 recv

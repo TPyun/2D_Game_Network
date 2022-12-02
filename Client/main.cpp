@@ -83,7 +83,7 @@ DWORD WINAPI server_thread(LPVOID arg)
 				}
 
 				//created_object ¼ö½Å
-				recv_creat_object(sock);
+				recv_created_object(sock);
 
 				retval = recv(sock, (char*)&game.player_list, sizeof(PS) * 3, MSG_WAITALL);
 				if (retval == SOCKET_ERROR) {
@@ -108,11 +108,12 @@ DWORD WINAPI server_thread(LPVOID arg)
 			// test¿ë
 			gun_interact(shoot_check);
 
-			
 			//cout << game.player_list[0].player_position.x << " / " << game.player_list[0].player_position.y << endl;
 			game.MyCharPos = game.player_list[0].player_position;
 			game.p1_pos = game.player_list[1].player_position;
-			//game.p2_pos = game.player_list[2].player_position;
+			game.p2_pos = game.player_list[2].player_position;
+			game.p1_rotation = game.player_list[1].player_rotation;
+			game.p2_rotation = game.player_list[2].player_rotation;
 
 		}
 	}

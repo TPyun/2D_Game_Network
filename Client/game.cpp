@@ -146,15 +146,14 @@ void Game::drawCharacter()
 	destR.x = WIDTH / 2 - player_size / 2 + p1_pos.x - MyCharPos.x;
 	destR.y = HEIGHT / 2 - player_size / 2 + p1_pos.y - MyCharPos.y;
 
-	SDL_RenderCopyEx(renderer, red_playerTex, NULL, &destR, my_char_angle + 90, &center, SDL_FLIP_NONE);
+	SDL_RenderCopyEx(renderer, red_playerTex, NULL, &destR, p1_rotation + 90, &center, SDL_FLIP_NONE);
 
 	
 	//draw p2
-
 	destR.x = WIDTH / 2 - player_size / 2 + p2_pos.x - MyCharPos.x;
 	destR.y = HEIGHT / 2 - player_size / 2 + p2_pos.y - MyCharPos.y;
 
-	SDL_RenderCopyEx(renderer, blue_playerTex, NULL, &destR, my_char_angle + 90, &center, SDL_FLIP_NONE);
+	SDL_RenderCopyEx(renderer, blue_playerTex, NULL, &destR, p2_rotation + 90, &center, SDL_FLIP_NONE);
 
 
 	//draw my chracter
@@ -162,6 +161,8 @@ void Game::drawCharacter()
 	destR.y = HEIGHT / 2 - player_size / 2; //MyCharPos.y - player_size / 2;
 
 	SDL_RenderCopyEx(renderer, black_playerTex, NULL, &destR, my_char_angle + 90, &center, SDL_FLIP_NONE);
+	
+	input.mouse_rotation = my_char_angle;
 }
 void Game::drawHealthbar()
 {
@@ -572,15 +573,14 @@ void Game::mouseEvent_ingame()
 			Mix_PlayChannel(-1, gunsound, 0);
 		}
 	}
-
 	//총이 발사되고 타이머 작동시켜서 1초 뒤 다시 발사 가능awd
 	if (gun_fired) {
 		if (Timer(fired_time, 100) == 1) {
-			input.clicked = false;
+			//input.clicked = false;
 			gun_fired = false;
 			fired_time = 0;
 		}
-	}
+	} 
 }
 
 void Game::keyEvent_ingame()
