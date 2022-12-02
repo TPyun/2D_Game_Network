@@ -166,7 +166,7 @@ void Game::drawHealthbar(int health, TF pos)
 	SDL_Rect r = { WIDTH / 2 - 20, HEIGHT / 2 - 35, 40, 10 };
 	SDL_RenderDrawRect(renderer, &r);
 }
-void Game::drawBullet()
+void Game::drawBullet(bool& fire, float char_angle, TF pos)
 {
 	bullet_angle = 3.14159265 * 2 * fired_angle / 360;
 	//총알이 보일 때
@@ -175,8 +175,8 @@ void Game::drawBullet()
 		myBulletVelo.x = cos(bullet_angle) * 6000 * delayTime;
 		myBulletVelo.y = sin(bullet_angle) * 6000 * delayTime;
 
-		myBulletPos.x += (myBulletVelo.x + MyVelo.x);
-		myBulletPos.y += (myBulletVelo.y + MyVelo.y);
+		myBulletPos.x += (myBulletVelo.x);// +MyVelo.x);
+		myBulletPos.y += (myBulletVelo.y);// +MyVelo.y);
 
 		destR.w = bullet_size;
 		destR.h = bullet_size;
@@ -189,22 +189,25 @@ void Game::drawBullet()
 		//SDL_RenderCopy(renderer, bulletTex, NULL, &destR);
 		SDL_RenderCopyEx(renderer, bulletTex, NULL, &destR, fired_angle, &center, SDL_FLIP_NONE);
 
-		if (myBulletPos.x > WIDTH || myBulletPos.x < 0 || myBulletPos.y >HEIGHT || myBulletPos.y < 0) {
+		if (myBulletPos.x > WIDTH || myBulletPos.x < 0 || myBulletPos.y > HEIGHT || myBulletPos.y < 0) {
 			show_bullet = false;
 		}
 	}
 	//총알이 보이지 않을 때
 	else {
-		myBulletPos.x = WIDTH / 2 + cos(bullet_angle) * 75;
-		myBulletPos.y = HEIGHT / 2 + sin(bullet_angle) * 75;
-		//캐릭터가 발사한 순간의 각도를 
-		fired_angle = my_char_angle;
+		myBulletPos.x = WIDTH / 2 + cos(bullet_angle) * 75 + pos.x - MyCharPos.x;
+		myBulletPos.y = HEIGHT / 2 + sin(bullet_angle) * 75 + pos.y - MyCharPos.y;
+		//캐릭터가 발사한 순간의 각도를 할당
+		fired_angle = char_angle;
 	}
-
+}
+void Game::drawFlash(bool& flash, float char_angle, TF pos)
+{
+	//draw flash
 	flash_size.x = 150;
 	flash_size.y = 80;
 
-	if (gun_flash) {
+	if (flash) {
 		srcR.w = flash_sprite_w / 4;
 		srcR.h = flash_sprite_h / 3;
 
@@ -218,13 +221,13 @@ void Game::drawBullet()
 			srcR.x = 0;
 
 			flash_i = 0;
-			gun_flash = false;
+			flash = false;
 		}
 
 		destR.w = flash_size.x;
 		destR.h = flash_size.y;
-		destR.x = WIDTH / 2 - flash_size.x / 2 + cos(bullet_angle) * 75;
-		destR.y = HEIGHT / 2 - flash_size.y / 2 + sin(bullet_angle) * 75;
+		destR.x = WIDTH / 2 - flash_size.x / 2 + cos(bullet_angle) * 75 + pos.x - MyCharPos.x;
+		destR.y = HEIGHT / 2 - flash_size.y / 2 + sin(bullet_angle) * 75 + pos.y - MyCharPos.y;
 
 		center.x = flash_size.x / 2;
 		center.y = flash_size.y / 2;
@@ -232,14 +235,9 @@ void Game::drawBullet()
 		SDL_RenderCopyEx(renderer, flashTex, &srcR, &destR, fired_angle, &center, SDL_FLIP_NONE);
 	}
 	else {
-		flash_angle = my_char_angle;
+		flash_angle = char_angle;
 	}
 }
-void Game::drawFlash()
-{
-	
-}
-
 void Game::drawCrosshair()
 {
 	//마우스 좌표 먹이기
@@ -320,7 +318,6 @@ void Game::drawWeaponList()
 	tmp = to_string(sniper_ammo);
 	num_char = tmp.c_str();
 	drawText(WIDTH / 2 + 60, HEIGHT - 100, (char*)num_char, color);
-
 }
 
 void Game::drawObstacle()
@@ -442,8 +439,16 @@ void Game::drawIngame()
 	drawBackground();
 	drawGround();
 	drawObstacle();
-	drawBullet();
-	drawFlash();
+	
+	drawBullet(gun_fired, my_char_angle, MyCharPos);
+	/*drawBullet(player_list[1].gun_fired, player_list[1].player_rotation, player_list[1].player_position);
+	drawBullet(player_list[2].gun_fired, player_list[2].player_rotation, player_list[2].player_position);*/
+
+	drawFlash(gun_flash, my_char_angle, MyCharPos);
+	/*drawFlash(player_list[1].gun_fired, player_list[1].player_rotation, player_list[1].player_position);
+	drawFlash(player_list[2].gun_fired, player_list[2].player_rotation, player_list[2].player_position);*/
+	
+	cout << player_list[1].gun_fired << endl;
 	
 	drawCharacter(black_playerTex, MyCharPos, my_char_angle);
 	drawCharacter(red_playerTex, player_list[1].player_position, player_list[1].player_rotation);
@@ -555,6 +560,7 @@ void Game::mouseEvent_ingame()
 		input.mouse_rotation = my_char_angle;
 		if (event.button.button == SDL_BUTTON_LEFT && gun_fired == false) {
 			input.clicked = true;
+			
 			gun_fired = true;
 			fired_time = clock();
 
@@ -564,10 +570,13 @@ void Game::mouseEvent_ingame()
 			Mix_PlayChannel(-1, gunsound, 0);
 		}
 	}
-	//총이 발사되고 타이머 작동시켜서 1초 뒤 다시 발사 가능awd
+	//총이 발사되고 타이머 작동시켜서 1초 뒤 다시 발사 가능
 	if (gun_fired) {
 		if (Timer(fired_time, 100) == 1) {
-			//input.clicked = false;
+<<<<<<< HEAD
+=======
+			input.clicked = false;
+>>>>>>> 1da77a42e7748ed29a4078c47e153a23c84b04d1
 			gun_fired = false;
 			fired_time = 0;
 		}

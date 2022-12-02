@@ -25,6 +25,7 @@ DWORD WINAPI server_thread(LPVOID arg)
 	if (sock == INVALID_SOCKET) err_quit("socket()");
 
 	PI player_info;
+	CI ci;
 	bool shoot_check = true;
 	
 	while (!game.done) {
@@ -106,7 +107,7 @@ DWORD WINAPI server_thread(LPVOID arg)
 			recv_event(sock);
 			
 			// test¿ë
-			gun_interact(&shoot_check);
+			//gun_interact(&shoot_check);
 
 			//cout << game.player_list[0].player_position.x << " / " << game.player_list[0].player_position.y << endl;
 			game.MyCharPos = game.player_list[0].player_position;

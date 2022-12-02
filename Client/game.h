@@ -127,8 +127,9 @@ private:
 	int mouse_X = 0;
 	int mouse_Y = 0;
 
-	bool show_bullet = false;
+	bool show_bullet = false; 
 	bool gun_flash = false;
+	
 	int flash_i;
 	int flash_angle;
 	int fired_time = 0;
@@ -161,7 +162,6 @@ private:
 
 	bool game_start = false;
 
-
 	//ÇÔ¼ö
 	void initVariables();
 	void initWindow();
@@ -183,8 +183,8 @@ private:
 	void drawGround();
 	void drawCharacter(SDL_Texture* tex, TF pos, float rot);
 	void drawHealthbar(int health, TF pos);
-	void drawBullet();
-	void drawFlash();
+	void drawBullet(bool& fire, float char_angle, TF pos);
+	void drawFlash(bool& flash, float char_angle, TF pos);
 	void drawCrosshair();
 	void drawText(int x, int y, char[], SDL_Color);
 	void drawWeaponList();
@@ -215,11 +215,7 @@ public:
 	TF mouse_point;
 
 	TF MyCharPos;
-	TF p1_pos;
-	TF p2_pos;
 	float my_char_angle = 0.f;
-	float p1_rotation = 0.f;
-	float p2_rotation = 0.f;
 
 	CO created_objects[MAXITEM];
 	PS player_list[3];

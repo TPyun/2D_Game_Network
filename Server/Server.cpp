@@ -105,6 +105,7 @@ DWORD WINAPI process_client(LPVOID arg)
 	char name_buf[NAMESIZE + 1];
 	bool find_match;
 	PP player_profile;
+	bool bullet_check = true;
 
 	// 클라이언트 정보 얻기
 	addrlen = sizeof(clientaddr);
@@ -252,13 +253,22 @@ DWORD WINAPI process_client(LPVOID arg)
 
 			// 마우스 클릭 확인 출력
 			player_profile.player_state.gun_fired = player_profile.input.clicked;
-			player_profile.player_state.player_rotation = player_profile.input.mouse_rotation;
-			player_profile.player_state.gun_fired = player_profile.input.clicked;
+			//player_profile.player_state.player_rotation = player_profile.input.mouse_rotation;
 
+<<<<<<< HEAD
 			if (player_profile.input.clicked == true) {
-				//cout << "clicked! " << player_profile.player_state.player_rotation << endl;
+				cout << "clicked! " << player_profile.player_state.player_rotation << endl;
+=======
+			if (player_profile.player_state.gun_fired == true && bullet_check == true) {
+				player_profile.player_state.player_rotation = player_profile.input.mouse_rotation;
+				cout << player_profile.player_state.gun_fired << " - " << player_profile.player_state.player_rotation << endl;
+				bullet_check = false;
+>>>>>>> 1da77a42e7748ed29a4078c47e153a23c84b04d1
 			}
-			//cout << player_profile.input.clicked << "    "<< player_profile.input.mouse_rotation << endl;
+			else if (player_profile.player_state.gun_fired == false && bullet_check == false) {
+				bullet_check = true;
+			}
+			cout << player_profile.player_state.player_rotation << endl;
 			
 			//local에 현재 pp에 있는 ps 넣어주기
 			local_player_list[0] = player_profile.player_state;
