@@ -441,22 +441,22 @@ void Game::drawIngame()
 	drawObstacle();
 	
 	drawBullet(gun_fired, my_char_angle, MyCharPos);
-	/*drawBullet(player_list[1].gun_fired, player_list[1].player_rotation, player_list[1].player_position);
-	drawBullet(player_list[2].gun_fired, player_list[2].player_rotation, player_list[2].player_position);*/
+	drawBullet(player_list[1].gun_fired, player_list[1].player_rotation, player_list[1].player_position);
+	//drawBullet(player_list[2].gun_fired, player_list[2].player_rotation, player_list[2].player_position);
 
 	drawFlash(gun_flash, my_char_angle, MyCharPos);
-	/*drawFlash(player_list[1].gun_fired, player_list[1].player_rotation, player_list[1].player_position);
-	drawFlash(player_list[2].gun_fired, player_list[2].player_rotation, player_list[2].player_position);*/
+	drawFlash(player_list[1].gun_fired, player_list[1].player_rotation, player_list[1].player_position);
+	//drawFlash(player_list[2].gun_fired, player_list[2].player_rotation, player_list[2].player_position);
 	
-	cout << player_list[1].gun_fired << endl;
+	//cout << player_list[1].gun_fired << endl;
 	
 	drawCharacter(black_playerTex, MyCharPos, my_char_angle);
 	drawCharacter(red_playerTex, player_list[1].player_position, player_list[1].player_rotation);
-	drawCharacter(blue_playerTex, player_list[2].player_position, player_list[2].player_rotation);
+	//drawCharacter(blue_playerTex, player_list[2].player_position, player_list[2].player_rotation);
 
 	drawHealthbar(player_list[0].hp, MyCharPos);
 	drawHealthbar(player_list[1].hp, player_list[1].player_position);
-	drawHealthbar(player_list[2].hp, player_list[2].player_position);
+	//drawHealthbar(player_list[2].hp, player_list[2].player_position);
 
 	drawCrosshair();
 	drawWeaponList();
@@ -573,10 +573,8 @@ void Game::mouseEvent_ingame()
 	//총이 발사되고 타이머 작동시켜서 1초 뒤 다시 발사 가능
 	if (gun_fired) {
 		if (Timer(fired_time, 100) == 1) {
-<<<<<<< HEAD
-=======
+			
 			input.clicked = false;
->>>>>>> 1da77a42e7748ed29a4078c47e153a23c84b04d1
 			gun_fired = false;
 			fired_time = 0;
 		}

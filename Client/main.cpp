@@ -107,7 +107,7 @@ DWORD WINAPI server_thread(LPVOID arg)
 			recv_event(sock);
 			
 			// test¿ë
-			//gun_interact(&shoot_check);
+			gun_interact(&shoot_check);
 
 			//cout << game.player_list[0].player_position.x << " / " << game.player_list[0].player_position.y << endl;
 			game.MyCharPos = game.player_list[0].player_position;
