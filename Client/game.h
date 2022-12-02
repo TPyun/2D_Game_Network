@@ -141,7 +141,6 @@ private:
 	int bullet_size = 100;
 	int crosshair_size = 80;
 
-	float my_char_angle = 0.f;
 	float fired_angle = 0;
 	float bullet_angle = 0;
 
@@ -182,8 +181,8 @@ private:
 
 	void drawBackground();
 	void drawGround();
-	void drawCharacter();
-	void drawHealthbar();
+	void drawCharacter(SDL_Texture* tex, TF pos, float rot);
+	void drawHealthbar(int health, TF pos);
 	void drawBullet();
 	void drawFlash();
 	void drawCrosshair();
@@ -218,8 +217,9 @@ public:
 	TF MyCharPos;
 	TF p1_pos;
 	TF p2_pos;
-	float p1_rotation;
-	float p2_rotation;
+	float my_char_angle = 0.f;
+	float p1_rotation = 0.f;
+	float p2_rotation = 0.f;
 
 	CO created_objects[MAXITEM];
 	PS player_list[3];

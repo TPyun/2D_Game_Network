@@ -134,46 +134,28 @@ void Game::drawGround()
 	//Draw Background
 	SDL_RenderCopy(renderer, groundTex, NULL, &destR);
 }
-void Game::drawCharacter()
+void Game::drawCharacter(SDL_Texture* tex, TF pos, float rot)
 {
-	
 	destR.w = player_size;
 	destR.h = player_size;
 	center.x = player_size / 2;
 	center.y = player_size / 2;
 
-	//draw p1
-	destR.x = WIDTH / 2 - player_size / 2 + p1_pos.x - MyCharPos.x;
-	destR.y = HEIGHT / 2 - player_size / 2 + p1_pos.y - MyCharPos.y;
+	destR.x = WIDTH / 2 - player_size / 2 + pos.x - MyCharPos.x;
+	destR.y = HEIGHT / 2 - player_size / 2 + pos.y - MyCharPos.y;
 
-	SDL_RenderCopyEx(renderer, red_playerTex, NULL, &destR, p1_rotation + 90, &center, SDL_FLIP_NONE);
-
-	
-	//draw p2
-	destR.x = WIDTH / 2 - player_size / 2 + p2_pos.x - MyCharPos.x;
-	destR.y = HEIGHT / 2 - player_size / 2 + p2_pos.y - MyCharPos.y;
-
-	SDL_RenderCopyEx(renderer, blue_playerTex, NULL, &destR, p2_rotation + 90, &center, SDL_FLIP_NONE);
-
-
-	//draw my chracter
-	destR.x = WIDTH / 2 - player_size / 2; //MyCharPos.x - player_size / 2;
-	destR.y = HEIGHT / 2 - player_size / 2; //MyCharPos.y - player_size / 2;
-
-	SDL_RenderCopyEx(renderer, black_playerTex, NULL, &destR, my_char_angle + 90, &center, SDL_FLIP_NONE);
-	
-	input.mouse_rotation = my_char_angle;
+	SDL_RenderCopyEx(renderer, tex, NULL, &destR, rot + 90, &center, SDL_FLIP_NONE);
 }
-void Game::drawHealthbar()
+void Game::drawHealthbar(int health, TF pos)
 {
-	destR.w = (float)my_health / 2.5f;
+	destR.w = (float)health / 2.5f;
 	destR.h = 10;
-	destR.x = WIDTH / 2 - 20;
-	destR.y = HEIGHT / 2 - 35;
-	if (my_health > 50) {
+	destR.x = WIDTH / 2 - 20 + pos.x - MyCharPos.x;
+	destR.y = HEIGHT / 2 - 35 + pos.y - MyCharPos.y;
+	if (health > 50) {
 		SDL_RenderCopy(renderer, greenTex, NULL, &destR);
 	}
-	else if (my_health > 25) {
+	else if (health > 25) {
 		SDL_RenderCopy(renderer, yellowTex, NULL, &destR);
 	}
 	else {
@@ -218,9 +200,7 @@ void Game::drawBullet()
 		//캐릭터가 발사한 순간의 각도를 
 		fired_angle = my_char_angle;
 	}
-}
-void Game::drawFlash()
-{
+
 	flash_size.x = 150;
 	flash_size.y = 80;
 
@@ -254,6 +234,10 @@ void Game::drawFlash()
 	else {
 		flash_angle = my_char_angle;
 	}
+}
+void Game::drawFlash()
+{
+	
 }
 
 void Game::drawCrosshair()
@@ -453,7 +437,6 @@ void Game::drawMenu()
 	}
 }
 
-
 void Game::drawIngame()
 {
 	drawBackground();
@@ -461,8 +444,15 @@ void Game::drawIngame()
 	drawObstacle();
 	drawBullet();
 	drawFlash();
-	drawCharacter();
-	drawHealthbar();
+	
+	drawCharacter(black_playerTex, MyCharPos, my_char_angle);
+	drawCharacter(red_playerTex, player_list[1].player_position, player_list[1].player_rotation);
+	drawCharacter(blue_playerTex, player_list[2].player_position, player_list[2].player_rotation);
+
+	drawHealthbar(player_list[0].hp, MyCharPos);
+	drawHealthbar(player_list[1].hp, player_list[1].player_position);
+	drawHealthbar(player_list[2].hp, player_list[2].player_position);
+
 	drawCrosshair();
 	drawWeaponList();
 }
@@ -557,6 +547,7 @@ void Game::mouseEvent_ingame()
 
 	//Get Character Angle by Mouse's Coordinates
 	my_char_angle = calcAngleFromPoints(mouse_point, middle_pos);
+	input.mouse_rotation = my_char_angle;
 
 	//마우스 왼 버튼 누르면 발사
 	if (event.type == SDL_MOUSEBUTTONDOWN) {

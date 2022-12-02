@@ -86,7 +86,7 @@ DWORD WINAPI ingame_thread(LPVOID room_num)
 				// ingame.collide_bullet_check(player.second, );
 
 				
-				Sleep(1000 / FPS - delayTime);
+				Sleep(1);
 				endTime = clock();
 				delayTime = (endTime - startTime) / 1000.f;
 			}
@@ -253,11 +253,12 @@ DWORD WINAPI process_client(LPVOID arg)
 			// 마우스 클릭 확인 출력
 			player_profile.player_state.gun_fired = player_profile.input.clicked;
 			player_profile.player_state.player_rotation = player_profile.input.mouse_rotation;
+			player_profile.player_state.gun_fired = player_profile.input.clicked;
 
 			if (player_profile.input.clicked == true) {
 				//cout << "clicked! " << player_profile.player_state.player_rotation << endl;
 			}
-			cout << player_profile.input.clicked << "    "<< player_profile.input.mouse_rotation << endl;
+			//cout << player_profile.input.clicked << "    "<< player_profile.input.mouse_rotation << endl;
 			
 			//local에 현재 pp에 있는 ps 넣어주기
 			local_player_list[0] = player_profile.player_state;

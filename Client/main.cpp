@@ -110,10 +110,6 @@ DWORD WINAPI server_thread(LPVOID arg)
 
 			//cout << game.player_list[0].player_position.x << " / " << game.player_list[0].player_position.y << endl;
 			game.MyCharPos = game.player_list[0].player_position;
-			game.p1_pos = game.player_list[1].player_position;
-			game.p2_pos = game.player_list[2].player_position;
-			game.p1_rotation = game.player_list[1].player_rotation;
-			game.p2_rotation = game.player_list[2].player_rotation;
 
 		}
 	}
@@ -136,7 +132,6 @@ int SDL_main(int argc, char* argv[])
 	{
 		startTime = clock();
 		game.update();
-
 
 		Sleep(1000 / FPS - game.delayTime);
 		endTime = clock();
