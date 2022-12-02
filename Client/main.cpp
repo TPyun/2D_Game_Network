@@ -26,7 +26,8 @@ DWORD WINAPI server_thread(LPVOID arg)
 
 	PI player_info;
 	CI ci;
-	bool shoot_check = true;
+	game.p1_shoot_check = true;
+	game.p2_shoot_check = true;
 	
 	while (!game.done) {
 		if (game.curr_state == 0) {				// 0:menu
@@ -78,8 +79,7 @@ DWORD WINAPI server_thread(LPVOID arg)
 				}
 
 				cout << "\nplayer_info 받은 정보" << endl;
-				for (int i = 0; i <= 3; ++i)
-				{
+				for (int i = 0; i <= 3; ++i){
 					cout << "플레이어 " << i << " 이름: " << player_info.name[i] << " 색: " << player_info.player_color[i] << endl;
 				}
 
@@ -106,8 +106,7 @@ DWORD WINAPI server_thread(LPVOID arg)
 			//이벤트 받기
 			recv_event(sock);
 			
-			// test용
-			gun_interact(&shoot_check);
+			
 
 			//cout << game.player_list[0].player_position.x << " / " << game.player_list[0].player_position.y << endl;
 			game.MyCharPos = game.player_list[0].player_position;

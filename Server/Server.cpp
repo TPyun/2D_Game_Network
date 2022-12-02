@@ -251,19 +251,15 @@ DWORD WINAPI process_client(LPVOID arg)
 				//예외처리
 			}
 
-
-			
 			// 마우스 클릭 확인 출력
 			player_profile.player_state.gun_fired = player_profile.input.clicked;
-			//player_profile.player_state.player_rotation = player_profile.input.mouse_rotation;
+			player_profile.player_state.player_rotation = player_profile.input.mouse_rotation;
 
 
 			
 			if (player_profile.player_state.gun_fired == true && bullet_check == true) {
 				player_profile.player_state.player_rotation = player_profile.input.mouse_rotation;
 				cout << player_profile.player_state.gun_fired << " - " << player_profile.player_state.player_rotation << endl;
-
-				
 				bullet_check = false;
 			}
 			else if (player_profile.player_state.gun_fired == false && bullet_check == false) {

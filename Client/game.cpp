@@ -166,53 +166,53 @@ void Game::drawHealthbar(int health, TF pos)
 	SDL_Rect r = { WIDTH / 2 - 20, HEIGHT / 2 - 35, 40, 10 };
 	SDL_RenderDrawRect(renderer, &r);
 }
-void Game::drawBullet(bool& fire, float char_angle, TF pos)
+void Game::drawBullet(int i,float char_angle, TF pos)
 {
-	bullet_angle = 3.14159265 * 2 * fired_angle / 360;
+	player_fire[i].bullet_angle = 3.14159265 * 2 * player_fire[i].fired_angle / 360;
 	//총알이 보일 때
-	if (show_bullet) {
+	if (player_fire[i].show_bullet) {
 
-		myBulletVelo.x = cos(bullet_angle) * 6000 * delayTime;
-		myBulletVelo.y = sin(bullet_angle) * 6000 * delayTime;
+		player_fire[i].bulletVelo.x = cos(player_fire[i].bullet_angle) * 6000 * delayTime;
+		player_fire[i].bulletVelo.y = sin(player_fire[i].bullet_angle) * 6000 * delayTime;
 
-		myBulletPos.x += (myBulletVelo.x);// +MyVelo.x);
-		myBulletPos.y += (myBulletVelo.y);// +MyVelo.y);
+		player_fire[i].bulletPos.x += (player_fire[i].bulletVelo.x);// +MyVelo.x);
+		player_fire[i].bulletPos.y += (player_fire[i].bulletVelo.y);// +MyVelo.y);
 
 		destR.w = bullet_size;
 		destR.h = bullet_size;
-		destR.x = myBulletPos.x - bullet_size / 2;
-		destR.y = myBulletPos.y - bullet_size / 2;
+		destR.x = player_fire[i].bulletPos.x - bullet_size / 2;
+		destR.y = player_fire[i].bulletPos.y - bullet_size / 2;
 
 		center.x = bullet_size / 2;
 		center.y = bullet_size / 2;
 
 		//SDL_RenderCopy(renderer, bulletTex, NULL, &destR);
-		SDL_RenderCopyEx(renderer, bulletTex, NULL, &destR, fired_angle, &center, SDL_FLIP_NONE);
+		SDL_RenderCopyEx(renderer, bulletTex, NULL, &destR, player_fire[i].fired_angle, &center, SDL_FLIP_NONE);
 
-		if (myBulletPos.x > WIDTH || myBulletPos.x < 0 || myBulletPos.y > HEIGHT || myBulletPos.y < 0) {
-			show_bullet = false;
+		if (player_fire[i].bulletPos.x > WIDTH || player_fire[i].bulletPos.x < 0 || player_fire[i].bulletPos.y > HEIGHT || player_fire[i].bulletPos.y < 0) {
+			player_fire[i].show_bullet = false;
 		}
 	}
 	//총알이 보이지 않을 때
 	else {
-		myBulletPos.x = WIDTH / 2 + cos(bullet_angle) * 75 + pos.x - MyCharPos.x;
-		myBulletPos.y = HEIGHT / 2 + sin(bullet_angle) * 75 + pos.y - MyCharPos.y;
+		player_fire[i].bulletPos.x = WIDTH / 2 + cos(player_fire[i].bullet_angle) * 75 + pos.x - MyCharPos.x;
+		player_fire[i].bulletPos.y = HEIGHT / 2 + sin(player_fire[i].bullet_angle) * 75 + pos.y - MyCharPos.y;
 		//캐릭터가 발사한 순간의 각도를 할당
-		fired_angle = char_angle;
+		player_fire[i].fired_angle = char_angle;
 	}
 }
-void Game::drawFlash(bool& flash, float char_angle, TF pos)
+void Game::drawFlash(int i, float char_angle, TF pos)
 {
 	//draw flash
 	flash_size.x = 150;
 	flash_size.y = 80;
 
-	if (flash) {
+	if (player_fire[i].gun_flash) {
 		srcR.w = flash_sprite_w / 4;
 		srcR.h = flash_sprite_h / 3;
 
-		flash_i += 1;
-		if (flash_i % 2 == 0) {
+		player_fire[i].flash_i += 1;
+		if (player_fire[i].flash_i % 2 == 0) {
 			srcR.x += srcR.w;
 			srcR.y = 320;
 		}
@@ -220,22 +220,40 @@ void Game::drawFlash(bool& flash, float char_angle, TF pos)
 		if (srcR.x >= flash_sprite_w - flash_sprite_w % 4) {
 			srcR.x = 0;
 
-			flash_i = 0;
-			flash = false;
+			player_fire[i].flash_i = 0;
+			player_fire[i].gun_flash = false;
 		}
 
 		destR.w = flash_size.x;
 		destR.h = flash_size.y;
-		destR.x = WIDTH / 2 - flash_size.x / 2 + cos(bullet_angle) * 75 + pos.x - MyCharPos.x;
-		destR.y = HEIGHT / 2 - flash_size.y / 2 + sin(bullet_angle) * 75 + pos.y - MyCharPos.y;
+		destR.x = WIDTH / 2 - flash_size.x / 2 + cos(player_fire[i].bullet_angle) * 75 + pos.x - MyCharPos.x;
+		destR.y = HEIGHT / 2 - flash_size.y / 2 + sin(player_fire[i].bullet_angle) * 75 + pos.y - MyCharPos.y;
 
 		center.x = flash_size.x / 2;
 		center.y = flash_size.y / 2;
 
-		SDL_RenderCopyEx(renderer, flashTex, &srcR, &destR, fired_angle, &center, SDL_FLIP_NONE);
+		SDL_RenderCopyEx(renderer, flashTex, &srcR, &destR, player_fire[i].fired_angle, &center, SDL_FLIP_NONE);
 	}
 	else {
-		flash_angle = char_angle;
+		player_fire[i].flash_angle = char_angle;
+	}
+}
+void Game::draw_enemy_fire(bool* shoot_check, int i)
+{
+	if (player_list[i].gun_fired == true && *shoot_check == true) {
+		cout << "shoot check : " << *shoot_check << endl;
+
+		// 아래 한 줄 지우고 이 곳에 총 그리기 - game.player_list[1].player_rotation
+		cout << player_list[i].player_rotation << endl;
+
+		player_fire[i].show_bullet = true;
+		player_fire[i].gun_flash = true;
+		
+		*shoot_check = false;
+	}
+
+	if (player_list[i].gun_fired == false && *shoot_check == false) {
+		*shoot_check = true;
 	}
 }
 void Game::drawCrosshair()
@@ -439,24 +457,28 @@ void Game::drawIngame()
 	drawBackground();
 	drawGround();
 	drawObstacle();
-	
-	drawBullet(gun_fired, my_char_angle, MyCharPos);
-	drawBullet(player_list[1].gun_fired, player_list[1].player_rotation, player_list[1].player_position);
-	//drawBullet(player_list[2].gun_fired, player_list[2].player_rotation, player_list[2].player_position);
 
-	drawFlash(gun_flash, my_char_angle, MyCharPos);
-	drawFlash(player_list[1].gun_fired, player_list[1].player_rotation, player_list[1].player_position);
-	//drawFlash(player_list[2].gun_fired, player_list[2].player_rotation, player_list[2].player_position);
+	// test용
+	draw_enemy_fire(&p1_shoot_check, 1);
+	draw_enemy_fire(&p2_shoot_check, 2);
+	
+	drawBullet( 0, my_char_angle, MyCharPos);
+	drawBullet( 1, player_list[1].player_rotation, player_list[1].player_position);
+	drawBullet(2, player_list[2].player_rotation, player_list[2].player_position);
+
+	drawFlash(0, my_char_angle, MyCharPos);
+	drawFlash( 1, player_list[1].player_rotation, player_list[1].player_position);
+	drawFlash(2, player_list[2].player_rotation, player_list[2].player_position);
 	
 	//cout << player_list[1].gun_fired << endl;
 	
 	drawCharacter(black_playerTex, MyCharPos, my_char_angle);
 	drawCharacter(red_playerTex, player_list[1].player_position, player_list[1].player_rotation);
-	//drawCharacter(blue_playerTex, player_list[2].player_position, player_list[2].player_rotation);
+	drawCharacter(blue_playerTex, player_list[2].player_position, player_list[2].player_rotation);
 
 	drawHealthbar(player_list[0].hp, MyCharPos);
 	drawHealthbar(player_list[1].hp, player_list[1].player_position);
-	//drawHealthbar(player_list[2].hp, player_list[2].player_position);
+	drawHealthbar(player_list[2].hp, player_list[2].player_position);
 
 	drawCrosshair();
 	drawWeaponList();
@@ -558,24 +580,24 @@ void Game::mouseEvent_ingame()
 	if (event.type == SDL_MOUSEBUTTONDOWN) {
 		//서버에 전송할 struct 변수에 마우스 좌표 저장, clicked
 		input.mouse_rotation = my_char_angle;
-		if (event.button.button == SDL_BUTTON_LEFT && gun_fired == false) {
+		if (event.button.button == SDL_BUTTON_LEFT && player_fire[0].gun_fired == false) {
 			input.clicked = true;
 			
-			gun_fired = true;
+			player_fire[0].gun_fired = true;
 			fired_time = clock();
 
-			show_bullet = true;
-			gun_flash = true;
+			player_fire[0].show_bullet = true;
+			player_fire[0].gun_flash = true;
 
 			Mix_PlayChannel(-1, gunsound, 0);
 		}
 	}
 	//총이 발사되고 타이머 작동시켜서 1초 뒤 다시 발사 가능
-	if (gun_fired) {
+	if (player_fire[0].gun_fired) {
 		if (Timer(fired_time, 100) == 1) {
 			
 			input.clicked = false;
-			gun_fired = false;
+			player_fire[0].gun_fired = false;
 			fired_time = 0;
 		}
 	} 

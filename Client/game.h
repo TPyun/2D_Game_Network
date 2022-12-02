@@ -63,6 +63,18 @@ typedef struct client_input {
 	float mouse_rotation;
 }CI;
 
+typedef struct players_fire {
+	int flash_i{};
+	bool gun_fired{};
+	bool show_bullet{};
+	bool gun_flash{};
+	float fired_angle{};
+	int flash_angle{};
+	float bullet_angle{};
+	TF bulletPos{};
+	TF bulletVelo{};
+}PF;
+
 class Game
 {
 private:
@@ -110,8 +122,7 @@ private:
 
 	TF MyVelo;
 	TF middle_pos;
-	TF myBulletPos;
-	TF myBulletVelo;
+	
 
 	TI flash_size;
 
@@ -127,11 +138,15 @@ private:
 	int mouse_X = 0;
 	int mouse_Y = 0;
 
-	bool show_bullet = false; 
-	bool gun_flash = false;
+	//bool show_bullet = false; 
+	//bool gun_flash = false;
 	
-	int flash_i;
+	/*int flash_i;
+	int flash_j;
+	int flash_k;
 	int flash_angle;
+	int flash_angle_1;
+	int flash_angle_2;*/
 	int fired_time = 0;
 
 	int deviceId = 0;
@@ -142,8 +157,8 @@ private:
 	int bullet_size = 100;
 	int crosshair_size = 80;
 
-	float fired_angle = 0;
-	float bullet_angle = 0;
+	//float fired_angle = 0;
+	//float bullet_angle = 0;
 
 	int flash_sprite_w = 1667;
 	int flash_sprite_h = 875;
@@ -183,8 +198,8 @@ private:
 	void drawGround();
 	void drawCharacter(SDL_Texture* tex, TF pos, float rot);
 	void drawHealthbar(int health, TF pos);
-	void drawBullet(bool& fire, float char_angle, TF pos);
-	void drawFlash(bool& flash, float char_angle, TF pos);
+	void drawBullet(int ,float char_angle, TF);
+	void drawFlash(int , float char_angle, TF pos);
 	void drawCrosshair();
 	void drawText(int x, int y, char[], SDL_Color);
 	void drawWeaponList();
@@ -195,7 +210,6 @@ private:
 
 	void mouseEvent_menu();
 	void collide_check(float a, float b, float c, float d, float e, float f, float g, float h);
-	
 public:
 	float delayTime;
 	int done = 0;
@@ -210,8 +224,11 @@ public:
 	char Name[20] = "wooyung";
 
 	int weapon_type = 0; // 0: pistol, 1: rifle, 2: sniper
-
-	bool gun_fired = false;
+	
+	bool p1_shoot_check = true;
+	bool p2_shoot_check = true;
+	
+	//bool gun_fired = false;
 	TF mouse_point;
 
 	TF MyCharPos;
@@ -220,9 +237,10 @@ public:
 	CO created_objects[MAXITEM];
 	PS player_list[3];
 	client_input input;
+	PF player_fire[3];
 
 	Game();
 	~Game();
-
+	void draw_enemy_fire(bool* shoot_check, int);
 	void update();
 };

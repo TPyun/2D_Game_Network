@@ -128,17 +128,3 @@ void recv_event(SOCKET sock)
 	}
 }
 
-void gun_interact(bool *shoot_check)
-{
-	if (game.player_list[1].gun_fired == true && *shoot_check == true) {
-		cout << "shoot check : " << *shoot_check << endl;
-
-		// 아래 한 줄 지우고 이 곳에 총 그리기 - game.player_list[1].player_rotation
-		cout << game.player_list[1].player_rotation << endl;
-		*shoot_check = false;
-	}
-
-	if (game.player_list[1].gun_fired == false && *shoot_check == false) {
-		*shoot_check = true;
-	}
-}
