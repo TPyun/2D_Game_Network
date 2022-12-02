@@ -25,6 +25,7 @@ DWORD WINAPI server_thread(LPVOID arg)
 	if (sock == INVALID_SOCKET) err_quit("socket()");
 
 	PI player_info;
+	CI ci;
 	bool shoot_check = true;
 	
 	while (!game.done) {

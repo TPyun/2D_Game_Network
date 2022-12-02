@@ -567,7 +567,7 @@ void Game::mouseEvent_ingame()
 	//총이 발사되고 타이머 작동시켜서 1초 뒤 다시 발사 가능awd
 	if (gun_fired) {
 		if (Timer(fired_time, 100) == 1) {
-			//input.clicked = false;
+			input.clicked = false;
 			gun_fired = false;
 			fired_time = 0;
 		}
