@@ -7,8 +7,11 @@ void Ingame::create_object()		// ÃÊ±â ¸Ê ·£´ı »ı¼ºÇÏ´Â ÇÔ¼ö (¹ÙÀ§, º®, ¾ÆÀÌÅÛ, Ç
 
 	for (int i = 0; i < 10; ++i) {
 		objects[i].object_position.x = uid(dre);
-		objects[i].object_position.y = uid(dre);/*
-		std::cout << i+1 << "¹øÂ° rock" << std::endl;
+		objects[i].object_position.y = uid(dre);
+		objects[i].object_position.x *= 10;
+		objects[i].object_position.y *= 10;
+		
+		/*std::cout << i+1 << "¹øÂ° rock" << std::endl;
 		std::cout << "¿ÀºêÁ§Æ® Å¸ÀÔ : " << objects[i].object_type << std::endl;
 		std::cout << "x : " << objects[i].object_position.x << std::endl;
 		std::cout << "y : " << objects[i].object_position.y << std::endl;*/
@@ -16,8 +19,11 @@ void Ingame::create_object()		// ÃÊ±â ¸Ê ·£´ı »ı¼ºÇÏ´Â ÇÔ¼ö (¹ÙÀ§, º®, ¾ÆÀÌÅÛ, Ç
 	for (int i = 10; i < 20; ++i) {
 		objects[i].object_type = 1;
 		objects[i].object_position.x = uid(dre);
-		objects[i].object_position.y = uid(dre);/*
-		std::cout << i + 1 << "¹øÂ° wall" << std::endl;
+		objects[i].object_position.y = uid(dre);
+
+		objects[i].object_position.x *= 10;
+		objects[i].object_position.y *= 10;
+		/*std::cout << i + 1 << "¹øÂ° wall" << std::endl;
 		std::cout << "¿ÀºêÁ§Æ® Å¸ÀÔ : " << objects[i].object_type << std::endl;
 		std::cout << "x : " << objects[i].object_position.x << std::endl;
 		std::cout << "y : " << objects[i].object_position.y << std::endl;*/
@@ -25,8 +31,11 @@ void Ingame::create_object()		// ÃÊ±â ¸Ê ·£´ı »ı¼ºÇÏ´Â ÇÔ¼ö (¹ÙÀ§, º®, ¾ÆÀÌÅÛ, Ç
 	for (int i = 20; i < 30; ++i) {
 		objects[i].object_type = 2;
 		objects[i].object_position.x = uid(dre);
-		objects[i].object_position.y = uid(dre);/*
-		std::cout << i + 1 << "¹øÂ° wall" << std::endl;
+		objects[i].object_position.y = uid(dre);
+
+		objects[i].object_position.x *= 10;
+		objects[i].object_position.y *= 10;
+		/*std::cout << i + 1 << "¹øÂ° wall" << std::endl;
 		std::cout << "¿ÀºêÁ§Æ® Å¸ÀÔ : " << objects[i].object_type << std::endl;
 		std::cout << "x : " << objects[i].object_position.x << std::endl;
 		std::cout << "y : " << objects[i].object_position.y << std::endl;*/
@@ -36,20 +45,40 @@ void Ingame::create_object()		// ÃÊ±â ¸Ê ·£´ı »ı¼ºÇÏ´Â ÇÔ¼ö (¹ÙÀ§, º®, ¾ÆÀÌÅÛ, Ç
 		objects[i].object_type = 3;
 		objects[i].object_position.x = uid(dre);
 		objects[i].object_position.y = uid(dre);
+		objects[i].object_position.x *= 10;
+		objects[i].object_position.y *= 10;
 	}
 	for (int i = 40; i < 50; ++i) {			// sniper
 		objects[i].object_type = 4;
 		objects[i].object_position.x = uid(dre);
 		objects[i].object_position.y = uid(dre);
+		objects[i].object_position.x *= 10;
+		objects[i].object_position.y *= 10;
 	}
 
+	list<int> changed_obj;
 	// object °ãÄ§ Ã¼Å©
-	for (int i = 0; i <= MAXITEM-1; ++i) {
-		for (int j = i+1; j <= MAXITEM; ++j) {
-			if (objects[i].object_position.x == objects[j].object_position.x && objects[i].object_position.y == objects[j].object_position.y) {
+	for (int i = 0; i < MAXITEM - 1; ++i) {
+		for (int j = i+1; j <= MAXITEM; ++j)
+			if (objects[i].object_position.x == objects[j].object_position.x &&
+				objects[i].object_position.y == objects[j].object_position.y) {
+				changed_obj.push_back(i);
 				objects[i].object_position.x = uid(dre);
 				objects[i].object_position.y = uid(dre);
 			}
+	}
+
+	while (changed_obj.size() != 0) {
+		for (int n = 0; n < changed_obj.size(); ++n)
+			changed_obj.remove(n);
+		for (int i = 0; i < MAXITEM - 1; ++i) {
+			for (int j = i + 1; j <= MAXITEM; ++j)
+				if (objects[i].object_position.x == objects[j].object_position.x &&
+					objects[i].object_position.y == objects[j].object_position.y) {
+					changed_obj.push_back(i);
+					objects[i].object_position.x = uid(dre);
+					objects[i].object_position.y = uid(dre);
+				}
 		}
 	}
 
