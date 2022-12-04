@@ -362,6 +362,16 @@ void Game::drawObstacle()
 			destR.h = 23;
 			SDL_RenderCopy(renderer, wall2_Tex, NULL, &destR);
 		}
+		else if (created_objects[i].object_type == 3) {		//rifle
+			destR.w = 74;
+			destR.h = 74;
+			SDL_RenderCopy(renderer, rifle_ammoTex, NULL, &destR);
+		}
+		else if (created_objects[i].object_type == 4) {		//sniper
+			destR.w = 74;
+			destR.h = 74;
+			SDL_RenderCopy(renderer, sniper_ammoTex, NULL, &destR);
+		}
 	}
 }
 

@@ -32,6 +32,17 @@ void Ingame::create_object()		// ÃÊ±â ¸Ê ·£´ı »ı¼ºÇÏ´Â ÇÔ¼ö (¹ÙÀ§, º®, ¾ÆÀÌÅÛ, Ç
 		std::cout << "y : " << objects[i].object_position.y << std::endl;*/
 	}
 
+	for (int i = 30; i < 40; ++i) {			// rifle
+		objects[i].object_type = 3;
+		objects[i].object_position.x = uid(dre);
+		objects[i].object_position.y = uid(dre);
+	}
+	for (int i = 40; i < 50; ++i) {			// sniper
+		objects[i].object_type = 4;
+		objects[i].object_position.x = uid(dre);
+		objects[i].object_position.y = uid(dre);
+	}
+
 	// object °ãÄ§ Ã¼Å©
 	for (int i = 0; i <= MAXITEM-1; ++i) {
 		for (int j = i+1; j <= MAXITEM; ++j) {

@@ -13,7 +13,7 @@ using namespace std;
 #define SERVERPORT	9000
 #define BUFSIZE		4096
 #define NAMESIZE	20
-#define MAXITEM		30
+#define MAXITEM		50
 
 typedef struct TWO_Floats {
 	float x = 0;
@@ -59,7 +59,7 @@ typedef struct players_profile {
 
 typedef struct created_object
 {
-	int object_type;	// 0: 바위, 1:세로 벽, 2:가로 벽, 3: 아이템
+	int object_type;	// 0: 바위, 1:세로 벽, 2:가로 벽, 3: rifle, 4:sniper
 	TI object_position;
 }CO;
 
