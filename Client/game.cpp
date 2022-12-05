@@ -172,8 +172,8 @@ void Game::drawBullet(int i,float char_angle, TF pos)
 	//총알이 보일 때
 	if (player_fire[i].show_bullet) {
 
-		player_fire[i].bulletVelo.x = cos(player_fire[i].bullet_angle) * 6 * delayTime;
-		player_fire[i].bulletVelo.y = sin(player_fire[i].bullet_angle) * 6 * delayTime;
+		player_fire[i].bulletVelo.x = cos(player_fire[i].bullet_angle) * 5 * delayTime;
+		player_fire[i].bulletVelo.y = sin(player_fire[i].bullet_angle) * 5 * delayTime;
 
 		player_fire[i].bulletPos.x += (player_fire[i].bulletVelo.x);// +MyVelo.x);
 		player_fire[i].bulletPos.y += (player_fire[i].bulletVelo.y);// +MyVelo.y);
@@ -189,14 +189,17 @@ void Game::drawBullet(int i,float char_angle, TF pos)
 		//SDL_RenderCopy(renderer, bulletTex, NULL, &destR);
 		SDL_RenderCopyEx(renderer, bulletTex, NULL, &destR, player_fire[i].fired_angle, &center, SDL_FLIP_NONE);
 
-		if (player_fire[i].bulletPos.x > WIDTH || player_fire[i].bulletPos.x < 0 || player_fire[i].bulletPos.y > HEIGHT || player_fire[i].bulletPos.y < 0) {
+		if (player_fire[i].bulletPos.x > WIDTH / 2 + ground_size / 2 - MyCharPos.x || player_fire[i].bulletPos.x <  WIDTH / 2 - ground_size / 2 - MyCharPos.x || player_fire[i].bulletPos.y > HEIGHT / 2 + ground_size / 2 - MyCharPos.y || player_fire[i].bulletPos.y < HEIGHT / 2 - ground_size / 2 - MyCharPos.y) {
 			player_fire[i].show_bullet = false;
+			//cout << player_fire[i].bulletPos.x << " " << player_fire[i].bulletPos.y << endl;
 		}
 	}
 	//총알이 보이지 않을 때
 	else {
 		player_fire[i].bulletPos.x = WIDTH / 2 + cos(player_fire[i].bullet_angle) * 75 + pos.x - MyCharPos.x;
 		player_fire[i].bulletPos.y = HEIGHT / 2 + sin(player_fire[i].bullet_angle) * 75 + pos.y - MyCharPos.y;
+		cout << player_fire[i].bulletPos.x << " " << player_fire[i].bulletPos.y << endl;
+
 		//캐릭터가 발사한 순간의 각도를 할당
 		player_fire[i].fired_angle = char_angle;
 	}
@@ -605,7 +608,7 @@ void Game::mouseEvent_ingame()
 	}
 	//총이 발사되고 타이머 작동시켜서 1초 뒤 다시 발사 가능
 	if (player_fire[0].gun_fired) {
-		if (Timer(fired_time, 100) == 1) {
+		if (Timer(fired_time, 500) == 1) {
 			
 			input.clicked = false;
 			player_fire[0].gun_fired = false;

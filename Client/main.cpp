@@ -134,7 +134,7 @@ int SDL_main(int argc, char* argv[])
 		if (game.delayTime > 0) {
 			Sleep(game.delayTime);
 		}
-		cout << game.delayTime << endl;
+		//cout << game.delayTime << endl;
 	}
 
 	//Á¾·á
