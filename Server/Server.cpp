@@ -49,55 +49,46 @@ DWORD WINAPI matching_thread(LPVOID arg)
 TF bullet;
 
 // 인게임쓰레드
-DWORD WINAPI ingame_thread(LPVOID room_num)
+DWORD WINAPI ingame_thread(LPVOID n)
 {
-	cout << (int)room_num << " : 게임을 시작하지." << endl;
-	ingame.create_object();
-	int i = 0;
-	//for (auto& player : player_list) {
-	//	/*if (player.second->room_num == (int)room_num) {
-	//		if (i == 0) {
-	//			player.second->player_state.player_position.x = 0;
-	//			player.second->player_state.player_position.y = -600;
-	//		}
-	//		else if (i == 1) {
-	//			player.second->player_state.player_position.x = -600;
-	//			player.second->player_state.player_position.y = 200;
-	//		}
-	//		else if (i == 2) {
-	//			player.second->player_state.player_position.x = 600;
-	//			player.second->player_state.player_position.y = 200;
-	//		}
-	//		++i;
-	//	}*/
-	//}
+	int room_num = (int)n;
+	cout << room_num << " : 게임을 시작하지." << endl;
+	//ingame.create_object();
+	//create object를 하면 2째 room num부터는 동작이 잘 안되는 오류 고쳐야 함
+	//map에서 player를 제거하면  다른 쓰레드에서 사용중인 map을 뒤지는 for문에서 오류가 발생함
+	cout << "맵생성 완료" << endl;
+	int i{};
 	int start{};
 	int end{};
 	int delay{};
 
 	while (1) {
+		int connected_players{0};
 		start = clock();
 		for (auto& player : player_list) {
 			if (player.second == &null_temp) {
-				player_list.erase(player.first);
-				continue;
+				
 			}
-			if (player.second->room_num == (int)room_num) {
-		
+			else if (player.second->room_num == room_num) {
+				++connected_players;
+				
 				CI local_input = player.second->input;
 				ingame.collide_check(player.second, &local_input, bullet);
 				ingame.character_movement(local_input, player.second->player_state.player_position);
+				//cout << "moving" << endl;
 				//cout << player.second->player_state.player_position.x << " " << player.second->player_state.player_position.y << endl;
 				// ingame.collide_bullet_check(player.second, );
-
-
 			}
+		}
+		if (MAX_CLIENT_IN_ROOM - connected_players == MAX_CLIENT_IN_ROOM) {
+			cout << "모든 플레이어가 나갔습니다. " << room_num << " ingame thread를 삭제" << endl;
+			return 0;
+			//player_list.erase(player.first);
 		}
 		end = clock();
 		delay = 1000 / FPS - (end - start);
 		if (delay > 0) {
 			Sleep(delay);
-			cout << "delay : " << delay << endl;
 		}
 
 	}
@@ -113,7 +104,7 @@ DWORD WINAPI process_client(LPVOID arg)
 	int addrlen;
 	char name_buf[NAMESIZE + 1];
 	bool find_match;
-	PP player_profile;
+	PP player_profile{};
 	bool bullet_check = true;
 
 	// 클라이언트 정보 얻기
@@ -136,11 +127,12 @@ DWORD WINAPI process_client(LPVOID arg)
 
 	// 이름 출력
 	name_buf[retval] = '\0';
-	cout << "name : " << name_buf << endl;
-	strcpy(player_profile.player_info.name[0], name_buf);
 
+	cout << "name : " << name_buf << endl;
+ 	strcpy(player_profile.player_info.name[0], name_buf);
+	
 	//보낼 player_list
-	PS local_player_list[3];
+	PS local_player_list[3]{};
 
 	player_profile.player_state.game_state = 0;
 	while (true) {
@@ -175,7 +167,7 @@ DWORD WINAPI process_client(LPVOID arg)
 
 		//2: loading ==================================================================================================================
 		else if (player_profile.player_state.game_state == 2) {
-			Sleep(500);
+			Sleep(1000);
 			cout << "나의 포트번호: " << port << endl;
 			//같은 방 사람 정보 넣기
 			int other_player_num = 0;
@@ -209,7 +201,7 @@ DWORD WINAPI process_client(LPVOID arg)
 
 			//created_object 송신
 			//완료되기전에 보내는거 방지(개선해야함)
-			Sleep(100);
+			Sleep(1000);
 
 			retval = send(client_sock, (char*)&ingame.objects, sizeof(ingame.objects), 0);
 			if (retval == SOCKET_ERROR) {
@@ -279,10 +271,10 @@ DWORD WINAPI process_client(LPVOID arg)
 			int i = 1;
 			for (auto& player : player_list) {
 				if (player.second == &null_temp) {
-					player_list.erase(player.first);
-					continue;
+					//cout << "null ingame" << endl;
+					//player_list.erase(player.first);
 				}
-				if (player.second->room_num == (int)player_profile.room_num && player.second->player_info.name[0] != player_profile.player_info.name[0]) {
+				else if (player.second->room_num == (int)player_profile.room_num && player.second->player_info.name[0] != player_profile.player_info.name[0]) {
 					local_player_list[i] = player.second->player_state;
 					++i;
 				}
@@ -293,12 +285,11 @@ DWORD WINAPI process_client(LPVOID arg)
 				err_display("send()");
 				break;
 			}
-			//cout << local_player_list[0].player_position.x << " / " << local_player_list[0].player_position.y << endl;
-			cout << bool(player_profile.player_state.game_state == 6) << endl;
+			/*cout << bool(player_profile.player_state.game_state == 6) << endl;
 			cout << "Name: " << (char*)player_profile.player_info.name << endl;
 			cout << "Room num: " << player_profile.room_num << endl;
 			cout << "Coordinates: " << player_profile.player_state.player_position.x << " " << player_profile.player_state.player_position.y << endl;
-			cout << "Health: " << player_profile.player_state.hp << endl;
+			cout << "Health: " << player_profile.player_state.hp << endl;*/
 		}
 
 		
@@ -321,12 +312,6 @@ DWORD WINAPI process_client(LPVOID arg)
 		if (player.first == port) {
 			player.second = &null_temp;
 		}
-	}
-	for (auto& player : player_list) {
-		if (player.second) {
-			cout << player.second->player_info.name[0] << endl;
-		}
-
 	}
 
 	cout << "종료한 플레이어: " << name_buf << endl;

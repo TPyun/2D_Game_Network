@@ -79,7 +79,7 @@ DWORD WINAPI server_thread(LPVOID arg)
 				}
 
 				cout << "\nplayer_info 받은 정보" << endl;
-				for (int i = 0; i <= 3; ++i){
+				for (int i = 0; i < 3; ++i){
 					cout << "플레이어 " << i << " 이름: " << player_info.name[i] << " 색: " << player_info.player_color[i] << endl;
 				}
 

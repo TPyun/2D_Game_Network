@@ -198,7 +198,7 @@ void Game::drawBullet(int i,float char_angle, TF pos)
 	else {
 		player_fire[i].bulletPos.x = WIDTH / 2 + cos(player_fire[i].bullet_angle) * 75 + pos.x - MyCharPos.x;
 		player_fire[i].bulletPos.y = HEIGHT / 2 + sin(player_fire[i].bullet_angle) * 75 + pos.y - MyCharPos.y;
-		cout << player_fire[i].bulletPos.x << " " << player_fire[i].bulletPos.y << endl;
+		//cout << player_fire[i].bulletPos.x << " " << player_fire[i].bulletPos.y << endl;
 
 		//캐릭터가 발사한 순간의 각도를 할당
 		player_fire[i].fired_angle = char_angle;
