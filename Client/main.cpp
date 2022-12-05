@@ -4,7 +4,7 @@
 #include "client.h"
 #include <sstream>
 
-#define FPS 144
+#define FPS 120
 #define SERVERPORT 9000
 #define BUFSIZE    1024
 
@@ -105,12 +105,9 @@ DWORD WINAPI server_thread(LPVOID arg)
 
 			//이벤트 받기
 			recv_event(sock);
-			
-			
 
 			//cout << game.player_list[0].player_position.x << " / " << game.player_list[0].player_position.y << endl;
 			game.MyCharPos = game.player_list[0].player_position;
-
 		}
 	}
 	return 0;
@@ -128,14 +125,16 @@ int SDL_main(int argc, char* argv[])
 	HANDLE h_thread;
 	h_thread = CreateThread(NULL, 0, server_thread,
 		(LPVOID)0, 0, NULL);
-	while (!game.done)
-	{
+	while (!game.done){
 		startTime = clock();
 		game.update();
 
-		Sleep(1000 / FPS - game.delayTime);
 		endTime = clock();
-		game.delayTime = (endTime - startTime) / 1000.f;
+		game.delayTime = 1000 / FPS - (endTime - startTime);
+		if (game.delayTime > 0) {
+			Sleep(game.delayTime);
+		}
+		cout << game.delayTime << endl;
 	}
 
 	//종료

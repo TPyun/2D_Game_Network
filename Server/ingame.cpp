@@ -91,7 +91,7 @@ void Ingame::character_movement(CI input, TF &pos)
 	//cout << "W: " << w_pressed << ", A: " << a_pressed << ", S: " << s_pressed << ", D: " << d_pressed << endl;
 
 	//float minimun_movement = 10.f;
-	float minimun_movement = 5.f;
+	float minimun_movement = 3.f;
 	TF velo;
 	velo.x = 0.f;
 	velo.y = 0.f;
@@ -109,8 +109,8 @@ void Ingame::character_movement(CI input, TF &pos)
 		velo.x += minimun_movement;
 	}
 
-	float MaxVelo = 200.f;
-	float MinVelo = -200.f;
+	float MaxVelo = 150.f;
+	float MinVelo = -150.f;
 
 	//Limit Velocity
 	if (velo.x > MaxVelo) {
@@ -127,7 +127,7 @@ void Ingame::character_movement(CI input, TF &pos)
 	}
 
 	//Character Speed Friction
-	float friction = 1.f;
+	float friction = 0.1f;
 
 	if (velo.x > 0) {
 		velo.x -= friction;
