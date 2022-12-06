@@ -11,7 +11,6 @@ char buffer[BUFSIZE]; // 가변 길이 데이터
 //mutex find_lock;
 //들어온 순서
 int hostnum;
-int disconnected_players_inserver{};
 
 map<int,Ingame> ingames;
 Matching matching;
@@ -30,13 +29,22 @@ DWORD WINAPI matching_thread(LPVOID arg)
 {
 	//ingame_room map함수 관리
 	int room_num = 1;
-
+	
 	//3player가 find_match를 눌렀는지 확인
 	while (1) {
+		int disconnected_players_inserver{};
+		
+		for (auto& player : player_list) {
+			if (player.second == nullptr) {
+			}
+			else if (player.second == &null_temp) {
+				++disconnected_players_inserver;;
+			}
+		}
 		if (disconnected_players_inserver == player_list.size() && player_list.size() != 0) {
 			cout << "총 " << player_list.size() << "명의 플레이어 중 " << disconnected_players_inserver << "명이 종료하여 map 전체 삭제" << endl;
 			for (auto player = player_list.cbegin(); player != player_list.cend();) {
-				//player_list.erase(player++);
+				player_list.erase(player++);
 			}
 			disconnected_players_inserver = 0;
 		}
@@ -71,7 +79,6 @@ DWORD WINAPI ingame_thread(LPVOID n)
 
 	while (1) {
 		//cout << "서버 전체 인원 수: "<< player_list.size() << endl;
-		disconnected_players_inserver = 0;
 
 		//cout << "인게임 도는중 방번호: " << room_num << endl;
 		int connected_players_inroom{0};
@@ -82,7 +89,6 @@ DWORD WINAPI ingame_thread(LPVOID n)
 				continue;
 			}
 			if (player.second == &null_temp) {
-				++disconnected_players_inserver;
 				continue;
 			}
 			if (player.second->room_num == room_num) {
