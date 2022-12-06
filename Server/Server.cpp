@@ -36,7 +36,7 @@ DWORD WINAPI matching_thread(LPVOID arg)
 		if (disconnected_players_inserver == player_list.size() && player_list.size() != 0) {
 			cout << "총 " << player_list.size() << "명의 플레이어 중 " << disconnected_players_inserver << "명이 종료하여 map 전체 삭제" << endl;
 			for (auto player = player_list.cbegin(); player != player_list.cend();) {
-				player_list.erase(player++);
+				//player_list.erase(player++);
 			}
 			disconnected_players_inserver = 0;
 		}
@@ -78,6 +78,9 @@ DWORD WINAPI ingame_thread(LPVOID n)
 		start = clock();
 		for (auto& player : player_list) {
 			//cout << player.first << endl;
+			if (player.second == nullptr) {
+				continue;
+			}
 			if (player.second == &null_temp) {
 				++disconnected_players_inserver;
 				continue;
@@ -185,7 +188,14 @@ DWORD WINAPI process_client(LPVOID arg)
 			//같은 방 사람 정보 넣기
 			int other_player_num = 0;
 			for (auto& player : player_list) {
+				if (player.second == &null_temp) {
+					continue;
+				}
+				if (player.second == nullptr) {
+					continue;
+				}
 				cout << "존재하는 포트번호 " << (int)player.first << endl;
+				
 				if (player.second->room_num == player_profile.room_num)		//같은 방에 있는 사람
 					player.second->player_info.player_color[other_player_num] = other_player_num;		//색깔 넣기
 				if (player.second->player_info.name[0] != player_profile.player_info.name[0]) {		//본인은 [0]에 있으니 제외
@@ -231,6 +241,12 @@ DWORD WINAPI process_client(LPVOID arg)
 			int cnt = 1;
 			for (auto& player : player_list) {
 				//같은 방에 걸린 플레이어 정보 가져옴
+				if (player.second == &null_temp) {
+					continue;
+				}
+				if (player.second == nullptr) {
+					continue;
+				}
 				if (player.second->room_num == player_profile.room_num) {
 					if (player.second->player_info.name[0] == player_profile.player_info.name[0]) {
 						local_player_list[0] = player.second->player_state;
@@ -284,6 +300,9 @@ DWORD WINAPI process_client(LPVOID arg)
 			local_player_list[0] = player_profile.player_state;
 			int i = 1;
 			for (auto& player : player_list) {
+				if (player.second == nullptr) {
+					continue;
+				}
 				if (player.second == &null_temp) {
 					//cout << "null ingame" << endl;
 					//player_list.erase(player.first);
