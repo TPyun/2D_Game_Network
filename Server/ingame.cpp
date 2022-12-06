@@ -60,8 +60,7 @@ void Ingame::create_object()		// ÃÊ±â ¸Ê ·£´ı »ı¼ºÇÏ´Â ÇÔ¼ö (¹ÙÀ§, º®, ¾ÆÀÌÅÛ, Ç
 	// object °ãÄ§ Ã¼Å©
 	for (int i = 0; i < MAXITEM - 1; ++i) {
 		for (int j = i + 1; j <= MAXITEM; ++j)
-			if (objects[i].object_position.x == objects[j].object_position.x &&
-				objects[i].object_position.y == objects[j].object_position.y) {
+			if (objects[i].object_position.x == objects[j].object_position.x && objects[i].object_position.y == objects[j].object_position.y) {
 				changed_obj.push_back(i);
 				objects[i].object_position.x = uid(dre) * OBJ_DISTANCE;
 				objects[i].object_position.y = uid(dre) * OBJ_DISTANCE;
@@ -83,6 +82,11 @@ void Ingame::create_object()		// ÃÊ±â ¸Ê ·£´ı »ı¼ºÇÏ´Â ÇÔ¼ö (¹ÙÀ§, º®, ¾ÆÀÌÅÛ, Ç
 					objects[i].object_position.y = uid(dre) * OBJ_DISTANCE;
 				}
 		}
+	}
+	int i = 0;
+	for (CO obj : objects) {
+		cout << i << " " << obj.object_type << " " << obj.object_position.x << " " << obj.object_position.y << endl;
+		i++;
 	}
 
 	std::cout << "create_map »ı¼º ¿Ï·á" << std::endl;
@@ -214,7 +218,7 @@ void Ingame::collide_check(PP* player, CI* input, TF bullet)
 						input->a_Pressed = false;
 				}
 			}
-			//º®1
+			//º®1 ¼¼·Î
 			if (obj.object_type == 1)
 			{
 				//cout << obj.object_position.x << " / " << obj.object_position.y << endl;
@@ -240,7 +244,7 @@ void Ingame::collide_check(PP* player, CI* input, TF bullet)
 						input->a_Pressed = false;
 				}
 			}
-			//º®2
+			//º®2 °¡·Î
 			if (obj.object_type == 2)
 			{
 				if (obj.object_position.y - player->player_state.player_position.y < 64 &&

@@ -409,23 +409,23 @@ void Game::drawObstacle()
 			SDL_RenderCopy(renderer, rock_Tex, NULL, &destR);
 		}
 		else if (created_objects[i].object_type == 1) {		//wall 1
-			destR.w = 23;
-			destR.h = 95;			
+			destR.w = 30;
+			destR.h = 100;			
 			SDL_RenderCopy(renderer, wall1_Tex, NULL, &destR);
 		}
 		else if (created_objects[i].object_type == 2){		//wall 2
-			destR.w = 95;
-			destR.h = 23;
+			destR.w = 100;
+			destR.h = 30;
 			SDL_RenderCopy(renderer, wall2_Tex, NULL, &destR);
 		}
 		else if (created_objects[i].object_type == 3) {		//rifle
-			destR.w = 64;
-			destR.h = 64;
+			destR.w = 40;
+			destR.h = 40;
 			SDL_RenderCopy(renderer, rifle_ammoTex, NULL, &destR);
 		}
 		else if (created_objects[i].object_type == 4) {		//sniper
-			destR.w = 64;
-			destR.h = 64;
+			destR.w = 40;
+			destR.h = 40;
 			SDL_RenderCopy(renderer, sniper_ammoTex, NULL, &destR);
 		}
 	}
