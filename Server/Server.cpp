@@ -11,6 +11,7 @@ char buffer[BUFSIZE]; // 가변 길이 데이터
 //mutex find_lock;
 //들어온 순서
 int hostnum;
+int disconnected_players_inserver{};
 
 Ingame ingame;
 Matching matching;
@@ -32,6 +33,13 @@ DWORD WINAPI matching_thread(LPVOID arg)
 
 	//3player가 find_match를 눌렀는지 확인
 	while (1) {
+		if (disconnected_players_inserver == player_list.size() && player_list.size() != 0) {
+			cout << "총 " << player_list.size() << "명의 플레이어 중 " << disconnected_players_inserver << "명이 종료하여 map 전체 삭제" << endl;
+			for (auto player = player_list.cbegin(); player != player_list.cend();) {
+				player_list.erase(player++);
+			}
+			disconnected_players_inserver = 0;
+		}
 		if (!matching.find_match_3p(room_num)){
 			Sleep(100);
 			continue;
@@ -53,9 +61,8 @@ DWORD WINAPI ingame_thread(LPVOID n)
 {
 	int room_num = (int)n;
 	cout << room_num << " : 게임을 시작하지." << endl;
-	//ingame.create_object();
-	//create object를 하면 2째 room num부터는 동작이 잘 안되는 오류 고쳐야 함
-	//map에서 player를 제거하면  다른 쓰레드에서 사용중인 map을 뒤지는 for문에서 오류가 발생함
+	ingame.create_object();
+	
 	cout << "맵생성 완료" << endl;
 	int i{};
 	int start{};
@@ -63,14 +70,20 @@ DWORD WINAPI ingame_thread(LPVOID n)
 	int delay{};
 
 	while (1) {
-		int connected_players{0};
+		cout << "서버 전체 인원 수: "<< player_list.size() << endl;
+		disconnected_players_inserver = 0;
+
+		cout << "인게임 도는중 방번호: " << room_num << endl;
+		int connected_players_inroom{0};
 		start = clock();
 		for (auto& player : player_list) {
+			cout << player.first << endl;
 			if (player.second == &null_temp) {
-				
+				++disconnected_players_inserver;
+				continue;
 			}
-			else if (player.second->room_num == room_num) {
-				++connected_players;
+			if (player.second->room_num == room_num) {
+				++connected_players_inroom;
 				
 				CI local_input = player.second->input;
 				ingame.collide_check(player.second, &local_input, bullet);
@@ -80,7 +93,7 @@ DWORD WINAPI ingame_thread(LPVOID n)
 				// ingame.collide_bullet_check(player.second, );
 			}
 		}
-		if (MAX_CLIENT_IN_ROOM - connected_players == MAX_CLIENT_IN_ROOM) {
+		if (MAX_CLIENT_IN_ROOM - connected_players_inroom == MAX_CLIENT_IN_ROOM) {
 			cout << "모든 플레이어가 나갔습니다. " << room_num << " ingame thread를 삭제" << endl;
 			return 0;
 			//player_list.erase(player.first);

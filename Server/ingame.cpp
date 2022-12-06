@@ -56,31 +56,31 @@ void Ingame::create_object()		// ÃÊ±â ¸Ê ·£´ı »ı¼ºÇÏ´Â ÇÔ¼ö (¹ÙÀ§, º®, ¾ÆÀÌÅÛ, Ç
 		objects[i].object_position.y *= 10;
 	}
 
-	list<int> changed_obj;
-	// object °ãÄ§ Ã¼Å©
-	for (int i = 0; i < MAXITEM - 1; ++i) {
-		for (int j = i+1; j <= MAXITEM; ++j)
-			if (objects[i].object_position.x == objects[j].object_position.x &&
-				objects[i].object_position.y == objects[j].object_position.y) {
-				changed_obj.push_back(i);
-				objects[i].object_position.x = uid(dre);
-				objects[i].object_position.y = uid(dre);
-			}
-	}
+	//list<int> changed_obj;
+	//// object °ãÄ§ Ã¼Å©
+	//for (int i = 0; i < MAXITEM - 1; ++i) {
+	//	for (int j = i+1; j <= MAXITEM; ++j)
+	//		if (objects[i].object_position.x == objects[j].object_position.x &&
+	//			objects[i].object_position.y == objects[j].object_position.y) {
+	//			changed_obj.push_back(i);
+	//			objects[i].object_position.x = uid(dre);
+	//			objects[i].object_position.y = uid(dre);
+	//		}
+	//}
 
-	while (changed_obj.size() != 0) {
-		for (int n = 0; n < changed_obj.size(); ++n)
-			changed_obj.remove(n);
-		for (int i = 0; i < MAXITEM - 1; ++i) {
-			for (int j = i + 1; j <= MAXITEM; ++j)
-				if (objects[i].object_position.x == objects[j].object_position.x &&
-					objects[i].object_position.y == objects[j].object_position.y) {
-					changed_obj.push_back(i);
-					objects[i].object_position.x = uid(dre);
-					objects[i].object_position.y = uid(dre);
-				}
-		}
-	}
+	//while (changed_obj.size() != 0) {
+	//	for (int n = 0; n < changed_obj.size(); ++n)
+	//		changed_obj.remove(n);
+	//	for (int i = 0; i < MAXITEM - 1; ++i) {
+	//		for (int j = i + 1; j <= MAXITEM; ++j)
+	//			if (objects[i].object_position.x == objects[j].object_position.x &&
+	//				objects[i].object_position.y == objects[j].object_position.y) {
+	//				changed_obj.push_back(i);
+	//				objects[i].object_position.x = uid(dre);
+	//				objects[i].object_position.y = uid(dre);
+	//			}
+	//	}
+	//}
 
 	std::cout << "create_map »ı¼º ¿Ï·á" << std::endl;
 }

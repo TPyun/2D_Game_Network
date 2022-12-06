@@ -172,9 +172,9 @@ void Game::drawBullet(int i,float char_angle, TF pos)
 	player_fire[i].bullet_angle = 3.14159265 * 2 * player_fire[i].fired_angle / 360;
 	//총알이 보일 때
 	if (player_fire[i].show_bullet) {
-		cout << player_fire[i].bulletPos.x << " " << player_fire[i].bulletPos.y << endl;
-		player_fire[i].bulletVelo.x = cos(player_fire[i].bullet_angle) * 5;
-		player_fire[i].bulletVelo.y = sin(player_fire[i].bullet_angle) * 5;
+		//cout << player_fire[i].bulletPos.x << " " << player_fire[i].bulletPos.y << endl;
+		player_fire[i].bulletVelo.x = cos(player_fire[i].bullet_angle) * 30;
+		player_fire[i].bulletVelo.y = sin(player_fire[i].bullet_angle) * 30;
 		
 		player_fire[i].bulletPos.x += (player_fire[i].bulletVelo.x);// +MyVelo.x);
 		player_fire[i].bulletPos.y += (player_fire[i].bulletVelo.y);// +MyVelo.y);
@@ -240,10 +240,60 @@ void Game::drawFlash(int i, float char_angle, TF pos)
 
 		SDL_RenderCopyEx(renderer, flashTex, &srcR, &destR, player_fire[i].fired_angle, &center, SDL_FLIP_NONE);
 	}
-	else {
+	else if(!player_fire[i].gun_flash) {
 		player_fire[i].flash_angle = char_angle;
 	}
 }
+
+void Game::mouseEvent_ingame()
+{
+	//get mouse coordinates 
+	SDL_GetGlobalMouseState(&mouse_X, &mouse_Y);
+
+	mouse_point.x = mouse_X;
+	mouse_point.y = mouse_Y;
+
+	//모니터 해상도 좌표를 게임 게임 창 좌표 기준으로 변환시킴
+	SDL_GetWindowPosition(window, &window_moved_x, &window_moved_y);
+	mouse_point.x -= window_moved_x;
+	mouse_point.y -= window_moved_y;
+
+	//Get Character Angle by Mouse's Coordinates
+	my_char_angle = calcAngleFromPoints(mouse_point, middle_pos);
+	input.mouse_rotation = my_char_angle;
+
+	//마우스 왼 버튼 누르면 발사
+	if (event.type == SDL_MOUSEBUTTONDOWN) {
+		//서버에 전송할 struct 변수에 마우스 좌표 저장, clicked
+		input.mouse_rotation = my_char_angle;
+		if (event.button.button == SDL_BUTTON_LEFT && player_fire[0].gun_fired == false) {
+			input.clicked = true;
+			cout << "fire" << endl;
+			player_fire[0].gun_fired = true;
+			fired_time = clock();
+
+			player_fire[0].show_bullet = true;
+			player_fire[0].gun_flash = true;
+
+			Mix_PlayChannel(-1, gunsound, 0);
+		}
+	}
+	//총이 발사되고 타이머 작동시켜서 1초 뒤 다시 발사 가능
+	if (player_fire[0].gun_fired) {
+		if (Timer(fired_time, 700) == 1) {
+
+			
+			input.clicked = false;
+
+			player_fire[0].gun_fired = false;
+			fired_time = 0;
+		}
+		else {
+
+		}
+	}
+}
+
 void Game::draw_enemy_fire(bool* shoot_check, int i)
 {
 	if (player_list[i].gun_fired == true && *shoot_check == true) {
@@ -578,50 +628,6 @@ Game::~Game()
 	SDL_Quit();
 }
 
-
-void Game::mouseEvent_ingame()
-{
-	//get mouse coordinates 
-	SDL_GetGlobalMouseState(&mouse_X, &mouse_Y);
-
-	mouse_point.x = mouse_X;
-	mouse_point.y = mouse_Y;
-
-	//모니터 해상도 좌표를 게임 게임 창 좌표 기준으로 변환시킴
-	SDL_GetWindowPosition(window, &window_moved_x, &window_moved_y);
-	mouse_point.x -= window_moved_x;
-	mouse_point.y -= window_moved_y;
-
-	//Get Character Angle by Mouse's Coordinates
-	my_char_angle = calcAngleFromPoints(mouse_point, middle_pos);
-	input.mouse_rotation = my_char_angle;
-
-	//마우스 왼 버튼 누르면 발사
-	if (event.type == SDL_MOUSEBUTTONDOWN) {
-		//서버에 전송할 struct 변수에 마우스 좌표 저장, clicked
-		input.mouse_rotation = my_char_angle;
-		if (event.button.button == SDL_BUTTON_LEFT && player_fire[0].gun_fired == false) {
-			input.clicked = true;
-			
-			player_fire[0].gun_fired = true;
-			fired_time = clock();
-
-			player_fire[0].show_bullet = true;
-			player_fire[0].gun_flash = true;
-
-			Mix_PlayChannel(-1, gunsound, 0);
-		}
-	}
-	//총이 발사되고 타이머 작동시켜서 1초 뒤 다시 발사 가능
-	if (player_fire[0].gun_fired) {
-		if (Timer(fired_time, 500) == 1) {
-			
-			input.clicked = false;
-			player_fire[0].gun_fired = false;
-			fired_time = 0;
-		}
-	} 
-}
 
 void Game::keyEvent_ingame()
 {

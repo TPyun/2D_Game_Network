@@ -139,15 +139,6 @@ private:
 	int mouse_X = 0;
 	int mouse_Y = 0;
 
-	//bool show_bullet = false; 
-	//bool gun_flash = false;
-	
-	/*int flash_i;
-	int flash_j;
-	int flash_k;
-	int flash_angle;
-	int flash_angle_1;
-	int flash_angle_2;*/
 	int fired_time = 0;
 
 	int deviceId = 0;
@@ -158,8 +149,6 @@ private:
 	int bullet_size = 100;
 	int crosshair_size = 80;
 
-	//float fired_angle = 0;
-	//float bullet_angle = 0;
 
 	int flash_sprite_w = 1667;
 	int flash_sprite_h = 875;
@@ -220,7 +209,7 @@ public:
 	bool connect_server = false; //서버와 연결했다는 것을 game.cpp에서 인지하게끔. main에서 false해버리면 game.cpp에서 진행 안됨
 	bool server_connected = false; //서버와 연결하면 connect다시 안하게끔
 
-	char IPAdress[20] = "127.0.0.1";
+	char IPAdress[20] = "192.168.0.8";
 	char Port[10] = "9000";
 	char Name[20] = "wooyung";
 
