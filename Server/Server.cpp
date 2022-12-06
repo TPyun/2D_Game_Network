@@ -227,6 +227,7 @@ DWORD WINAPI process_client(LPVOID arg)
 					}
 				}
 			}
+			
 			retval = send(client_sock, (char*)&local_player_list, sizeof(PS) * 3, 0);
 			if (retval == SOCKET_ERROR) {
 				err_display("send()");

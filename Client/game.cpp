@@ -2,6 +2,7 @@
 #include "game.h"
 #include <Windows.h>
 
+
 using namespace std;
 
 void Game::clearRenderer()
@@ -171,17 +172,17 @@ void Game::drawBullet(int i,float char_angle, TF pos)
 	player_fire[i].bullet_angle = 3.14159265 * 2 * player_fire[i].fired_angle / 360;
 	//총알이 보일 때
 	if (player_fire[i].show_bullet) {
-
-		player_fire[i].bulletVelo.x = cos(player_fire[i].bullet_angle) * 50;
-		player_fire[i].bulletVelo.y = sin(player_fire[i].bullet_angle) * 50;
-
+		cout << player_fire[i].bulletPos.x << " " << player_fire[i].bulletPos.y << endl;
+		player_fire[i].bulletVelo.x = cos(player_fire[i].bullet_angle) * 5;
+		player_fire[i].bulletVelo.y = sin(player_fire[i].bullet_angle) * 5;
+		
 		player_fire[i].bulletPos.x += (player_fire[i].bulletVelo.x);// +MyVelo.x);
 		player_fire[i].bulletPos.y += (player_fire[i].bulletVelo.y);// +MyVelo.y);
 
 		destR.w = bullet_size;
 		destR.h = bullet_size;
-		destR.x = player_fire[i].bulletPos.x - bullet_size / 2;
-		destR.y = player_fire[i].bulletPos.y - bullet_size / 2;
+		destR.x = (player_fire[i].bulletPos.x - bullet_size / 2) - MyCharPos.x + player_fire[i].fired_pos.x;
+		destR.y = (player_fire[i].bulletPos.y - bullet_size / 2) - MyCharPos.y + player_fire[i].fired_pos.y;
 
 		center.x = bullet_size / 2;
 		center.y = bullet_size / 2;
@@ -198,6 +199,8 @@ void Game::drawBullet(int i,float char_angle, TF pos)
 	else {
 		player_fire[i].bulletPos.x = WIDTH / 2 + cos(player_fire[i].bullet_angle) * 75 + pos.x - MyCharPos.x;
 		player_fire[i].bulletPos.y = HEIGHT / 2 + sin(player_fire[i].bullet_angle) * 75 + pos.y - MyCharPos.y;
+		player_fire[i].fired_pos.x = MyCharPos.x;
+		player_fire[i].fired_pos.y = MyCharPos.y;
 		//cout << player_fire[i].bulletPos.x << " " << player_fire[i].bulletPos.y << endl;
 
 		//캐릭터가 발사한 순간의 각도를 할당
@@ -500,6 +503,9 @@ void Game::drawIngame()
 
 void Game::update()
 {
+	_CrtSetBreakAlloc(165);
+	
+	
 	SDL_PollEvent(&event);
 	if (event.type == SDL_QUIT) {
 		done = 1;

@@ -4,6 +4,19 @@
 #include "client.h"
 #include <sstream>
 
+#define _CRTDBG_MAP_ALLOC
+#include <cstdlib>
+#include <crtdbg.h>
+
+#ifdef _DEBUG
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+// Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
+// allocations to be of _CLIENT_BLOCK type
+#else
+#define DBG_NEW new
+#endif
+
+
 #define FPS 120
 #define SERVERPORT 9000
 #define BUFSIZE    1024
@@ -135,6 +148,9 @@ int SDL_main(int argc, char* argv[])
 			Sleep(game.delayTime);
 		}
 		//cout << game.delayTime << endl;
+
+		_CrtDumpMemoryLeaks();
+
 	}
 
 	//Á¾·á

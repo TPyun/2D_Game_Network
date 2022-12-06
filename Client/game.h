@@ -73,6 +73,7 @@ typedef struct players_fire {
 	float bullet_angle{};
 	TF bulletPos{};
 	TF bulletVelo{};
+	TF fired_pos;
 }PF;
 
 class Game
@@ -232,6 +233,7 @@ public:
 	TF mouse_point;
 
 	TF MyCharPos;
+
 	float my_char_angle = 0.f;
 
 	CO created_objects[MAXITEM];
