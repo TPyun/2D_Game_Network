@@ -4,7 +4,7 @@
 #include <cstring>
 #include <list>
 #include "global.h"
-
+#define OBJ_DISTANCE 30
 
 class Ingame
 {
@@ -17,7 +17,7 @@ public:
 
 private:
 	// 화면 크기에 따라 조정 필요
-	std::uniform_int_distribution<int> uid{ -90, 90 };
+	std::uniform_int_distribution<int> uid{ -30, 30 };
 	std::default_random_engine dre;
 };
 

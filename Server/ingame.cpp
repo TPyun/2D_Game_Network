@@ -8,9 +8,9 @@ void Ingame::create_object()		// ÃÊ±â ¸Ê ·£´ý »ý¼ºÇÏ´Â ÇÔ¼ö (¹ÙÀ§, º®, ¾ÆÀÌÅÛ, Ç
 	for (int i = 0; i < 10; ++i) {
 		objects[i].object_position.x = uid(dre);
 		objects[i].object_position.y = uid(dre);
-		objects[i].object_position.x *= 10;
-		objects[i].object_position.y *= 10;
-		
+		objects[i].object_position.x *= OBJ_DISTANCE;
+		objects[i].object_position.y *= OBJ_DISTANCE;
+
 		/*std::cout << i+1 << "¹øÂ° rock" << std::endl;
 		std::cout << "¿ÀºêÁ§Æ® Å¸ÀÔ : " << objects[i].object_type << std::endl;
 		std::cout << "x : " << objects[i].object_position.x << std::endl;
@@ -21,8 +21,8 @@ void Ingame::create_object()		// ÃÊ±â ¸Ê ·£´ý »ý¼ºÇÏ´Â ÇÔ¼ö (¹ÙÀ§, º®, ¾ÆÀÌÅÛ, Ç
 		objects[i].object_position.x = uid(dre);
 		objects[i].object_position.y = uid(dre);
 
-		objects[i].object_position.x *= 10;
-		objects[i].object_position.y *= 10;
+		objects[i].object_position.x *= OBJ_DISTANCE;
+		objects[i].object_position.y *= OBJ_DISTANCE;
 		/*std::cout << i + 1 << "¹øÂ° wall" << std::endl;
 		std::cout << "¿ÀºêÁ§Æ® Å¸ÀÔ : " << objects[i].object_type << std::endl;
 		std::cout << "x : " << objects[i].object_position.x << std::endl;
@@ -33,8 +33,8 @@ void Ingame::create_object()		// ÃÊ±â ¸Ê ·£´ý »ý¼ºÇÏ´Â ÇÔ¼ö (¹ÙÀ§, º®, ¾ÆÀÌÅÛ, Ç
 		objects[i].object_position.x = uid(dre);
 		objects[i].object_position.y = uid(dre);
 
-		objects[i].object_position.x *= 10;
-		objects[i].object_position.y *= 10;
+		objects[i].object_position.x *= OBJ_DISTANCE;
+		objects[i].object_position.y *= OBJ_DISTANCE;
 		/*std::cout << i + 1 << "¹øÂ° wall" << std::endl;
 		std::cout << "¿ÀºêÁ§Æ® Å¸ÀÔ : " << objects[i].object_type << std::endl;
 		std::cout << "x : " << objects[i].object_position.x << std::endl;
@@ -45,42 +45,45 @@ void Ingame::create_object()		// ÃÊ±â ¸Ê ·£´ý »ý¼ºÇÏ´Â ÇÔ¼ö (¹ÙÀ§, º®, ¾ÆÀÌÅÛ, Ç
 		objects[i].object_type = 3;
 		objects[i].object_position.x = uid(dre);
 		objects[i].object_position.y = uid(dre);
-		objects[i].object_position.x *= 10;
-		objects[i].object_position.y *= 10;
+		objects[i].object_position.x *= OBJ_DISTANCE;
+		objects[i].object_position.y *= OBJ_DISTANCE;
 	}
 	for (int i = 40; i < 50; ++i) {			// sniper
 		objects[i].object_type = 4;
 		objects[i].object_position.x = uid(dre);
 		objects[i].object_position.y = uid(dre);
-		objects[i].object_position.x *= 10;
-		objects[i].object_position.y *= 10;
+		objects[i].object_position.x *= OBJ_DISTANCE;
+		objects[i].object_position.y *= OBJ_DISTANCE;
 	}
 
-	//list<int> changed_obj;
-	//// object °ãÄ§ Ã¼Å©
-	//for (int i = 0; i < MAXITEM - 1; ++i) {
-	//	for (int j = i+1; j <= MAXITEM; ++j)
-	//		if (objects[i].object_position.x == objects[j].object_position.x &&
-	//			objects[i].object_position.y == objects[j].object_position.y) {
-	//			changed_obj.push_back(i);
-	//			objects[i].object_position.x = uid(dre);
-	//			objects[i].object_position.y = uid(dre);
-	//		}
-	//}
+	list<int> changed_obj{};
+	// object °ãÄ§ Ã¼Å©
+	for (int i = 0; i < MAXITEM - 1; ++i) {
+		for (int j = i + 1; j <= MAXITEM; ++j)
+			if (objects[i].object_position.x == objects[j].object_position.x &&
+				objects[i].object_position.y == objects[j].object_position.y) {
+				changed_obj.push_back(i);
+				objects[i].object_position.x = uid(dre) * OBJ_DISTANCE;
+				objects[i].object_position.y = uid(dre) * OBJ_DISTANCE;
+			}
+	}
 
-	//while (changed_obj.size() != 0) {
-	//	for (int n = 0; n < changed_obj.size(); ++n)
-	//		changed_obj.remove(n);
-	//	for (int i = 0; i < MAXITEM - 1; ++i) {
-	//		for (int j = i + 1; j <= MAXITEM; ++j)
-	//			if (objects[i].object_position.x == objects[j].object_position.x &&
-	//				objects[i].object_position.y == objects[j].object_position.y) {
-	//				changed_obj.push_back(i);
-	//				objects[i].object_position.x = uid(dre);
-	//				objects[i].object_position.y = uid(dre);
-	//			}
-	//	}
-	//}
+	while (changed_obj.empty() == 0) {
+		for (list<int>::iterator iter = changed_obj.begin(); iter != changed_obj.end(); ++iter) {
+			objects[*iter].object_position.x = uid(dre) * OBJ_DISTANCE;
+			objects[*iter].object_position.y = uid(dre) * OBJ_DISTANCE;
+		}
+		changed_obj.clear();
+		for (int i = 0; i < MAXITEM - 1; ++i) {
+			for (int j = i + 1; j <= MAXITEM; ++j)
+				if (objects[i].object_position.x == objects[j].object_position.x &&
+					objects[i].object_position.y == objects[j].object_position.y) {
+					changed_obj.push_back(i);
+					objects[i].object_position.x = uid(dre) * OBJ_DISTANCE;
+					objects[i].object_position.y = uid(dre) * OBJ_DISTANCE;
+				}
+		}
+	}
 
 	std::cout << "create_map »ý¼º ¿Ï·á" << std::endl;
 }
