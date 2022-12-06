@@ -6,6 +6,7 @@
 #include "global.h"
 #define OBJ_DISTANCE 180
 
+using namespace std;
 class Ingame
 {
 public:
@@ -17,8 +18,9 @@ public:
 
 private:
 	// 화면 크기에 따라 조정 필요
-	std::uniform_int_distribution<int> uid{ -5, 5 };
-	std::default_random_engine dre;
+	uniform_int_distribution <int> uid{ -5, 5 };
+	random_device rd;
+	default_random_engine dre{ rd() };
 };
 
 
