@@ -280,6 +280,8 @@ void Ingame::collide_check(PP* player, CI* input, TF bullet)
 					{
 						cout << "rifle get" << endl;
 						obj.object_type = -1;
+						player->player_state.object_position = obj.object_position;
+						player->player_state.bullet[1] += 10;
 						break;
 					}
 				}
@@ -291,6 +293,8 @@ void Ingame::collide_check(PP* player, CI* input, TF bullet)
 					{
 						cout << "rifle get" << endl;
 						obj.object_type = -1;
+						player->player_state.object_position = obj.object_position;
+						player->player_state.bullet[1] += 10;
 						break;
 					}
 				}
@@ -304,20 +308,26 @@ void Ingame::collide_check(PP* player, CI* input, TF bullet)
 				{
 					if (obj.object_position.y - player->player_state.player_position.y < 62
 						&& obj.object_position.y - player->player_state.player_position.y > 0)
-						input->s_Pressed = false;
-					if (obj.object_position.y - player->player_state.player_position.y > -35
-						&& obj.object_position.y - player->player_state.player_position.y < 0)
-						input->w_Pressed = false;
+					{
+						cout << "sniper get" << endl;
+						obj.object_type = -1;
+						player->player_state.object_position = obj.object_position;
+						player->player_state.bullet[2] += 5;
+						break;
+					}
 				}
-				if (obj.object_position.y - player->player_state.player_position.y < 53 &&
-					obj.object_position.y - player->player_state.player_position.y > -28)
+				if (obj.object_position.y - player->player_state.player_position.y < 60 &&
+					obj.object_position.y - player->player_state.player_position.y > 0)
 				{
 					if (obj.object_position.x - player->player_state.player_position.x < 62
 						&& obj.object_position.x - player->player_state.player_position.x > 0)
-						input->d_Pressed = false;
-					if (obj.object_position.x - player->player_state.player_position.x > -37
-						&& obj.object_position.x - player->player_state.player_position.x < 0)
-						input->a_Pressed = false;
+					{
+						cout << "sniper get" << endl;
+						obj.object_type = -1;
+						player->player_state.object_position = obj.object_position;
+						player->player_state.bullet[2] += 5;
+						break;
+					}
 				}
 			}
 

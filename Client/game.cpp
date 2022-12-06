@@ -402,7 +402,6 @@ void Game::drawObstacle()
 		
 		//cout << created_objects[i].object_position.x << " | " << created_objects[i].object_position.y << endl;
 		//cout << MyCharPos.x << " / " << MyCharPos.y << endl;
-		
 		if (created_objects[i].object_type == 0) {		//rock
 			destR.w = 74;
 			destR.h = 74;

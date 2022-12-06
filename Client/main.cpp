@@ -98,7 +98,7 @@ DWORD WINAPI server_thread(LPVOID arg)
 
 				//created_object 수신
 				recv_created_object(sock);
-
+				
 				retval = recv(sock, (char*)&game.player_list, sizeof(PS) * 3, MSG_WAITALL);
 				if (retval == SOCKET_ERROR) {
 					err_display("recv()");
@@ -118,7 +118,17 @@ DWORD WINAPI server_thread(LPVOID arg)
 
 			//이벤트 받기
 			recv_event(sock);
-
+			for (int i = 0; i < MAXITEM; i++) {
+				for (int j = 0; j < 3; ++j) {
+					if (game.created_objects[i].object_position.x == game.player_list[j].object_position.x
+						&& game.created_objects[i].object_position.y == game.player_list[j].object_position.y)
+					{
+						game.created_objects[i].object_type == -1;
+						game.created_objects[i].object_position.x = -9999;
+						game.created_objects[i].object_position.y = -9999;
+					}
+				}
+			}
 			//cout << game.player_list[0].player_position.x << " / " << game.player_list[0].player_position.y << endl;
 			game.MyCharPos = game.player_list[0].player_position;
 		}
