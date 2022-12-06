@@ -268,6 +268,60 @@ void Ingame::collide_check(PP* player, CI* input, TF bullet)
 						input->w_Pressed = false;
 				}
 			}
+
+			//rifle
+			if (obj.object_type == 3)
+			{
+				if (obj.object_position.x - player->player_state.player_position.x < 60 &&
+					obj.object_position.x - player->player_state.player_position.x > 0)
+				{
+					if (obj.object_position.y - player->player_state.player_position.y < 62
+						&& obj.object_position.y - player->player_state.player_position.y > 0)
+					{
+						cout << "rifle get" << endl;
+						obj.object_type = -1;
+						break;
+					}
+				}
+				if (obj.object_position.y - player->player_state.player_position.y < 60 &&
+					obj.object_position.y - player->player_state.player_position.y > 0)
+				{
+					if (obj.object_position.x - player->player_state.player_position.x < 62
+						&& obj.object_position.x - player->player_state.player_position.x > 0)
+					{
+						cout << "rifle get" << endl;
+						obj.object_type = -1;
+						break;
+					}
+				}
+			}
+
+			//sniper
+			if (obj.object_type == 4)
+			{
+				if (obj.object_position.x - player->player_state.player_position.x < 60 &&
+					obj.object_position.x - player->player_state.player_position.x > 0)
+				{
+					if (obj.object_position.y - player->player_state.player_position.y < 62
+						&& obj.object_position.y - player->player_state.player_position.y > 0)
+						input->s_Pressed = false;
+					if (obj.object_position.y - player->player_state.player_position.y > -35
+						&& obj.object_position.y - player->player_state.player_position.y < 0)
+						input->w_Pressed = false;
+				}
+				if (obj.object_position.y - player->player_state.player_position.y < 53 &&
+					obj.object_position.y - player->player_state.player_position.y > -28)
+				{
+					if (obj.object_position.x - player->player_state.player_position.x < 62
+						&& obj.object_position.x - player->player_state.player_position.x > 0)
+						input->d_Pressed = false;
+					if (obj.object_position.x - player->player_state.player_position.x > -37
+						&& obj.object_position.x - player->player_state.player_position.x < 0)
+						input->a_Pressed = false;
+				}
+			}
+
+
 		}
 	}
 

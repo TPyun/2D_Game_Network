@@ -59,7 +59,7 @@ typedef struct players_profile {
 
 typedef struct created_object
 {
-	int object_type;	// 0: 바위, 1:세로 벽, 2:가로 벽, 3: rifle, 4:sniper
+	int object_type;	// 0: 바위, 1:세로 벽, 2:가로 벽, 3: rifle, 4:sniper, -1 : 빈오브젝트
 	TI object_position;
 }CO;
 

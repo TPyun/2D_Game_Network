@@ -13,7 +13,7 @@ char buffer[BUFSIZE]; // 가변 길이 데이터
 int hostnum;
 int disconnected_players_inserver{};
 
-Ingame ingame;
+map<int,Ingame> ingames;
 Matching matching;
 
 //map<int, char*> client_thread_list;
@@ -61,7 +61,7 @@ DWORD WINAPI ingame_thread(LPVOID n)
 {
 	int room_num = (int)n;
 	cout << room_num << " : 게임을 시작하지." << endl;
-	ingame.create_object();
+	ingames[room_num].create_object();
 	
 	cout << "맵생성 완료" << endl;
 	int i{};
@@ -70,14 +70,14 @@ DWORD WINAPI ingame_thread(LPVOID n)
 	int delay{};
 
 	while (1) {
-		cout << "서버 전체 인원 수: "<< player_list.size() << endl;
+		//cout << "서버 전체 인원 수: "<< player_list.size() << endl;
 		disconnected_players_inserver = 0;
 
-		cout << "인게임 도는중 방번호: " << room_num << endl;
+		//cout << "인게임 도는중 방번호: " << room_num << endl;
 		int connected_players_inroom{0};
 		start = clock();
 		for (auto& player : player_list) {
-			cout << player.first << endl;
+			//cout << player.first << endl;
 			if (player.second == &null_temp) {
 				++disconnected_players_inserver;
 				continue;
@@ -86,8 +86,8 @@ DWORD WINAPI ingame_thread(LPVOID n)
 				++connected_players_inroom;
 				
 				CI local_input = player.second->input;
-				ingame.collide_check(player.second, &local_input, bullet);
-				ingame.character_movement(local_input, player.second->player_state.player_position);
+				ingames[room_num].collide_check(player.second, &local_input, bullet);
+				ingames[room_num].character_movement(local_input, player.second->player_state.player_position);
 				//cout << "moving" << endl;
 				//cout << player.second->player_state.player_position.x << " " << player.second->player_state.player_position.y << endl;
 				// ingame.collide_bullet_check(player.second, );
@@ -216,15 +216,15 @@ DWORD WINAPI process_client(LPVOID arg)
 			//완료되기전에 보내는거 방지(개선해야함)
 			Sleep(1000);
 
-			retval = send(client_sock, (char*)&ingame.objects, sizeof(ingame.objects), 0);
+			retval = send(client_sock, (char*)&ingames[player_profile.room_num].objects, sizeof(ingames[player_profile.room_num].objects), 0);
 			if (retval == SOCKET_ERROR) {
 				err_display("send()");
 				break;
 			}
-			cout << "보내는 byte : " << sizeof(ingame.objects) << endl;
+			cout << "보내는 byte : " << sizeof(ingames[player_profile.room_num].objects) << endl;
 			cout << "sent first created objects" << endl;
 			for (int i = 0; i < MAXITEM; ++i) {
-				cout << "보낸 obj[" << i << "] : " << ingame.objects[i].object_position.x << " / " << ingame.objects[i].object_position.y << endl;
+				cout << "보낸 obj[" << i << "] : " << ingames[player_profile.room_num].objects[i].object_position.x << " / " << ingames[player_profile.room_num].objects[i].object_position.y << endl;
 			}
 
 			//player_state 송신
