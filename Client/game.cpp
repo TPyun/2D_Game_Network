@@ -172,8 +172,8 @@ void Game::drawBullet(int i,float char_angle, TF pos)
 	//총알이 보일 때
 	if (player_fire[i].show_bullet) {
 
-		player_fire[i].bulletVelo.x = cos(player_fire[i].bullet_angle) * 5 * delayTime;
-		player_fire[i].bulletVelo.y = sin(player_fire[i].bullet_angle) * 5 * delayTime;
+		player_fire[i].bulletVelo.x = cos(player_fire[i].bullet_angle) * 50;
+		player_fire[i].bulletVelo.y = sin(player_fire[i].bullet_angle) * 50;
 
 		player_fire[i].bulletPos.x += (player_fire[i].bulletVelo.x);// +MyVelo.x);
 		player_fire[i].bulletPos.y += (player_fire[i].bulletVelo.y);// +MyVelo.y);
