@@ -477,6 +477,7 @@ void Game::drawMenu()
 			}
 		}
 		else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN) {
+
 			connect_server = true;
 		}
 		//Exit event

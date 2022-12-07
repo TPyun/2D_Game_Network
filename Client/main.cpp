@@ -32,7 +32,6 @@ DWORD WINAPI server_thread(LPVOID arg)
 	// 윈속 초기화
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 		return 1;
-
 	// 소켓 생성
 	SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (sock == INVALID_SOCKET) err_quit("socket()");
@@ -58,7 +57,7 @@ DWORD WINAPI server_thread(LPVOID arg)
 				serveraddr.sin_port = htons(i);
 				retval = connect(sock, (struct sockaddr*)&serveraddr, sizeof(serveraddr));
 				if (retval == SOCKET_ERROR) {
-					//err_quit("connect()");
+					err_quit("connect()");
 					game.connect_server = false;
 					cout << "\nconnect 못했어요. 정확한지 다시 한번 보셈" << endl;
 					continue;
@@ -77,6 +76,7 @@ DWORD WINAPI server_thread(LPVOID arg)
 				retval = send(sock, (char*)&game.find_match, sizeof(bool), 0);
 				if (retval == SOCKET_ERROR) {
 					err_display("send()");
+					sock = socket_init(sock);
 				}
 				game.find_match = false; //true인거 받고 false로 바꿔줌
 				cout << "\nfind_match 전송" << endl;
@@ -85,7 +85,7 @@ DWORD WINAPI server_thread(LPVOID arg)
 				retval = recv(sock, (char*)&player_info, sizeof(PI), MSG_WAITALL);
 				if (retval == SOCKET_ERROR) {
 					err_display("recv()");
-					//예외처리
+					sock = socket_init(sock);
 				}
 				else if (retval == 0) {
 					//예외처리
@@ -102,7 +102,7 @@ DWORD WINAPI server_thread(LPVOID arg)
 				retval = recv(sock, (char*)&game.player_list, sizeof(PS) * 3, MSG_WAITALL);
 				if (retval == SOCKET_ERROR) {
 					err_display("recv()");
-					//예외처리
+					sock = socket_init(sock);
 				}
 				cout << "recv first player state" << endl;
 				cout << game.player_list[0].game_state << endl;
@@ -114,10 +114,20 @@ DWORD WINAPI server_thread(LPVOID arg)
 		}
 		else if(game.curr_state == 1) {			// 1:ingame
 			//이벤트 전송
-			send_event(sock);
+			retval = send_event(sock);
+			if (retval == SOCKET_ERROR) {
+				//예외처리
+				sock = socket_init(sock);
 
+			}
 			//이벤트 받기
-			recv_event(sock);
+			retval = recv_event(sock);
+			if (retval == SOCKET_ERROR) {
+				err_display("recv()");
+				//예외처리
+				sock = socket_init(sock);
+
+			}
 			for (int i = 0; i < MAXITEM; i++) {
 				for (int j = 0; j < 3; ++j) {
 					if (game.created_objects[i].object_position.x == game.player_list[j].object_position.x
@@ -160,9 +170,7 @@ int SDL_main(int argc, char* argv[])
 		//cout << game.delayTime << endl;
 
 		_CrtDumpMemoryLeaks();
-
 	}
-
 	//종료
 	cout << "End\n" << endl;
 	return 0;

@@ -108,23 +108,36 @@ void recv_created_object(SOCKET sock)
 }
 
 // 클라이언트 인게임에서의 입력
-void send_event(SOCKET sock)
+int send_event(SOCKET sock)
 {
 	// key input for player move
 	retval = send(sock, (char*)&game.input, sizeof(CI), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("key_pressed()");
-	}
+	
+	return retval;
 }
 
 // 서버에서 다른 플레이어 이벤트 recv
-void recv_event(SOCKET sock)
+int recv_event(SOCKET sock)
 {
 	//플레이어 상태 받기
 	retval = recv(sock, (char*)&game.player_list, sizeof(PS) * 3, MSG_WAITALL);
-	if (retval == SOCKET_ERROR) {
-		err_display("recv()");
-		//예외처리
-	}
+	
+	return retval;
 }
 
+SOCKET socket_init(SOCKET sock)
+{
+	game.waiting_match = false;
+	game.connect_server = false;
+	game.server_connected = false;
+	game.curr_state = 0;
+	closesocket(sock);
+	// 윈속 초기화
+	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) {
+		err_quit("WSAStartup()");
+	}
+	// 소켓 생성
+	sock = socket(AF_INET, SOCK_STREAM, 0);
+	if (sock == INVALID_SOCKET) err_quit("socket()");
+	return sock;
+}
