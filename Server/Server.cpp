@@ -94,7 +94,7 @@ DWORD WINAPI ingame_thread(LPVOID n)
 				++connected_players_inroom;
 				
 				CI local_input = player.second->input;
-				ingames[room_num].bullet_movement(player.second->player_state.player_rotation, player.second);
+				ingames[room_num].bullet_movement(player.second->input.mouse_rotation, player.second);
 				ingames[room_num].collide_check(player.second, &local_input);
 				ingames[room_num].character_movement(local_input, player.second->player_state.player_position);
 				
@@ -294,9 +294,9 @@ DWORD WINAPI process_client(LPVOID arg)
 			
 			if (player_profile.player_state.gun_fired == true && bullet_check == true) {
 				player_profile.player_state.player_rotation = player_profile.input.mouse_rotation;
-
-				ingames[player_profile.room_num].bullet = player_profile.unconditinal_fired_pos;
-				cout << ingames[player_profile.room_num].bullet.x << "\t" << ingames[player_profile.room_num].bullet.y << endl;
+				cout << player_profile.player_state.player_rotation << endl;
+				player_profile.player_state.bullet_pos = player_profile.unconditinal_fired_pos;
+				cout << player_profile.player_state.bullet_pos.x << "\t" << player_profile.player_state.bullet_pos.y << endl;
 				cout << "ÃÑ¾Ë À§Ä¡ x: " << player_profile.unconditinal_fired_pos.x << "\ty : " <<
 					player_profile.unconditinal_fired_pos.y << endl;
 

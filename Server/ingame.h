@@ -16,7 +16,7 @@ public:
 	void collide_check(PP*, CI*);	// player_input, player, bullet_posion
 	void bullet_movement(float, PP*);
 
-	TF bullet{};
+	//TF bullet[3]{};
 	float bullet_angle{};
 	TF bulletVelo{};
 
@@ -29,4 +29,5 @@ private:
 	default_random_engine dre{ rd() };
 	bool show_bullet = true;
 	int ground_size = 2000;
+	float angle;
 };

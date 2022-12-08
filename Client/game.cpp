@@ -204,8 +204,8 @@ void Game::drawBullet(int i,float char_angle, TF pos)
 		player_fire[i].bulletPos.y = HEIGHT / 2 + sin(player_fire[i].bullet_angle) * 75 + pos.y - MyCharPos.y;
 		player_fire[i].fired_pos.x = MyCharPos.x;
 		player_fire[i].fired_pos.y = MyCharPos.y;
-		player_fire[i].unconditional_fired_pos.x = WIDTH / 2 + cos(player_fire[i].bullet_angle) * 75 + pos.x;
-		player_fire[i].unconditional_fired_pos.y = HEIGHT / 2 + sin(player_fire[i].bullet_angle) * 75 + pos.y;
+		player_fire[i].unconditional_fired_pos.x = cos(player_fire[i].bullet_angle) * 75 + pos.x;
+		player_fire[i].unconditional_fired_pos.y = sin(player_fire[i].bullet_angle) * 75 + pos.y;
 		//cout << i << "의 총알 시작 위치 x: " << player_list[i].uncounditional_fired_pos.x << "\ty: " << player_list[i].uncounditional_fired_pos.y << endl;
 		//cout << player_fire[i].bulletPos.x << " " << player_fire[i].bulletPos.y << endl;
 
@@ -272,10 +272,9 @@ void Game::mouseEvent_ingame()
 	//마우스 왼 버튼 누르면 발사
 	if (event.type == SDL_MOUSEBUTTONDOWN) {
 		//서버에 전송할 struct 변수에 마우스 좌표 저장, clicked
-		input.mouse_rotation = my_char_angle;
 		input.unconditional_fired_pos_input = player_fire[0].unconditional_fired_pos;
 		if (event.button.button == SDL_BUTTON_LEFT && player_fire[0].gun_fired == false) {
-			input.clicked = true;
+			input.clicked = true; 
 			cout << "fire" << endl;
 			input.unconditional_fired_pos_input = player_fire[0].unconditional_fired_pos;
 			cout << input.unconditional_fired_pos_input.x << "\t" << input.unconditional_fired_pos_input.y << endl;
@@ -294,7 +293,7 @@ void Game::mouseEvent_ingame()
 	if (player_fire[0].gun_fired) {
 		if (Timer(fired_time, 700) == 1) {
 
-			
+
 			input.clicked = false;
 			player_fire[0].gun_fired = false;
 			fired_time = 0;
