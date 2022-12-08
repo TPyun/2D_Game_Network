@@ -14,6 +14,8 @@ using namespace std;
 #define BUFSIZE		4096
 #define NAMESIZE	20
 #define MAXITEM		50
+#define WIDTH 1240
+#define HEIGHT 720
 
 typedef struct TWO_Floats {
 	float x = 0;
@@ -34,6 +36,7 @@ typedef struct players_state {
 	float player_rotation{};
 	bool gun_fired{};
 	int game_state{};		// 0:main, 1:find_match, 2:in_game, 3:lose, 4:win
+	bool collide = false;
 }PS;
 
 typedef struct players_info {
@@ -48,6 +51,7 @@ typedef struct client_input {
 	bool d_Pressed;
 	bool clicked;
 	float mouse_rotation;
+	TF uncounditional_fired_pos_input{};
 }CI;
 
 typedef struct players_profile {
@@ -55,6 +59,7 @@ typedef struct players_profile {
 	PI player_info;
 	PS player_state;
 	CI input;
+	TF unconditinal_fired_pos;
 }PP;
 
 typedef struct created_object

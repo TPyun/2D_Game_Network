@@ -13,7 +13,13 @@ public:
 	CO objects[MAXITEM]{};
 	void create_object();
 	void character_movement(CI, TF&);
-	void collide_check(PP*, CI*, TF);	// player_input, player, bullet_posion
+	void collide_check(PP*, CI*);	// player_input, player, bullet_posion
+	void bullet_movement(float, PP*);
+
+	TF bullet{};
+	float bullet_angle{};
+	TF bulletVelo{};
+
 	// void mouseEvent_ingame();
 
 private:
@@ -21,6 +27,6 @@ private:
 	uniform_int_distribution <int> uid{ -5, 5 };
 	random_device rd;
 	default_random_engine dre{ rd() };
+	bool show_bullet = true;
+	int ground_size = 2000;
 };
-
-

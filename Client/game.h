@@ -40,6 +40,7 @@ typedef struct players_state {
 	float player_rotation{};
 	bool gun_fired{};
 	int game_state{};
+	bool collide = false;
 }PS;
 
 typedef struct players_info
@@ -61,6 +62,7 @@ typedef struct client_input {
 	bool d_Pressed;
 	bool clicked;
 	float mouse_rotation;
+	TF unconditional_fired_pos_input{};
 }CI;
 
 typedef struct players_fire {
@@ -73,7 +75,8 @@ typedef struct players_fire {
 	float bullet_angle{};
 	TF bulletPos{};
 	TF bulletVelo{};
-	TF fired_pos;
+	TF fired_pos{};
+	TF unconditional_fired_pos{};
 }PF;
 
 class Game
@@ -217,6 +220,8 @@ public:
 	
 	bool p1_shoot_check = true;
 	bool p2_shoot_check = true;
+
+	bool collide_checker = false;
 	
 	//bool gun_fired = false;
 	TF mouse_point;

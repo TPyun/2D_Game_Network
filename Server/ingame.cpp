@@ -5,7 +5,7 @@ void Ingame::create_object()		// ÃÊ±â ¸Ê ·£´ý »ý¼ºÇÏ´Â ÇÔ¼ö (¹ÙÀ§, º®, ¾ÆÀÌÅÛ, Ç
 {
 	std::cout << "create_map ½ÇÇà" << std::endl;
 
-	for (int i = 0; i < 10; ++i) {
+	for (int i = 0; i < 1; ++i) {
 		objects[i].object_position.x = uid(dre);
 		objects[i].object_position.y = uid(dre);
 		objects[i].object_position.x *= OBJ_DISTANCE;
@@ -186,7 +186,7 @@ void Ingame::character_movement(CI input, TF &pos)
 	//cout << "ÇÃ·¹ÀÌ¾î À§Ä¡: " << pos.x << ", " << pos.y << endl;
 }
 
-void Ingame::collide_check(PP* player, CI* input, TF bullet)
+void Ingame::collide_check(PP* player, CI* input)
 {
 	// ÇÃ·¹ÀÌ¾î¿Í objects °£ÀÇ collide_check
 	for (auto& obj : objects)
@@ -335,14 +335,43 @@ void Ingame::collide_check(PP* player, CI* input, TF bullet)
 		}
 	}
 
-	// ÇÃ·¹ÀÌ¾î¿Í bullet °£ÀÇ collide_check
-	
 
-	// bullet°ú objects °£ÀÇ collidecheck
-	for(auto& obj : objects)
-	{ }
+	// ÇÃ·¹ÀÌ¾î¿Í bullet °£ÀÇ collide_check
+	// bullet°ú objects °£ÀÇ collide_check
+	// Á¶°Ç¹® º¯°æ ÇÊ¿ä bulletÀÇ ÁÂÇ¥¿Í player, objectsÀÇ ÁÂÇ¥±âÁØÀÌ ´Ù¸§.
+	if (bullet.x < 0) {
+		show_bullet = false;
+		cout << "collide!" << endl;
+		player->player_state.collide = true;
+		bullet.x = 0.f;
+	}
 }
 
+
+void Ingame::bullet_movement(float fired_angle, PP* player)
+{
+	float bullet_angle = 3.14159265 * 2 * fired_angle / 360;
+
+	if (player->player_state.gun_fired == true && show_bullet == true) {
+		bulletVelo.x = cos(bullet_angle) * 30;
+		bulletVelo.y = sin(bullet_angle) * 30;
+		bullet.x += bulletVelo.x;
+		bullet.y += bulletVelo.y;
+		cout << "³¯À¸´Â ÃÑ¾Ë x : " << bullet.x << "\t y : " << bullet.y << endl;
+		if (bullet.x > WIDTH / 2 + ground_size / 2 ||
+			bullet.x < WIDTH / 2 - ground_size / 2 ||
+			bullet.y > HEIGHT / 2 + ground_size / 2 ||
+			bullet.y < HEIGHT / 2 - ground_size / 2 )
+		{
+			show_bullet = false;
+		}
+	}
+	else if (player->player_state.gun_fired == false && show_bullet == false)
+	{
+		player->player_state.collide = false;
+		show_bullet = true;
+	}
+}
 //void Ingame::mouseEvent_ingame()
 //{
 //	//get mouse coordinates 

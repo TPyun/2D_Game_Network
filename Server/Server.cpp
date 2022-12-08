@@ -62,7 +62,6 @@ DWORD WINAPI matching_thread(LPVOID arg)
 	}
 }
 
-TF bullet;
 
 // 인게임쓰레드
 DWORD WINAPI ingame_thread(LPVOID n)
@@ -95,8 +94,11 @@ DWORD WINAPI ingame_thread(LPVOID n)
 				++connected_players_inroom;
 				
 				CI local_input = player.second->input;
-				ingames[room_num].collide_check(player.second, &local_input, bullet);
+				ingames[room_num].bullet_movement(player.second->player_state.player_rotation, player.second);
+				ingames[room_num].collide_check(player.second, &local_input);
 				ingames[room_num].character_movement(local_input, player.second->player_state.player_position);
+				
+
 				//cout << "moving" << endl;
 				//cout << player.second->player_state.player_position.x << " " << player.second->player_state.player_position.y << endl;
 				// ingame.collide_bullet_check(player.second, );
@@ -288,16 +290,22 @@ DWORD WINAPI process_client(LPVOID arg)
 			// 마우스 클릭 확인 출력
 			player_profile.player_state.gun_fired = player_profile.input.clicked;
 			player_profile.player_state.player_rotation = player_profile.input.mouse_rotation;
-
-
+			player_profile.unconditinal_fired_pos = player_profile.input.uncounditional_fired_pos_input;
 			
 			if (player_profile.player_state.gun_fired == true && bullet_check == true) {
 				player_profile.player_state.player_rotation = player_profile.input.mouse_rotation;
-				cout << player_profile.player_state.gun_fired << " - " << player_profile.player_state.player_rotation << endl;
+
+				ingames[player_profile.room_num].bullet = player_profile.unconditinal_fired_pos;
+				cout << ingames[player_profile.room_num].bullet.x << "\t" << ingames[player_profile.room_num].bullet.y << endl;
+				cout << "총알 위치 x: " << player_profile.unconditinal_fired_pos.x << "\ty : " <<
+					player_profile.unconditinal_fired_pos.y << endl;
+
+				cout << "플레이어 rotation : " << player_profile.player_state.player_rotation << endl;
 				bullet_check = false;
 			}
 			else if (player_profile.player_state.gun_fired == false && bullet_check == false) {
 				bullet_check = true;
+
 			}
 			//cout << player_profile.player_state.player_rotation << endl;
 

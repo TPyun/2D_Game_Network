@@ -123,6 +123,7 @@ void Game::drawBackground()
 	//cout << MyCharPos.x << " " << MyCharPos.y << endl;
 
 	//Draw Background
+
 	SDL_RenderCopy(renderer, backTex, NULL, &destR);
 }
 void Game::drawGround()
@@ -172,35 +173,40 @@ void Game::drawBullet(int i,float char_angle, TF pos)
 	player_fire[i].bullet_angle = 3.14159265 * 2 * player_fire[i].fired_angle / 360;
 	//총알이 보일 때
 	if (player_fire[i].show_bullet) {
-		//cout << player_fire[i].bulletPos.x << " " << player_fire[i].bulletPos.y << endl;
 		player_fire[i].bulletVelo.x = cos(player_fire[i].bullet_angle) * 30;
 		player_fire[i].bulletVelo.y = sin(player_fire[i].bullet_angle) * 30;
-		
 		player_fire[i].bulletPos.x += (player_fire[i].bulletVelo.x);// +MyVelo.x);
 		player_fire[i].bulletPos.y += (player_fire[i].bulletVelo.y);// +MyVelo.y);
-
+		
 		destR.w = bullet_size;
 		destR.h = bullet_size;
 		destR.x = (player_fire[i].bulletPos.x - bullet_size / 2) - MyCharPos.x + player_fire[i].fired_pos.x;
 		destR.y = (player_fire[i].bulletPos.y - bullet_size / 2) - MyCharPos.y + player_fire[i].fired_pos.y;
-
 		center.x = bullet_size / 2;
 		center.y = bullet_size / 2;
-
+		cout << "날으는 총알 x : " << player_fire[i].bulletPos.x << "\ty : " << player_fire[i].bulletPos.y << endl;
 		//SDL_RenderCopy(renderer, bulletTex, NULL, &destR);
 		SDL_RenderCopyEx(renderer, bulletTex, NULL, &destR, player_fire[i].fired_angle, &center, SDL_FLIP_NONE);
 
-		if (player_fire[i].bulletPos.x > WIDTH / 2 + ground_size / 2 - MyCharPos.x || player_fire[i].bulletPos.x <  WIDTH / 2 - ground_size / 2 - MyCharPos.x || player_fire[i].bulletPos.y > HEIGHT / 2 + ground_size / 2 - MyCharPos.y || player_fire[i].bulletPos.y < HEIGHT / 2 - ground_size / 2 - MyCharPos.y) {
+		if (player_fire[i].bulletPos.x > WIDTH / 2 + ground_size / 2 - MyCharPos.x ||
+			player_fire[i].bulletPos.x <  WIDTH / 2 - ground_size / 2 - MyCharPos.x || 
+			player_fire[i].bulletPos.y > HEIGHT / 2 + ground_size / 2 - MyCharPos.y ||
+			player_fire[i].bulletPos.y < HEIGHT / 2 - ground_size / 2 - MyCharPos.y) 
+		{
 			player_fire[i].show_bullet = false;
 			//cout << player_fire[i].bulletPos.x << " " << player_fire[i].bulletPos.y << endl;
 		}
 	}
 	//총알이 보이지 않을 때
 	else {
+
 		player_fire[i].bulletPos.x = WIDTH / 2 + cos(player_fire[i].bullet_angle) * 75 + pos.x - MyCharPos.x;
 		player_fire[i].bulletPos.y = HEIGHT / 2 + sin(player_fire[i].bullet_angle) * 75 + pos.y - MyCharPos.y;
 		player_fire[i].fired_pos.x = MyCharPos.x;
 		player_fire[i].fired_pos.y = MyCharPos.y;
+		player_fire[i].unconditional_fired_pos.x = WIDTH / 2 + cos(player_fire[i].bullet_angle) * 75 + pos.x;
+		player_fire[i].unconditional_fired_pos.y = HEIGHT / 2 + sin(player_fire[i].bullet_angle) * 75 + pos.y;
+		//cout << i << "의 총알 시작 위치 x: " << player_list[i].uncounditional_fired_pos.x << "\ty: " << player_list[i].uncounditional_fired_pos.y << endl;
 		//cout << player_fire[i].bulletPos.x << " " << player_fire[i].bulletPos.y << endl;
 
 		//캐릭터가 발사한 순간의 각도를 할당
@@ -261,14 +267,20 @@ void Game::mouseEvent_ingame()
 	//Get Character Angle by Mouse's Coordinates
 	my_char_angle = calcAngleFromPoints(mouse_point, middle_pos);
 	input.mouse_rotation = my_char_angle;
+	//input.unconditional_fired_pos_input = player_fire[0].uncounditional_fired_pos;
 
 	//마우스 왼 버튼 누르면 발사
 	if (event.type == SDL_MOUSEBUTTONDOWN) {
 		//서버에 전송할 struct 변수에 마우스 좌표 저장, clicked
 		input.mouse_rotation = my_char_angle;
+		input.unconditional_fired_pos_input = player_fire[0].unconditional_fired_pos;
 		if (event.button.button == SDL_BUTTON_LEFT && player_fire[0].gun_fired == false) {
 			input.clicked = true;
 			cout << "fire" << endl;
+			input.unconditional_fired_pos_input = player_fire[0].unconditional_fired_pos;
+			cout << input.unconditional_fired_pos_input.x << "\t" << input.unconditional_fired_pos_input.y << endl;
+			cout << "총알 시작위치 x : " << input.unconditional_fired_pos_input.x << "\ty :" << input.unconditional_fired_pos_input.y << endl;
+			cout << "화면상의 위치 x : " << player_fire[0].bulletPos.x << "\ty : " << player_fire[0].bulletPos.y << endl;
 			player_fire[0].gun_fired = true;
 			fired_time = clock();
 
@@ -284,7 +296,6 @@ void Game::mouseEvent_ingame()
 
 			
 			input.clicked = false;
-
 			player_fire[0].gun_fired = false;
 			fired_time = 0;
 		}
@@ -528,12 +539,12 @@ void Game::drawIngame()
 	draw_enemy_fire(&p1_shoot_check, 1);
 	draw_enemy_fire(&p2_shoot_check, 2);
 	
-	drawBullet( 0, my_char_angle, MyCharPos);
-	drawBullet( 1, player_list[1].player_rotation, player_list[1].player_position);
+	drawBullet(0, my_char_angle, MyCharPos);
+	drawBullet(1, player_list[1].player_rotation, player_list[1].player_position);
 	drawBullet(2, player_list[2].player_rotation, player_list[2].player_position);
 
 	drawFlash(0, my_char_angle, MyCharPos);
-	drawFlash( 1, player_list[1].player_rotation, player_list[1].player_position);
+	drawFlash(1, player_list[1].player_rotation, player_list[1].player_position);
 	drawFlash(2, player_list[2].player_rotation, player_list[2].player_position);
 	
 	//cout << player_list[1].gun_fired << endl;
