@@ -362,35 +362,18 @@ void Ingame::collide_check(PP* player, CI* input)
 	{
 		for (int i = 0; i < cnt-1; ++i)
 		{
-			if (abs(player->player_state.bullet_pos.x - another_player[i]->player_state.player_position.x) < 50
-				&& abs(player->player_state.bullet_pos.y - another_player[i]->player_state.player_position.y) < 50)
+			if (abs(player->player_state.bullet_pos.x - another_player[i]->player_state.player_position.x) < 20
+				&& abs(player->player_state.bullet_pos.y - another_player[i]->player_state.player_position.y) < 20)
 			{
 				show_bullet = false;
 				cout << "collide ´×°Õ!" << endl;
 				player->player_state.collide = true;
 				player->player_state.bullet_pos.x = -float(ground_size);
 				player->player_state.bullet_pos.y = -float(ground_size);
+				
+				another_player[i]->player_state.hp -= 10;
 			}
-		}/*
-		if (abs(player->player_state.bullet_pos.x - another_player[0]->player_state.player_position.x) < 50
-			&& abs(player->player_state.bullet_pos.y - another_player[0]->player_state.player_position.y) < 50)
-		{
-			show_bullet = false;
-			cout << "collide ´×°Õ1!" << endl;
-			player->player_state.collide = true;
-			player->player_state.bullet_pos.x = -float(ground_size);
-			player->player_state.bullet_pos.y = -float(ground_size);
 		}
-		else if ( 
-			abs(player->player_state.bullet_pos.x - another_player[cnt - 1]->player_state.player_position.x) < 50
-			&& abs(player->player_state.bullet_pos.y - another_player[cnt - 1]->player_state.player_position.y) < 50)
-		{
-			show_bullet = false;
-			cout << "collide ´×°Õ2!" << endl;
-			player->player_state.collide = true;
-			player->player_state.bullet_pos.x = -float(ground_size);
-			player->player_state.bullet_pos.y = -float(ground_size);
-		}*/
 	}
 
 
@@ -474,6 +457,7 @@ void Ingame::bullet_movement(float fired_angle, PP* player)
 		show_bullet = true;
 	}
 }
+
 //void Ingame::mouseEvent_ingame()
 //{
 //	//get mouse coordinates 
