@@ -8,7 +8,7 @@
 
 using namespace std;
 
-#define MAX_CLIENT_IN_ROOM 2
+#define MAX_CLIENT_IN_ROOM 1
 
 #define SERVERPORT	9000
 #define BUFSIZE		4096

@@ -66,7 +66,7 @@ void Game::loadWavs()
 }
 void Game::loadFont()
 {
-	font = TTF_OpenFont("arial.ttf", 18);
+	font = TTF_OpenFont("arial.ttf", 17);
 	if (!font) {
 		printf("Could not open font! (%s)\n", TTF_GetError());
 	}
@@ -268,10 +268,10 @@ void Game::drawFlash(int i, float char_angle, TF pos)
 void Game::drawLog() 
 {
 	SDL_Color color = { 0, 0, 0 };
-	char state[20]{};
+	char state[30]{};
 	for (int i = 0; i < 3; i++){
 		if (player_list[i].game_state != 3) {
-			strcpy(state, " : NOT EXSIST HERE");
+			strcpy(state, " UNKNOWN : NOT EXSIST");
 		}
 		else if (player_list[i].hp <= 0) {
 			strcpy(state, " : DEAD");
@@ -280,7 +280,7 @@ void Game::drawLog()
 			strcpy(state, " : ALIVE");
 		}
 		drawText(10, i * 20 + 10, player_info.name[i], color);
-		drawText(10 + 10 * strlen(player_info.name[i]), i * 20 + 10, state, color);
+		drawText(10 + 13 * strlen(player_info.name[i]), i * 20 + 10, state, color);
 	}
 }
 void Game::mouseEvent_ingame()
@@ -502,7 +502,7 @@ void Game::drawMenu()
 				strcpy(Port, text_in.c_str());
 			}
 			else if (text_in_height == 300) {
-				if(strlen(Name) < 18)
+				if(strlen(Name) < 10)
 					strcpy(Name, text_in.c_str());
 			}
 		}
