@@ -94,7 +94,7 @@ DWORD WINAPI ingame_thread(LPVOID n)
 				++connected_players_inroom;
 				
 				CI local_input = player.second->input;
-				ingames[room_num].bullet_movement(player.second->input.mouse_rotation, player.second);
+				ingames[room_num].bullet_movement(player.second->input.clicked_mouse_rotation, player.second);
 				ingames[room_num].collide_check(player.second, &local_input);
 				ingames[room_num].character_movement(local_input, player.second->player_state.player_position);
 				
