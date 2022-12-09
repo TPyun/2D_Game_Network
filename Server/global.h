@@ -8,7 +8,7 @@
 
 using namespace std;
 
-#define MAX_CLIENT_IN_ROOM 1
+#define MAX_CLIENT_IN_ROOM 2
 
 #define SERVERPORT	9000
 #define BUFSIZE		4096
@@ -73,3 +73,4 @@ typedef struct created_object
 
 extern map<int, char*> client_thread_list;
 extern map<int, PP*> player_list;
+extern PP null_temp;

@@ -17,7 +17,7 @@ Matching matching;
 
 //map<int, char*> client_thread_list;
 map<int, PP*> player_list;
-PP null_temp{};
+PP null_temp;
 
 //함수 선언
 DWORD WINAPI matching_thread(LPVOID arg);
@@ -82,6 +82,8 @@ DWORD WINAPI ingame_thread(LPVOID n)
 		//cout << "인게임 도는중 방번호: " << room_num << endl;
 		int connected_players_inroom{0};
 		start = clock();
+		
+
 		for (auto& player : player_list) {
 			//cout << player.first << endl;
 			if (player.second == nullptr) {
@@ -97,7 +99,7 @@ DWORD WINAPI ingame_thread(LPVOID n)
 				ingames[room_num].bullet_movement(player.second->input.clicked_mouse_rotation, player.second);
 				ingames[room_num].collide_check(player.second, &local_input);
 				ingames[room_num].character_movement(local_input, player.second->player_state.player_position);
-				
+
 
 				//cout << "moving" << endl;
 				//cout << player.second->player_state.player_position.x << " " << player.second->player_state.player_position.y << endl;

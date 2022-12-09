@@ -27,7 +27,7 @@ private:
 	uniform_int_distribution <int> uid{ -5, 5 };
 	random_device rd;
 	default_random_engine dre{ rd() };
-	bool show_bullet = true;
+	bool show_bullet = false;
 	int ground_size = 2000;
 	float angle;
 };
