@@ -138,7 +138,7 @@ void Game::drawGround()
 }
 void Game::drawCharacter(int playing, SDL_Texture* tex, TF pos, float rot, bool dead)
 {
-	if (!playing) {
+	if (playing != 2) {
 		return;
 	}
 	destR.w = player_size;
@@ -159,7 +159,7 @@ void Game::drawCharacter(int playing, SDL_Texture* tex, TF pos, float rot, bool 
 }
 void Game::drawHealthbar(int playing, int health, TF pos)
 {
-	if (!playing) {
+	if (playing != 2) {
 		return;
 	}
 	destR.w = (float)health / 2.5f;
