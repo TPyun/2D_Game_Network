@@ -201,6 +201,7 @@ private:
 	void drawText(int x, int y, char[], SDL_Color);
 	void drawWeaponList();
 	void drawObstacle();
+	void drawLog();
 
 	void drawMenu();
 	void drawIngame();
@@ -238,6 +239,8 @@ public:
 	PS player_list[3];
 	client_input input;
 	PF player_fire[3];
+	PI player_info;
+	CI ci;
 
 	Game();
 	~Game();

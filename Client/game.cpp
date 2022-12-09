@@ -265,7 +265,13 @@ void Game::drawFlash(int i, float char_angle, TF pos)
 		player_fire[i].flash_angle = char_angle;
 	}
 }
-
+void Game::drawLog() 
+{
+	SDL_Color color = { 0, 0, 0 };
+	for (int i = 0; i < 3; i++){
+		drawText(10, i * 20 + 10, player_info.name[i], color);
+	}
+}
 void Game::mouseEvent_ingame()
 {
 	//get mouse coordinates 
@@ -309,8 +315,6 @@ void Game::mouseEvent_ingame()
 	//총이 발사되고 타이머 작동시켜서 1초 뒤 다시 발사 가능
 	if (player_fire[0].gun_fired) {
 		if (Timer(fired_time, 700) == 1) {
-
-
 			input.clicked = false;
 			player_fire[0].gun_fired = false;
 			fired_time = 0;
@@ -574,6 +578,7 @@ void Game::drawIngame()
 
 	drawCrosshair();
 	drawWeaponList();
+	drawLog();
 }
 
 void Game::update()

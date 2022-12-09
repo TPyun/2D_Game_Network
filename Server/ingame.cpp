@@ -362,7 +362,8 @@ void Ingame::collide_check(PP* player, CI* input)
 	{
 		for (int i = 0; i < cnt-1; ++i)
 		{
-			if (abs(player->player_state.bullet_pos.x - another_player[i]->player_state.player_position.x) < 20
+			if (another_player[i]->player_state.hp > 0 &&
+				abs(player->player_state.bullet_pos.x - another_player[i]->player_state.player_position.x) < 20
 				&& abs(player->player_state.bullet_pos.y - another_player[i]->player_state.player_position.y) < 20)
 			{
 				show_bullet = false;

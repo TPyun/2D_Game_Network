@@ -36,8 +36,6 @@ DWORD WINAPI server_thread(LPVOID arg)
 	SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (sock == INVALID_SOCKET) err_quit("socket()");
 
-	PI player_info;
-	CI ci;
 	game.p1_shoot_check = true;
 	game.p2_shoot_check = true;
 	
@@ -82,7 +80,7 @@ DWORD WINAPI server_thread(LPVOID arg)
 				cout << "\nfind_match 전송" << endl;
 
 				//recv player_info
-				retval = recv(sock, (char*)&player_info, sizeof(PI), MSG_WAITALL);
+				retval = recv(sock, (char*)&game.player_info, sizeof(PI), MSG_WAITALL);
 				if (retval == SOCKET_ERROR) {
 					err_display("recv()");
 					sock = socket_init(sock);
@@ -93,7 +91,7 @@ DWORD WINAPI server_thread(LPVOID arg)
 
 				cout << "\nplayer_info 받은 정보" << endl;
 				for (int i = 0; i < 3; ++i){
-					cout << "플레이어 " << i << " 이름: " << player_info.name[i] << " 색: " << player_info.player_color[i] << endl;
+					cout << "플레이어 " << i << " 이름: " << game.player_info.name[i] << " 색: " << game.player_info.player_color[i] << endl;
 				}
 
 				//created_object 수신
