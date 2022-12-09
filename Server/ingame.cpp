@@ -340,9 +340,8 @@ void Ingame::collide_check(PP* player, CI* input)
 	int my_room_num = player->room_num;
 	char my_name[20];
 	strcpy(my_name, player->player_info.name[0]);
-	PP* another_player1;
-	PP* another_player2;
-	int cnt{};
+	PP* another_player[MAX_CLIENT_IN_ROOM]{};
+	int cnt{1};
 	for (auto& player : player_list) {
 		//cout << player.first << endl;
 		if (player.second == nullptr) {
@@ -352,20 +351,29 @@ void Ingame::collide_check(PP* player, CI* input)
 			continue;
 		}
 		if (strcmp(player.second->player_info.name[0], my_name) != 0 && player.second->room_num == my_room_num) {
-			if (cnt == 0 && cnt < MAX_CLIENT_IN_ROOM) {
-				another_player1 = player.second;
+			if (cnt < MAX_CLIENT_IN_ROOM) {
+				another_player[cnt-1] = player.second;
 				cnt++;
-			}
-			else if (cnt == 1 && cnt < MAX_CLIENT_IN_ROOM) {
-				another_player2 = player.second;
 			}
 		}
 	}
 
 	if (show_bullet == true)
 	{
-		if (abs(player->player_state.bullet_pos.x - another_player1->player_state.player_position.x) < 50
-			&& abs(player->player_state.bullet_pos.y - another_player1->player_state.player_position.y) < 50)
+		for (int i = 0; i < cnt-1; ++i)
+		{
+			if (abs(player->player_state.bullet_pos.x - another_player[i]->player_state.player_position.x) < 50
+				&& abs(player->player_state.bullet_pos.y - another_player[i]->player_state.player_position.y) < 50)
+			{
+				show_bullet = false;
+				cout << "collide ´×°Õ!" << endl;
+				player->player_state.collide = true;
+				player->player_state.bullet_pos.x = -float(ground_size);
+				player->player_state.bullet_pos.y = -float(ground_size);
+			}
+		}/*
+		if (abs(player->player_state.bullet_pos.x - another_player[0]->player_state.player_position.x) < 50
+			&& abs(player->player_state.bullet_pos.y - another_player[0]->player_state.player_position.y) < 50)
 		{
 			show_bullet = false;
 			cout << "collide ´×°Õ1!" << endl;
@@ -373,15 +381,16 @@ void Ingame::collide_check(PP* player, CI* input)
 			player->player_state.bullet_pos.x = -float(ground_size);
 			player->player_state.bullet_pos.y = -float(ground_size);
 		}
-		else if (abs(player->player_state.bullet_pos.x - another_player2->player_state.player_position.x) < 50
-			&& abs(player->player_state.bullet_pos.y - another_player2->player_state.player_position.y) < 50)
+		else if ( 
+			abs(player->player_state.bullet_pos.x - another_player[cnt - 1]->player_state.player_position.x) < 50
+			&& abs(player->player_state.bullet_pos.y - another_player[cnt - 1]->player_state.player_position.y) < 50)
 		{
 			show_bullet = false;
 			cout << "collide ´×°Õ2!" << endl;
 			player->player_state.collide = true;
 			player->player_state.bullet_pos.x = -float(ground_size);
 			player->player_state.bullet_pos.y = -float(ground_size);
-		}
+		}*/
 	}
 
 
