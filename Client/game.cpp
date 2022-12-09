@@ -136,8 +136,11 @@ void Game::drawGround()
 	//Draw Background
 	SDL_RenderCopy(renderer, groundTex, NULL, &destR);
 }
-void Game::drawCharacter(SDL_Texture* tex, TF pos, float rot)
+void Game::drawCharacter(int playing, SDL_Texture* tex, TF pos, float rot, bool dead)
 {
+	if (!playing) {
+		return;
+	}
 	destR.w = player_size;
 	destR.h = player_size;
 	center.x = player_size / 2;
@@ -146,10 +149,19 @@ void Game::drawCharacter(SDL_Texture* tex, TF pos, float rot)
 	destR.x = WIDTH / 2 - player_size / 2 + pos.x - MyCharPos.x;
 	destR.y = HEIGHT / 2 - player_size / 2 + pos.y - MyCharPos.y;
 
+	if (dead){
+		tex = blood_Tex;
+		rot = -90;
+		destR.w = 50;
+		destR.h = 50;
+	}
 	SDL_RenderCopyEx(renderer, tex, NULL, &destR, rot + 90, &center, SDL_FLIP_NONE);
 }
-void Game::drawHealthbar(int health, TF pos)
+void Game::drawHealthbar(int playing, int health, TF pos)
 {
+	if (!playing) {
+		return;
+	}
 	destR.w = (float)health / 2.5f;
 	destR.h = 10;
 	destR.x = WIDTH / 2 - 20 + pos.x - MyCharPos.x;
@@ -165,8 +177,11 @@ void Game::drawHealthbar(int health, TF pos)
 	}
 	
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
-	SDL_Rect r = { WIDTH / 2 - 20, HEIGHT / 2 - 35, 40, 10 };
-	SDL_RenderDrawRect(renderer, &r);
+
+	if (health > 0) {
+		SDL_Rect r = { WIDTH / 2 - 40 / 2 + pos.x - MyCharPos.x, HEIGHT / 2 - 70 / 2 + pos.y - MyCharPos.y, 40, 10 };
+		SDL_RenderDrawRect(renderer, &r);
+	}
 }
 void Game::drawBullet(int i,float char_angle, TF pos)
 {
@@ -200,7 +215,6 @@ void Game::drawBullet(int i,float char_angle, TF pos)
 	}
 	//총알이 보이지 않을 때
 	else {
-
 		player_fire[i].bulletPos.x = WIDTH / 2 + cos(player_fire[i].bullet_angle) * 75 + pos.x - MyCharPos.x;
 		player_fire[i].bulletPos.y = HEIGHT / 2 + sin(player_fire[i].bullet_angle) * 75 + pos.y - MyCharPos.y;
 		player_fire[i].fired_pos.x = MyCharPos.x;
@@ -271,7 +285,7 @@ void Game::mouseEvent_ingame()
 	//input.unconditional_fired_pos_input = player_fire[0].uncounditional_fired_pos;
 
 	//마우스 왼 버튼 누르면 발사
-	if (event.type == SDL_MOUSEBUTTONDOWN) {
+	if (event.type == SDL_MOUSEBUTTONDOWN && player_list[0].hp > 0) {
 		//서버에 전송할 struct 변수에 마우스 좌표 저장, clicked
 		input.unconditional_fired_pos_input = player_fire[0].unconditional_fired_pos;
 		input.clicked_mouse_rotation = my_char_angle;
@@ -311,6 +325,7 @@ void Game::draw_enemy_fire(bool* shoot_check, int i)
 {
 	if (player_list[i].gun_fired == true && *shoot_check == true) {
 		cout << "shoot check : " << *shoot_check << endl;
+		Mix_PlayChannel(-1, gunsound, 0);
 
 		// 아래 한 줄 지우고 이 곳에 총 그리기 - game.player_list[1].player_rotation
 		cout << player_list[i].player_rotation << endl;
@@ -540,7 +555,7 @@ void Game::drawIngame()
 	// test용
 	draw_enemy_fire(&p1_shoot_check, 1);
 	draw_enemy_fire(&p2_shoot_check, 2);
-	
+
 	drawBullet(0, my_char_angle, MyCharPos);
 	drawBullet(1, player_list[1].player_rotation, player_list[1].player_position);
 	drawBullet(2, player_list[2].player_rotation, player_list[2].player_position);
@@ -549,16 +564,13 @@ void Game::drawIngame()
 	drawFlash(1, player_list[1].player_rotation, player_list[1].player_position);
 	drawFlash(2, player_list[2].player_rotation, player_list[2].player_position);
 	
-	//cout << player_list[1].gun_fired << endl;
-	
-	drawCharacter(black_playerTex, MyCharPos, my_char_angle);
-	drawCharacter(red_playerTex, player_list[1].player_position, player_list[1].player_rotation);
-	drawCharacter(blue_playerTex, player_list[2].player_position, player_list[2].player_rotation);
+	drawCharacter(player_list[0].game_state, black_playerTex, MyCharPos, my_char_angle, player_list[0].hp <= 0);
+	drawCharacter(player_list[1].game_state, red_playerTex, player_list[1].player_position, player_list[1].player_rotation, player_list[1].hp <= 0);
+	drawCharacter(player_list[2].game_state, blue_playerTex, player_list[2].player_position, player_list[2].player_rotation, player_list[2].hp <= 0);
 
-	//cout << player_list[0].hp << endl;
-	drawHealthbar(player_list[0].hp, MyCharPos);
-	drawHealthbar(player_list[1].hp, player_list[1].player_position);
-	drawHealthbar(player_list[2].hp, player_list[2].player_position);
+	drawHealthbar(player_list[0].game_state, player_list[0].hp, player_list[0].player_position);
+	drawHealthbar(player_list[1].game_state, player_list[1].hp, player_list[1].player_position);
+	drawHealthbar(player_list[2].game_state, player_list[2].hp, player_list[2].player_position);
 
 	drawCrosshair();
 	drawWeaponList();
@@ -595,6 +607,8 @@ Game::Game()
 	black_playerTex = this->loadImage("Images/Player_Black.png");
 	red_playerTex = this->loadImage("Images/Player_Red.png");
 	blue_playerTex = this->loadImage("Images/Player_Blue.png");
+	
+	blood_Tex = this->loadImage("Images/Blood.png");
 	
 	targetTex = this->loadImage("Images/Target.png");
 	backTex = this->loadImage("Images/Space.jpg");

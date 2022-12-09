@@ -93,6 +93,8 @@ private:
 	SDL_Texture* red_playerTex;
 	SDL_Texture* blue_playerTex;
 
+	SDL_Texture* blood_Tex;
+
 	SDL_Texture* targetTex;
 	SDL_Texture* backTex;
 	SDL_Texture* groundTex;
@@ -191,8 +193,8 @@ private:
 
 	void drawBackground();
 	void drawGround();
-	void drawCharacter(SDL_Texture* tex, TF pos, float rot);
-	void drawHealthbar(int health, TF pos);
+	void drawCharacter(int playing, SDL_Texture* tex, TF pos, float rot, bool dead);
+	void drawHealthbar(int playing, int health, TF pos);
 	void drawBullet(int ,float char_angle, TF);
 	void drawFlash(int , float char_angle, TF pos);
 	void drawCrosshair();
@@ -214,7 +216,7 @@ public:
 	bool connect_server = false; //서버와 연결했다는 것을 game.cpp에서 인지하게끔. main에서 false해버리면 game.cpp에서 진행 안됨
 	bool server_connected = false; //서버와 연결하면 connect다시 안하게끔
 
-	char IPAdress[20] = "127.0.0.1";
+	char IPAdress[20] = "192.168.0.8";
 	char Port[10] = "9000";
 	char Name[20] = "wooyung";
 
