@@ -338,7 +338,7 @@ void Ingame::collide_check(PP* player, CI* input)
 	
 	// 플레이어와 bullet 간의 collide_check
 	int my_room_num = player->room_num;
-	char my_name[20];
+	char my_name[50];
 	strcpy(my_name, player->player_info.name[0]);
 	PP* another_player[MAX_CLIENT_IN_ROOM]{};
 	int cnt{1};
