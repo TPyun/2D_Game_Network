@@ -399,10 +399,10 @@ void Game::drawWeaponList()
 	SDL_RenderCopy(renderer, infinity_Tex, NULL, &destR);
 	
 	SDL_Color color = { 0, 0, 0 };
-	string tmp = to_string(rifle_ammo);
+	string tmp = to_string(player_list[0].bullet[1]);
 	char const* num_char = tmp.c_str();
 	drawText(WIDTH / 2 - 40, HEIGHT - 100, (char*)num_char, color);
-	tmp = to_string(sniper_ammo);
+	tmp = to_string(player_list[0].bullet[2]);
 	num_char = tmp.c_str();
 	drawText(WIDTH / 2 + 60, HEIGHT - 100, (char*)num_char, color);
 }
