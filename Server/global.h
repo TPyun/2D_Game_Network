@@ -8,7 +8,7 @@
 
 using namespace std;
 
-#define MAX_CLIENT_IN_ROOM 2
+#define MAX_CLIENT_IN_ROOM 1
 
 #define SERVERPORT	9000
 #define BUFSIZE		4096
@@ -31,6 +31,7 @@ typedef struct players_state {
 	int hp = 100;
 	int gun_type{};
 	int bullet[3]{};
+	TF velo{};
 	TI object_position{};
 	TF player_position{};
 	float player_rotation{};

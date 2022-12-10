@@ -271,7 +271,7 @@ void Game::drawLog()
 	char state[30]{};
 	for (int i = 0; i < 3; i++){
 		if (player_list[i].game_state != 3) {
-			strcpy(state, " UNKNOWN : NOT EXSIST");
+			strcpy(state, "UNKNOWN : NOT EXSIST");
 		}
 		else if (player_list[i].hp <= 0) {
 			strcpy(state, " : DEAD");
@@ -493,7 +493,7 @@ void Game::drawMenu()
 			text_in = "";
 		}
 		//Press button to add text
-		else if (event.type == SDL_TEXTINPUT) {
+		else if (event.type == SDL_TEXTINPUT && strlen(text_in.c_str()) < 10) {
 			text_in += event.text.text;
 			if (text_in_height == 100) {
 				strcpy(IPAdress, text_in.c_str());
@@ -594,8 +594,8 @@ void Game::drawIngame()
 
 void Game::update()
 {
-	_CrtSetBreakAlloc(165);
 	
+	//cout << player_list[0].hp << endl;
 	
 	SDL_PollEvent(&event);
 	if (event.type == SDL_QUIT) {
@@ -613,6 +613,9 @@ void Game::update()
 	}
 
 	updateRenderer();
+
+	_CrtDumpMemoryLeaks();
+
 }
 
 Game::Game()

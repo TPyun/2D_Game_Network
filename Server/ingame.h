@@ -12,7 +12,7 @@ class Ingame
 public:
 	CO objects[MAXITEM]{};
 	void create_object();
-	void character_movement(CI, TF&);
+	void character_movement(CI, TF&, TF&);
 	void collide_check(PP*, CI*);	// player_input, player, bullet_posion
 	void bullet_movement(float, PP*);
 

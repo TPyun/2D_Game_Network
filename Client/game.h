@@ -35,6 +35,7 @@ typedef struct players_state {
 	int hp = 100;
 	int gun_type{};
 	int bullet[3]{};
+	TF velo{};
 	TI object_position{};
 	TF player_position{};
 	float player_rotation{};
@@ -131,7 +132,6 @@ private:
 
 	TF MyVelo;
 	TF middle_pos;
-	
 
 	TI flash_size;
 
@@ -169,7 +169,7 @@ private:
 	int sniper_ammo = 5;
 
 	//메뉴화면 변수
-	string text_in = "";
+	string text_in;
 	char text_show[100]{};
 	int text_in_height{ 100 };
 

@@ -99,7 +99,7 @@ DWORD WINAPI ingame_thread(LPVOID n)
 					ingames[room_num].bullet_movement(player.second->input.clicked_mouse_rotation, player.second);
 					ingames[room_num].collide_check(player.second, &local_input);
 				}
-				ingames[room_num].character_movement(local_input, player.second->player_state.player_position);
+				ingames[room_num].character_movement(local_input, player.second->player_state.player_position, player.second->player_state.velo);
 
 
 				//cout << "moving" << endl;

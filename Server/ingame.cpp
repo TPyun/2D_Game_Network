@@ -92,16 +92,12 @@ void Ingame::create_object()		// ÃÊ±â ¸Ê ·£´ý »ý¼ºÇÏ´Â ÇÔ¼ö (¹ÙÀ§, º®, ¾ÆÀÌÅÛ, Ç
 	std::cout << "create_map »ý¼º ¿Ï·á" << std::endl;
 }
 
-void Ingame::character_movement(CI input, TF &pos)
+void Ingame::character_movement(CI input, TF &pos, TF &velo)
 {
-
 	//cout << "W: " << w_pressed << ", A: " << a_pressed << ", S: " << s_pressed << ", D: " << d_pressed << endl;
 
 	//float minimun_movement = 10.f;
-	float minimun_movement = 3.f;
-	TF velo;
-	velo.x = 0.f;
-	velo.y = 0.f;
+	float minimun_movement = 2.f;
 
 	if (input.w_Pressed) {
 		velo.y -= minimun_movement;
@@ -115,9 +111,9 @@ void Ingame::character_movement(CI input, TF &pos)
 	if (input.d_Pressed) {
 		velo.x += minimun_movement;
 	}
-
-	float MaxVelo = 150.f;
-	float MinVelo = -150.f;
+	
+	float MaxVelo = 3.f;
+	float MinVelo = -3.f;
 
 	//Limit Velocity
 	if (velo.x > MaxVelo) {
@@ -132,7 +128,7 @@ void Ingame::character_movement(CI input, TF &pos)
 	if (velo.y < MinVelo) {
 		velo.y = MinVelo;
 	}
-
+	
 	//Character Speed Friction
 	float friction = 0.1f;
 
@@ -156,6 +152,8 @@ void Ingame::character_movement(CI input, TF &pos)
 	if (-minimun_movement / 2 <= velo.y && velo.y <= minimun_movement / 2) {
 		velo.y = 0;
 	}
+
+	cout << velo.x << "   " << velo.y << endl;
 
 	//Keep Character Visible in Window
 	int ground_size = 2000;
@@ -201,21 +199,33 @@ void Ingame::collide_check(PP* player, CI* input)
 					obj.object_position.x - player->player_state.player_position.x > -28)
 				{
 					if (obj.object_position.y - player->player_state.player_position.y < 62
-						&& obj.object_position.y - player->player_state.player_position.y > 0)
+						&& obj.object_position.y - player->player_state.player_position.y > 0) {
 						input->s_Pressed = false;
+						player->player_state.velo.y = 0;
+					}
+						
 					if (obj.object_position.y - player->player_state.player_position.y > -35
-						&& obj.object_position.y - player->player_state.player_position.y < 0)
+						&& obj.object_position.y - player->player_state.player_position.y < 0) {
 						input->w_Pressed = false;
+						player->player_state.velo.y = 0;
+
+					}
 				}
 				if (obj.object_position.y - player->player_state.player_position.y < 53 &&
 					obj.object_position.y - player->player_state.player_position.y > -28)
 				{
 					if (obj.object_position.x - player->player_state.player_position.x < 62
-						&& obj.object_position.x - player->player_state.player_position.x > 0)
+						&& obj.object_position.x - player->player_state.player_position.x > 0) {
 						input->d_Pressed = false;
+						player->player_state.velo.x = 0;
+
+					}
 					if (obj.object_position.x - player->player_state.player_position.x > -37
-						&& obj.object_position.x - player->player_state.player_position.x < 0)
+						&& obj.object_position.x - player->player_state.player_position.x < 0) {
 						input->a_Pressed = false;
+						player->player_state.velo.x = 0;
+
+					}
 				}
 			}
 			//º®1 ¼¼·Î
@@ -226,22 +236,32 @@ void Ingame::collide_check(PP* player, CI* input)
 					obj.object_position.x - player->player_state.player_position.x > 8)
 				{
 					if (obj.object_position.y - player->player_state.player_position.y < 72
-						&& obj.object_position.y - player->player_state.player_position.y > 0)
+						&& obj.object_position.y - player->player_state.player_position.y > 0) {
 						input->s_Pressed = false;
+						player->player_state.velo.y = 0;
+					}
+					
 					if (obj.object_position.y - player->player_state.player_position.y > -72
-						&& obj.object_position.y - player->player_state.player_position.y < 0)
+						&& obj.object_position.y - player->player_state.player_position.y < 0) {
 						input->w_Pressed = false;
+						player->player_state.velo.y = 0;
+
+					}
 				}
 				if (obj.object_position.y - player->player_state.player_position.y < 64 &&
 					obj.object_position.y - player->player_state.player_position.y > -64)
 
 				{
 					if (obj.object_position.x - player->player_state.player_position.x < 72
-						&& obj.object_position.x - player->player_state.player_position.x > 30)
+						&& obj.object_position.x - player->player_state.player_position.x > 30) {
 						input->d_Pressed = false;
+						player->player_state.velo.x = 0;
+					}
 					if (obj.object_position.x - player->player_state.player_position.x > 5
-						&& obj.object_position.x - player->player_state.player_position.x < 20)
+						&& obj.object_position.x - player->player_state.player_position.x < 20) {
 						input->a_Pressed = false;
+						player->player_state.velo.x = 0;
+					}
 				}
 			}
 			//º®2 °¡·Î
@@ -251,21 +271,30 @@ void Ingame::collide_check(PP* player, CI* input)
 					obj.object_position.y - player->player_state.player_position.y > 8)
 				{
 					if (obj.object_position.x - player->player_state.player_position.x < 72
-						&& obj.object_position.x - player->player_state.player_position.x > 57)
+						&& obj.object_position.x - player->player_state.player_position.x > 57) {
 						input->d_Pressed = false;
+						player->player_state.velo.x = 0;
+					}
 					if (obj.object_position.x - player->player_state.player_position.x > -72
-						&& obj.object_position.x - player->player_state.player_position.x < -57)
+						&& obj.object_position.x - player->player_state.player_position.x < -57) {
 						input->a_Pressed = false;
+						player->player_state.velo.x = 0;
+
+					}
 				}
 				if (obj.object_position.x - player->player_state.player_position.x < 64 &&
 					obj.object_position.x - player->player_state.player_position.x > -64)
 				{
 					if (obj.object_position.y - player->player_state.player_position.y < 72
-						&& obj.object_position.y - player->player_state.player_position.y > 30)
+						&& obj.object_position.y - player->player_state.player_position.y > 30) {
 						input->s_Pressed = false;
+						player->player_state.velo.y = 0;
+					}
 					if (obj.object_position.y - player->player_state.player_position.y > 5
-						&& obj.object_position.y - player->player_state.player_position.y < 20)
+						&& obj.object_position.y - player->player_state.player_position.y < 20) {
 						input->w_Pressed = false;
+						player->player_state.velo.y = 0;
+					}
 				}
 			}
 

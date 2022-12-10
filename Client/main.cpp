@@ -140,12 +140,19 @@ DWORD WINAPI server_thread(LPVOID arg)
 			//cout << game.player_list[0].player_position.x << " / " << game.player_list[0].player_position.y << endl;
 			game.MyCharPos = game.player_list[0].player_position;
 		}
+		else if (game.curr_state == 2) {			//½ÂÆÐ
+			
+
+		
+		}
 	}
 	return 0;
 }
 
 int SDL_main(int argc, char* argv[])
 {
+	//_CrtSetBreakAlloc(0x016650E0);
+
 	cout << "Start" << endl;
 
 	int startTime, endTime;
@@ -167,9 +174,10 @@ int SDL_main(int argc, char* argv[])
 		}
 		//cout << game.delayTime << endl;
 
-		_CrtDumpMemoryLeaks();
 	}
 	//Á¾·á
 	cout << "End\n" << endl;
+	
 	return 0;
+
 }
