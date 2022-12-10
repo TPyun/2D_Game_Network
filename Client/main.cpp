@@ -139,11 +139,14 @@ DWORD WINAPI server_thread(LPVOID arg)
 			}
 			//cout << game.player_list[0].player_position.x << " / " << game.player_list[0].player_position.y << endl;
 			game.MyCharPos = game.player_list[0].player_position;
+
+			if (game.player_list[0].game_state > 3) {
+				game.curr_state = 2;
+				sock = socket_init(sock);
+			}
 		}
 		else if (game.curr_state == 2) {			//½ÂÆÐ
 			
-
-		
 		}
 	}
 	return 0;

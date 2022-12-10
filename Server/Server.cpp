@@ -81,6 +81,7 @@ DWORD WINAPI ingame_thread(LPVOID n)
 
 		//cout << "인게임 도는중 방번호: " << room_num << endl;
 		int connected_players_inroom{0};
+		int player_alive{ 0 };
 		start = clock();
 
 		for (auto& player : player_list) {
@@ -98,13 +99,27 @@ DWORD WINAPI ingame_thread(LPVOID n)
 				if (player.second->player_state.hp > 0) {
 					ingames[room_num].bullet_movement(player.second->input.clicked_mouse_rotation, player.second);
 					ingames[room_num].collide_check(player.second, &local_input);
+					player_alive++;
 				}
 				ingames[room_num].character_movement(local_input, player.second->player_state.player_position, player.second->player_state.velo);
-
-
-				//cout << "moving" << endl;
-				//cout << player.second->player_state.player_position.x << " " << player.second->player_state.player_position.y << endl;
-				// ingame.collide_bullet_check(player.second, );
+			}
+		}
+		if (player_alive == 1 && MAX_CLIENT_IN_ROOM != 1) {
+			for (auto& player : player_list) {
+				if (player.second == nullptr) {
+					continue;
+				}
+				if (player.second == &null_temp) {
+					continue;
+				}
+				if (player.second->room_num == room_num) {
+					if (player.second->player_state.hp > 0) {
+						player.second->player_state.game_state = 5;
+					}
+					else {
+						player.second->player_state.game_state = 4;
+					}
+				}
 			}
 		}
 		if (MAX_CLIENT_IN_ROOM - connected_players_inroom == MAX_CLIENT_IN_ROOM) {
@@ -347,13 +362,14 @@ DWORD WINAPI process_client(LPVOID arg)
 
 		//4:lose ==================================================================================================================
 		else if (player_profile.player_state.game_state == 4) {
-
+			
 		}
 
 
 
 		//5: win ==================================================================================================================
 		else if (player_profile.player_state.game_state == 5) {
+			
 		}
 	}
 	

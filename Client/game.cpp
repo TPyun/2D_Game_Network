@@ -436,7 +436,6 @@ void Game::drawWeaponList()
 	num_char = tmp.c_str();
 	drawText(WIDTH / 2 + 60, HEIGHT - 100, (char*)num_char, color);
 }
-
 void Game::drawObstacle()
 {
 	for (int i = 0; i < MAXITEM; i++) {
@@ -592,9 +591,27 @@ void Game::drawIngame()
 	drawLog();
 }
 
+void Game::drawEndgame()
+{
+	SDL_Color color = { 255, 255, 255 };
+	for (int i = 0; i < 3; i++) {
+		if (player_list[i].game_state == 5) {
+			drawText(200, 200, (char*)"Winner: ", color);
+			drawText(200, 200 + 30, player_info.name[i], color);
+		}
+		else {
+			drawText(200, 300, (char*)"Loser", color);
+			drawText(200, 300 + 30 * i, player_info.name[i], color);
+		}
+	}
+	
+	if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN) {
+		curr_state = 0;
+	}
+}
+
 void Game::update()
 {
-	
 	//cout << player_list[0].hp << endl;
 	
 	SDL_PollEvent(&event);
@@ -610,6 +627,9 @@ void Game::update()
 		mouseEvent_ingame();
 		keyEvent_ingame();
 		drawIngame();
+	}
+	else if (curr_state == 2) {
+		drawEndgame();
 	}
 
 	updateRenderer();
