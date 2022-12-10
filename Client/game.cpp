@@ -599,14 +599,16 @@ void Game::drawIngame()
 void Game::drawEndgame()
 {
 	SDL_Color color = { 255, 255, 255 };
+	int shown_player{ 0 };
 	for (int i = 0; i < 3; i++) {
 		if (player_list[i].game_state == 5) {
-			drawText(200, 200, (char*)"Winner: ", color);
+			drawText(200, 200, (char*)"Winner :  ", color);
 			drawText(200, 200 + 30, player_info.name[i], color);
 		}
-		else {
-			drawText(200, 300, (char*)"Loser", color);
-			drawText(200, 300 + 30 * i, player_info.name[i], color);
+		else if(player_list[i].game_state == 4) {
+			drawText(200, 300, (char*)"Loser :  ", color);
+			drawText(200, 330 + 30 * shown_player, player_info.name[i], color);
+			shown_player++;
 		}
 	}
 	
@@ -617,8 +619,6 @@ void Game::drawEndgame()
 
 void Game::update()
 {
-	//cout << player_list[0].hp << endl;
-	
 	SDL_PollEvent(&event);
 	if (event.type == SDL_QUIT) {
 		done = 1;
@@ -640,7 +640,6 @@ void Game::update()
 	updateRenderer();
 
 	_CrtDumpMemoryLeaks();
-
 }
 
 Game::Game()

@@ -34,8 +34,11 @@ DWORD WINAPI server_thread(LPVOID arg)
 		return 1;
 	// 소켓 생성
 	SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
-	if (sock == INVALID_SOCKET) err_quit("socket()");
+	if (sock == INVALID_SOCKET) {
+		err_quit("socket()");
 
+	}
+	
 	game.p1_shoot_check = true;
 	game.p2_shoot_check = true;
 	
@@ -55,10 +58,8 @@ DWORD WINAPI server_thread(LPVOID arg)
 				serveraddr.sin_port = htons(i);
 				retval = connect(sock, (struct sockaddr*)&serveraddr, sizeof(serveraddr));
 				if (retval == SOCKET_ERROR) {
-					err_quit("connect()");
-					game.connect_server = false;
-					cout << "\nconnect 못했어요. 정확한지 다시 한번 보셈" << endl;
-					continue;
+					//err_quit("connect()");
+					sock = socket_init(sock);
 				}
 				else {
 					game.server_connected = true; //한번만 connect하게끔
@@ -75,6 +76,7 @@ DWORD WINAPI server_thread(LPVOID arg)
 				if (retval == SOCKET_ERROR) {
 					err_display("send()");
 					sock = socket_init(sock);
+
 				}
 				game.find_match = false; //true인거 받고 false로 바꿔줌
 				cout << "\nfind_match 전송" << endl;
@@ -84,6 +86,7 @@ DWORD WINAPI server_thread(LPVOID arg)
 				if (retval == SOCKET_ERROR) {
 					err_display("recv()");
 					sock = socket_init(sock);
+					
 				}
 				else if (retval == 0) {
 					//예외처리
@@ -101,6 +104,7 @@ DWORD WINAPI server_thread(LPVOID arg)
 				if (retval == SOCKET_ERROR) {
 					err_display("recv()");
 					sock = socket_init(sock);
+
 				}
 				cout << "recv first player state" << endl;
 				cout << game.player_list[0].game_state << endl;
@@ -124,6 +128,7 @@ DWORD WINAPI server_thread(LPVOID arg)
 				err_display("recv()");
 				//예외처리
 				sock = socket_init(sock);
+				game.curr_state = 0;
 
 			}
 			for (int i = 0; i < MAXITEM; i++) {
@@ -141,12 +146,11 @@ DWORD WINAPI server_thread(LPVOID arg)
 			game.MyCharPos = game.player_list[0].player_position;
 
 			if (game.player_list[0].game_state > 3) {
-				game.curr_state = 2;
 				sock = socket_init(sock);
+				game.curr_state = 2;
 			}
 		}
 		else if (game.curr_state == 2) {			//승패
-			
 		}
 	}
 	return 0;

@@ -190,7 +190,6 @@ private:
 	void mouseEvent_ingame();
 
 	double calcAngleFromPoints(TF first_point, TF second_point);
-	int Timer(int start_time, int delay);
 
 	void drawBackground();
 	void drawGround();
@@ -210,6 +209,7 @@ private:
 
 	void mouseEvent_menu();
 	void collide_check(float a, float b, float c, float d, float e, float f, float g, float h);
+	
 public:
 	float delayTime;
 	int done = 0;
@@ -219,7 +219,6 @@ public:
 	bool connect_server = false; //서버와 연결했다는 것을 game.cpp에서 인지하게끔. main에서 false해버리면 game.cpp에서 진행 안됨
 	bool server_connected = false; //서버와 연결하면 connect다시 안하게끔
 
-	//char IPAdress[20] = "192.168.0.8";
 	char IPAdress[20] = "127.0.0.1";
 	char Port[10] = "9000";
 	char Name[20] = "wooyung";
@@ -233,7 +232,6 @@ public:
 	
 	//bool gun_fired = false;
 	TF mouse_point;
-
 	TF MyCharPos;
 
 	float my_char_angle = 0.f;
@@ -246,6 +244,8 @@ public:
 
 	Game();
 	~Game();
+	
+	int Timer(int start_time, int delay);
 	void draw_enemy_fire(bool* shoot_check, int);
 	void update();
 };

@@ -130,7 +130,6 @@ SOCKET socket_init(SOCKET sock)
 	game.waiting_match = false;
 	game.connect_server = false;
 	game.server_connected = false;
-	game.curr_state = 0;
 	closesocket(sock);
 	// 윈속 초기화
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) {

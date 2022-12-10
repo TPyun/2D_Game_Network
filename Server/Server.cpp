@@ -12,7 +12,7 @@ char buffer[BUFSIZE]; // 가변 길이 데이터
 //들어온 순서
 int hostnum;
 
-map<int, Ingame> ingames;
+map<int,Ingame> ingames;
 Matching matching;
 
 //map<int, char*> client_thread_list;
@@ -29,11 +29,11 @@ DWORD WINAPI matching_thread(LPVOID arg)
 {
 	//ingame_room map함수 관리
 	int room_num = 1;
-
+	
 	//3player가 find_match를 눌렀는지 확인
 	while (1) {
 		int disconnected_players_inserver{};
-
+		
 		for (auto& player : player_list) {
 			if (player.second == nullptr) {
 			}
@@ -47,16 +47,17 @@ DWORD WINAPI matching_thread(LPVOID arg)
 				player_list.erase(player++);
 			}
 			disconnected_players_inserver = 0;
+			room_num = 1;
 		}
-		if (!matching.find_match_3p(room_num)) {
+		if (!matching.find_match_3p(room_num)){
 			Sleep(100);
 			continue;
 		}
 		else {
 			//ingame_thread생성
-
+			
 			HANDLE  ingamethread;
-			ingamethread = CreateThread(NULL, 0, ingame_thread, (LPVOID)room_num, 0, NULL);
+			ingamethread = CreateThread(NULL, 0, ingame_thread,(LPVOID)room_num, 0, NULL);
 			room_num++;
 		}
 	}
@@ -84,13 +85,13 @@ DWORD WINAPI ingame_thread(LPVOID n)
 	while (1) {
 		//cout << "서버 전체 인원 수: "<< player_list.size() << endl;
 		//cout << "인게임 도는중 방번호: " << room_num << endl;
-		int connected_players_inroom{ 0 };
+		int connected_players_inroom{0};
 		int player_alive{ 0 };
 		start = clock();
-
+		
 		for (auto& player : player_list) {
 			//cout << player.first << endl;
-
+			
 			if (player.second == nullptr) {
 				continue;
 			}
@@ -102,7 +103,7 @@ DWORD WINAPI ingame_thread(LPVOID n)
 				player.second->player_state.gun_type = player.second->input.gun_type;
 				CI local_input = player.second->input;
 				if (player.second->player_state.hp > 0) {
-
+					player_alive++;
 					ingames[room_num].bullet_movement(player.second->input.clicked_mouse_rotation, player.second);
 					ingames[room_num].collide_check(player.second, &local_input);
 					if (player.second->input.clicked == true)
@@ -190,8 +191,8 @@ DWORD WINAPI process_client(LPVOID arg)
 	name_buf[retval] = '\0';
 
 	cout << "name : " << name_buf << endl;
-	strcpy(player_profile.player_info.name[0], name_buf);
-
+ 	strcpy(player_profile.player_info.name[0], name_buf);
+	
 	//보낼 player_list
 	PS local_player_list[3]{};
 
@@ -379,19 +380,44 @@ DWORD WINAPI process_client(LPVOID arg)
 
 
 
-		//4:lose ==================================================================================================================
-		else if (player_profile.player_state.game_state == 4) {
+		//4:lose 5: win ===============================================================================================
+		else if (player_profile.player_state.game_state == 4 || player_profile.player_state.game_state == 5) {
 
-		}
+			// 키입력 받기
+			retval = recv(client_sock, (char*)&player_profile.input, sizeof(CI), MSG_WAITALL);
+			if (retval == SOCKET_ERROR) {
+				err_display("recv()");
+				break;
+			}
+			else if (retval == 0) {
+				//예외처리
+			}
 
+			//local에 현재 pp에 있는 ps 넣어주기
+			local_player_list[0] = player_profile.player_state;
+			int i = 1;
+			for (auto& player : player_list) {
+				if (player.second == nullptr) {
+					continue;
+				}
+				if (player.second == &null_temp) {
+					//cout << "null ingame" << endl;
+					//player_list.erase(player.first);
+				}
+				else if (player.second->room_num == (int)player_profile.room_num && player.second->player_info.name[0] != player_profile.player_info.name[0]) {
+					local_player_list[i] = player.second->player_state;
+					++i;
+				}
+			}
 
-
-		//5: win ==================================================================================================================
-		else if (player_profile.player_state.game_state == 5) {
-
+			retval = send(client_sock, (char*)&local_player_list, sizeof(PS) * 3, 0);
+			if (retval == SOCKET_ERROR) {
+				err_display("send()");
+				break;
+			}
 		}
 	}
-
+	
 
 	for (auto& player : player_list) {
 		if (player.first == port) {
@@ -473,3 +499,4 @@ int main(int argc, char* argv[])
 	WSACleanup();
 	return 0;
 }
+	
