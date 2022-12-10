@@ -18,8 +18,6 @@ using namespace std;
 #define HEIGHT 720
 #define MAXITEM 50
 
-//#define WIDTH 1200
-//#define HEIGHT 900
 
 typedef struct TWO_Floats {
 	float x;

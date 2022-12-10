@@ -73,25 +73,6 @@ void send_name(SOCKET sock, Game* game)	// 플레이어 이름 보내기
 //	gun_type = gun;
 //}
 
-//void mouse_input(SOCKET sock)
-//{
-//	if (game.gun_fired == true && shoot_check == true) {
-//		cout << "shoot!" << endl;
-//		retval = send(sock, (char*)&bullet, sizeof(char), 0);
-//		if (retval == SOCKET_ERROR) {
-//			err_display("mouse_pressed()");
-//		}
-//		retval = send(sock, (char*)&game.mouse_point, sizeof(TF), 0);
-//		if (retval == SOCKET_ERROR) {
-//			err_display("mouse_pressed()");
-//		}
-//	}
-//	shoot_check = false;
-//	if (game.gun_fired == false && shoot_check == false) {
-//		shoot_check = true;
-//	}
-//}
-
 void recv_created_object(SOCKET sock)
 {
 	retval = recv(sock, (char*)&game.created_objects, sizeof(game.created_objects), MSG_WAITALL);

@@ -4,16 +4,12 @@
 #include "client.h"
 #include <sstream>
 
-#define _CRTDBG_MAP_ALLOC
-#include <cstdlib>
+
 #include <crtdbg.h>
 
-#ifdef _DEBUG
-#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
-// Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
-// allocations to be of _CLIENT_BLOCK type
-#else
-#define DBG_NEW new
+#if _DEBUG
+#define new new(_NORMAL_BLOCK,__FILE__,__LINE__)
+#define malloc(s) _malloc_dbg(s,_NORMAL_BLOCK,__FILE__,__LINE__)
 #endif
 
 
@@ -158,7 +154,8 @@ DWORD WINAPI server_thread(LPVOID arg)
 
 int SDL_main(int argc, char* argv[])
 {
-	//_CrtSetBreakAlloc(0x016650E0);
+	//_CrtSetBreakAlloc(163);
+
 
 	cout << "Start" << endl;
 
@@ -184,7 +181,7 @@ int SDL_main(int argc, char* argv[])
 	}
 	//Á¾·á
 	cout << "End\n" << endl;
-	
+	//_CrtDumpMemoryLeaks();
 	return 0;
 
 }

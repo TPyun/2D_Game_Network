@@ -19,7 +19,7 @@ void Game::updateRenderer()
 
 void Game::initVariables()
 {
-	this->window = nullptr;
+	
 }
 void Game::initWindow()
 {
@@ -388,8 +388,8 @@ void Game::drawText(int x, int y, char text[], SDL_Color color)
 
 	SDL_Rect r = { x, y, surface->w, surface->h };
 	SDL_RenderCopy(renderer, texture, NULL, &r);
-	//SDL_DestroyTexture(texture);
-	//TTF_CloseFont(font);
+	
+	SDL_DestroyTexture(texture);
 }
 void Game::drawWeaponList()
 {
@@ -624,7 +624,7 @@ void Game::update()
 		done = 1;
 	}
 	clearRenderer();
-
+	
 	if (curr_state == 0) {
 		drawMenu();
 	}
@@ -638,8 +638,8 @@ void Game::update()
 	}
 
 	updateRenderer();
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-	_CrtDumpMemoryLeaks();
 }
 
 Game::Game()
@@ -691,6 +691,7 @@ Game::Game()
 Game::~Game()
 {
 	Mix_FreeChunk(gunsound);
+	TTF_CloseFont(font);
 
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
