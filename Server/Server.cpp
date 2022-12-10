@@ -82,7 +82,6 @@ DWORD WINAPI ingame_thread(LPVOID n)
 		//cout << "인게임 도는중 방번호: " << room_num << endl;
 		int connected_players_inroom{0};
 		start = clock();
-		
 
 		for (auto& player : player_list) {
 			//cout << player.first << endl;
@@ -94,7 +93,7 @@ DWORD WINAPI ingame_thread(LPVOID n)
 			}
 			if (player.second->room_num == room_num) {
 				++connected_players_inroom;
-				
+				player.second->player_state.gun_type = player.second->input.gun_type;
 				CI local_input = player.second->input;
 				if (player.second->player_state.hp > 0) {
 					ingames[room_num].bullet_movement(player.second->input.clicked_mouse_rotation, player.second);

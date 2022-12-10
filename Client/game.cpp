@@ -685,6 +685,7 @@ void Game::keyEvent_ingame()
 		else if (event.key.keysym.sym == SDLK_3) {
 			weapon_type = 2;
 		}
+		input.gun_type = weapon_type;
 	}
 
 	//Fix keyboard status when key pressed

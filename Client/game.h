@@ -65,6 +65,7 @@ typedef struct client_input {
 	float mouse_rotation;
 	float clicked_mouse_rotation;
 	TF unconditional_fired_pos_input{};
+	int gun_type;
 }CI;
 
 typedef struct players_fire {
@@ -217,7 +218,8 @@ public:
 	bool connect_server = false; //서버와 연결했다는 것을 game.cpp에서 인지하게끔. main에서 false해버리면 game.cpp에서 진행 안됨
 	bool server_connected = false; //서버와 연결하면 connect다시 안하게끔
 
-	char IPAdress[20] = "192.168.0.8";
+	//char IPAdress[20] = "192.168.0.8";
+	char IPAdress[20] = "127.0.0.1";
 	char Port[10] = "9000";
 	char Name[20] = "wooyung";
 
@@ -240,7 +242,6 @@ public:
 	client_input input;
 	PF player_fire[3];
 	PI player_info;
-	CI ci;
 
 	Game();
 	~Game();

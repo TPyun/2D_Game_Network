@@ -8,7 +8,7 @@
 
 using namespace std;
 
-#define MAX_CLIENT_IN_ROOM 1
+#define MAX_CLIENT_IN_ROOM 2
 
 #define SERVERPORT	9000
 #define BUFSIZE		4096
@@ -54,6 +54,7 @@ typedef struct client_input {
 	float mouse_rotation;
 	float clicked_mouse_rotation;
 	TF uncounditional_fired_pos_input{};
+	int gun_type;
 }CI;
 
 typedef struct players_profile {

@@ -357,7 +357,7 @@ void Ingame::collide_check(PP* player, CI* input)
 			}
 		}
 	}
-
+	
 	if (show_bullet == true)
 	{
 		for (int i = 0; i < cnt-1; ++i)
@@ -371,8 +371,12 @@ void Ingame::collide_check(PP* player, CI* input)
 				player->player_state.collide = true;
 				player->player_state.bullet_pos.x = -float(ground_size);
 				player->player_state.bullet_pos.y = -float(ground_size);
-				
-				another_player[i]->player_state.hp -= 10;
+				if(player->player_state.gun_type == 0)
+					another_player[i]->player_state.hp -= 5;
+				else if (player->player_state.gun_type == 1)
+					another_player[i]->player_state.hp -= 10;
+				else if (player->player_state.gun_type == 2)
+					another_player[i]->player_state.hp -= 20;
 			}
 		}
 	}
