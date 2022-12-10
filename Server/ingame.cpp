@@ -153,7 +153,7 @@ void Ingame::character_movement(CI input, TF &pos, TF &velo)
 		velo.y = 0;
 	}
 
-	cout << velo.x << "   " << velo.y << endl;
+	//cout << velo.x << "   " << velo.y << endl;
 
 	//Keep Character Visible in Window
 	int ground_size = 2000;
@@ -489,6 +489,7 @@ void Ingame::bullet_movement(float fired_angle, PP* player)
 	{
 		player->player_state.collide = false;
 		show_bullet = true;
+
 	}
 }
 

@@ -69,22 +69,27 @@ DWORD WINAPI ingame_thread(LPVOID n)
 	int room_num = (int)n;
 	cout << room_num << " : 게임을 시작하지." << endl;
 	ingames[room_num].create_object();
-	
+
 	cout << "맵생성 완료" << endl;
 	int i{};
 	int start{};
 	int end{};
 	int delay{};
-
+	int cnt = 0;
+	bool bullet_cnt[MAX_CLIENT_IN_ROOM] = {};
+	for (int i = 0; i < MAX_CLIENT_IN_ROOM; ++i)
+	{
+		bullet_cnt[i] = false;
+	}
 	while (1) {
 		//cout << "서버 전체 인원 수: "<< player_list.size() << endl;
-
 		//cout << "인게임 도는중 방번호: " << room_num << endl;
 		int connected_players_inroom{0};
 		start = clock();
-
+		
 		for (auto& player : player_list) {
 			//cout << player.first << endl;
+			
 			if (player.second == nullptr) {
 				continue;
 			}
@@ -96,8 +101,23 @@ DWORD WINAPI ingame_thread(LPVOID n)
 				player.second->player_state.gun_type = player.second->input.gun_type;
 				CI local_input = player.second->input;
 				if (player.second->player_state.hp > 0) {
+					
 					ingames[room_num].bullet_movement(player.second->input.clicked_mouse_rotation, player.second);
 					ingames[room_num].collide_check(player.second, &local_input);
+					if (player.second->input.clicked == true)
+					{
+						if (bullet_cnt[cnt] == false)
+						{
+							cout << cnt << endl;
+							player.second->player_state.bullet[player.second->player_state.gun_type]--;
+							bullet_cnt[cnt] = true;
+						}
+					}
+					if (player.second->input.clicked == false)
+					{
+						bullet_cnt[cnt] = false;
+					}
+					cnt++;
 				}
 				ingames[room_num].character_movement(local_input, player.second->player_state.player_position, player.second->player_state.velo);
 
@@ -117,7 +137,7 @@ DWORD WINAPI ingame_thread(LPVOID n)
 		if (delay > 0) {
 			Sleep(delay);
 		}
-
+		cnt = 0;
 	}
 	return 0;
 }
