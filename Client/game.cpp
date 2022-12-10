@@ -302,36 +302,41 @@ void Game::mouseEvent_ingame()
 	//input.unconditional_fired_pos_input = player_fire[0].uncounditional_fired_pos;
 
 	//마우스 왼 버튼 누르면 발사
-	if (event.type == SDL_MOUSEBUTTONDOWN && player_list[0].hp > 0) {
-		//서버에 전송할 struct 변수에 마우스 좌표 저장, clicked
-		input.unconditional_fired_pos_input = player_fire[0].unconditional_fired_pos;
-		input.clicked_mouse_rotation = my_char_angle;
-		if (event.button.button == SDL_BUTTON_LEFT && player_fire[0].gun_fired == false) {
-			input.clicked = true; 
-			cout << "fire" << endl;
+
+	if (weapon_type == 0 || player_list[0].bullet[weapon_type] > 0)
+	{
+		if (event.type == SDL_MOUSEBUTTONDOWN && player_list[0].hp > 0) {
+			//서버에 전송할 struct 변수에 마우스 좌표 저장, clicked
 			input.unconditional_fired_pos_input = player_fire[0].unconditional_fired_pos;
 			input.clicked_mouse_rotation = my_char_angle;
-			cout << "클릭 마우스 rotation : " << input.clicked_mouse_rotation << endl;
-			cout << "총알 시작위치 x : " << input.unconditional_fired_pos_input.x << "\ty :" << input.unconditional_fired_pos_input.y << endl;
-			cout << "화면상의 위치 x : " << player_fire[0].bulletPos.x << "\ty : " << player_fire[0].bulletPos.y << endl;
-			player_fire[0].gun_fired = true;
-			fired_time = clock();
+			if (event.button.button == SDL_BUTTON_LEFT && player_fire[0].gun_fired == false) {
+				input.clicked = true;
+				cout << "fire" << endl;
+				input.unconditional_fired_pos_input = player_fire[0].unconditional_fired_pos;
+				input.clicked_mouse_rotation = my_char_angle;
+				cout << "클릭 마우스 rotation : " << input.clicked_mouse_rotation << endl;
+				cout << "총알 시작위치 x : " << input.unconditional_fired_pos_input.x << "\ty :" << input.unconditional_fired_pos_input.y << endl;
+				cout << "화면상의 위치 x : " << player_fire[0].bulletPos.x << "\ty : " << player_fire[0].bulletPos.y << endl;
+				player_fire[0].gun_fired = true;
+				fired_time = clock();
 
-			player_fire[0].show_bullet = true;
-			player_fire[0].gun_flash = true;
+				player_fire[0].show_bullet = true;
+				player_fire[0].gun_flash = true;
 
-			Mix_PlayChannel(-1, gunsound, 0);
+				Mix_PlayChannel(-1, gunsound, 0);
+			}
 		}
-	}
-	//총이 발사되고 타이머 작동시켜서 1초 뒤 다시 발사 가능
-	if (player_fire[0].gun_fired) {
-		if (Timer(fired_time, 700) == 1) {
-			input.clicked = false;
-			player_fire[0].gun_fired = false;
-			fired_time = 0;
-		}
-		else {
 
+		//총이 발사되고 타이머 작동시켜서 1초 뒤 다시 발사 가능
+		if (player_fire[0].gun_fired) {
+			if (Timer(fired_time, 700) == 1) {
+				input.clicked = false;
+				player_fire[0].gun_fired = false;
+				fired_time = 0;
+			}
+			else {
+
+			}
 		}
 	}
 }

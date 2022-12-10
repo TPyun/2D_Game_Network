@@ -12,7 +12,7 @@ char buffer[BUFSIZE]; // 가변 길이 데이터
 //들어온 순서
 int hostnum;
 
-map<int,Ingame> ingames;
+map<int, Ingame> ingames;
 Matching matching;
 
 //map<int, char*> client_thread_list;
@@ -29,11 +29,11 @@ DWORD WINAPI matching_thread(LPVOID arg)
 {
 	//ingame_room map함수 관리
 	int room_num = 1;
-	
+
 	//3player가 find_match를 눌렀는지 확인
 	while (1) {
 		int disconnected_players_inserver{};
-		
+
 		for (auto& player : player_list) {
 			if (player.second == nullptr) {
 			}
@@ -48,15 +48,15 @@ DWORD WINAPI matching_thread(LPVOID arg)
 			}
 			disconnected_players_inserver = 0;
 		}
-		if (!matching.find_match_3p(room_num)){
+		if (!matching.find_match_3p(room_num)) {
 			Sleep(100);
 			continue;
 		}
 		else {
 			//ingame_thread생성
-			
+
 			HANDLE  ingamethread;
-			ingamethread = CreateThread(NULL, 0, ingame_thread,(LPVOID)room_num, 0, NULL);
+			ingamethread = CreateThread(NULL, 0, ingame_thread, (LPVOID)room_num, 0, NULL);
 			room_num++;
 		}
 	}
@@ -69,23 +69,28 @@ DWORD WINAPI ingame_thread(LPVOID n)
 	int room_num = (int)n;
 	cout << room_num << " : 게임을 시작하지." << endl;
 	ingames[room_num].create_object();
-	
+
 	cout << "맵생성 완료" << endl;
 	int i{};
 	int start{};
 	int end{};
 	int delay{};
-
+	int cnt = 0;
+	bool bullet_cnt[MAX_CLIENT_IN_ROOM] = {};
+	for (int i = 0; i < MAX_CLIENT_IN_ROOM; ++i)
+	{
+		bullet_cnt[i] = false;
+	}
 	while (1) {
 		//cout << "서버 전체 인원 수: "<< player_list.size() << endl;
-
 		//cout << "인게임 도는중 방번호: " << room_num << endl;
-		int connected_players_inroom{0};
+		int connected_players_inroom{ 0 };
 		int player_alive{ 0 };
 		start = clock();
 
 		for (auto& player : player_list) {
 			//cout << player.first << endl;
+
 			if (player.second == nullptr) {
 				continue;
 			}
@@ -97,9 +102,23 @@ DWORD WINAPI ingame_thread(LPVOID n)
 				player.second->player_state.gun_type = player.second->input.gun_type;
 				CI local_input = player.second->input;
 				if (player.second->player_state.hp > 0) {
+
 					ingames[room_num].bullet_movement(player.second->input.clicked_mouse_rotation, player.second);
 					ingames[room_num].collide_check(player.second, &local_input);
-					player_alive++;
+					if (player.second->input.clicked == true)
+					{
+						if (bullet_cnt[cnt] == false)
+						{
+							cout << cnt << endl;
+							player.second->player_state.bullet[player.second->player_state.gun_type]--;
+							bullet_cnt[cnt] = true;
+						}
+					}
+					if (player.second->input.clicked == false)
+					{
+						bullet_cnt[cnt] = false;
+					}
+					cnt++;
 				}
 				ingames[room_num].character_movement(local_input, player.second->player_state.player_position, player.second->player_state.velo);
 			}
@@ -132,7 +151,7 @@ DWORD WINAPI ingame_thread(LPVOID n)
 		if (delay > 0) {
 			Sleep(delay);
 		}
-
+		cnt = 0;
 	}
 	return 0;
 }
@@ -171,8 +190,8 @@ DWORD WINAPI process_client(LPVOID arg)
 	name_buf[retval] = '\0';
 
 	cout << "name : " << name_buf << endl;
- 	strcpy(player_profile.player_info.name[0], name_buf);
-	
+	strcpy(player_profile.player_info.name[0], name_buf);
+
 	//보낼 player_list
 	PS local_player_list[3]{};
 
@@ -221,7 +240,7 @@ DWORD WINAPI process_client(LPVOID arg)
 					continue;
 				}
 				cout << "존재하는 포트번호 " << (int)player.first << endl;
-				
+
 				if (player.second->room_num == player_profile.room_num)		//같은 방에 있는 사람
 					player.second->player_info.player_color[other_player_num] = other_player_num;		//색깔 넣기
 				if (player.second->player_info.name[0] != player_profile.player_info.name[0]) {		//본인은 [0]에 있으니 제외
@@ -282,7 +301,7 @@ DWORD WINAPI process_client(LPVOID arg)
 					}
 				}
 			}
-			
+
 			retval = send(client_sock, (char*)&local_player_list, sizeof(PS) * 3, 0);
 			if (retval == SOCKET_ERROR) {
 				err_display("send()");
@@ -309,7 +328,7 @@ DWORD WINAPI process_client(LPVOID arg)
 			player_profile.player_state.gun_fired = player_profile.input.clicked;
 			player_profile.player_state.player_rotation = player_profile.input.mouse_rotation;
 			player_profile.unconditinal_fired_pos = player_profile.input.uncounditional_fired_pos_input;
-			
+
 			if (player_profile.player_state.gun_fired == true && bullet_check == true) {
 				player_profile.player_state.player_rotation = player_profile.input.mouse_rotation;
 				cout << player_profile.player_state.player_rotation << endl;
@@ -357,22 +376,22 @@ DWORD WINAPI process_client(LPVOID arg)
 			cout << "Health: " << player_profile.player_state.hp << endl;*/
 		}
 
-		
+
 
 
 		//4:lose ==================================================================================================================
 		else if (player_profile.player_state.game_state == 4) {
-			
+
 		}
 
 
 
 		//5: win ==================================================================================================================
 		else if (player_profile.player_state.game_state == 5) {
-			
+
 		}
 	}
-	
+
 
 	for (auto& player : player_list) {
 		if (player.first == port) {
@@ -454,4 +473,3 @@ int main(int argc, char* argv[])
 	WSACleanup();
 	return 0;
 }
-	
