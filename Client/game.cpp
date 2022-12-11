@@ -629,7 +629,7 @@ void Game::drawEndgame()
 			drawText(200, 330 + 30 * shown_player, player_info.name[i], color);
 			shown_player++;
 		}
-	}
+	}		
 	
 	if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN) {
 		curr_state = 0;
@@ -717,7 +717,6 @@ Game::~Game()
 	TTF_Quit();
 	SDL_Quit();
 }
-
 
 void Game::keyEvent_ingame()
 {

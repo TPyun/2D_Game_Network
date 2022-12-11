@@ -257,7 +257,7 @@ void Ingame::collide_check(PP* player, CI* input)
 						input->d_Pressed = false;
 						player->player_state.velo.x = 0;
 					}
-					if (obj.object_position.x - player->player_state.player_position.x > 5
+					if (obj.object_position.x - player->player_state.player_position.x > 0
 						&& obj.object_position.x - player->player_state.player_position.x < 20) {
 						input->a_Pressed = false;
 						player->player_state.velo.x = 0;
@@ -290,7 +290,7 @@ void Ingame::collide_check(PP* player, CI* input)
 						input->s_Pressed = false;
 						player->player_state.velo.y = 0;
 					}
-					if (obj.object_position.y - player->player_state.player_position.y > 5
+					if (obj.object_position.y - player->player_state.player_position.y > 0
 						&& obj.object_position.y - player->player_state.player_position.y < 20) {
 						input->w_Pressed = false;
 						player->player_state.velo.y = 0;
@@ -429,7 +429,10 @@ void Ingame::collide_check(PP* player, CI* input)
 					}
 					else {
 						show_bullet = false;
-						cout << "collide rok!" << endl;
+						cout << "collide rock!" << endl;
+						cout << player->player_state.bullet_pos.x << " " << player->player_state.bullet_pos.y << endl;
+						cout << obj.object_position.x << " " << obj.object_position.y << endl;
+						cout << "=============================" << endl;
 						player->player_state.collide = true;
 						player->player_state.bullet_pos.x = -float(ground_size);
 						player->player_state.bullet_pos.y = -float(ground_size);
@@ -442,18 +445,23 @@ void Ingame::collide_check(PP* player, CI* input)
 					}
 					show_bullet = false;
 					cout << "collide 세로벽!" << endl;
+					cout << player->player_state.bullet_pos.x << " " << player->player_state.bullet_pos.y << endl;
+					cout << obj.object_position.x << " " << obj.object_position.y << endl;
+					cout << "=============================" << endl;
 					player->player_state.collide = true;
 					player->player_state.bullet_pos.x = -float(ground_size);
 					player->player_state.bullet_pos.y = -float(ground_size);
 				}
 				else if (obj.object_type == 2)	// 가로 벽
 				{
-
 					if (player->player_state.bullet_pos.y - obj.object_position.y > 1) {
 						continue;
 					}
 					show_bullet = false;
 					cout << "collide 가로벽!" << endl;
+					cout << player->player_state.bullet_pos.x << " " << player->player_state.bullet_pos.y << endl;
+					cout << obj.object_position.x << " " << obj.object_position.y << endl;
+					cout << "=============================" << endl;
 					player->player_state.collide = true;
 					player->player_state.bullet_pos.x = -float(ground_size);
 					player->player_state.bullet_pos.y = -float(ground_size);

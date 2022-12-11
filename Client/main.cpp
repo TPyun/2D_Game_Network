@@ -107,6 +107,8 @@ DWORD WINAPI server_thread(LPVOID arg)
 				cout << game.player_list[1].game_state << endl;
 				cout << game.player_list[2].game_state << endl;
 				
+
+				game.weapon_type = 0;
 				game.curr_state = 1;
 			}
 		}
@@ -154,9 +156,6 @@ DWORD WINAPI server_thread(LPVOID arg)
 
 int SDL_main(int argc, char* argv[])
 {
-	//_CrtSetBreakAlloc(163);
-
-
 	cout << "Start" << endl;
 
 	int startTime, endTime;
@@ -181,7 +180,7 @@ int SDL_main(int argc, char* argv[])
 	}
 	//Á¾·á
 	cout << "End\n" << endl;
-	//_CrtDumpMemoryLeaks();
+	
 	return 0;
 
 }
