@@ -82,6 +82,12 @@ DWORD WINAPI ingame_thread(LPVOID n)
 	{
 		bullet_cnt[i] = false;
 	}
+	for (auto& player : player_list) {
+		if (player.second->room_num == room_num) {
+			ingames[room_num].rand_player_pos(player.second);
+		}
+
+	}
 	while (1) {
 		//cout << "서버 전체 인원 수: "<< player_list.size() << endl;
 		//cout << "인게임 도는중 방번호: " << room_num << endl;

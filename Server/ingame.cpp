@@ -84,14 +84,135 @@ void Ingame::create_object()		// ÃÊ±â ¸Ê ·£´ý »ý¼ºÇÏ´Â ÇÔ¼ö (¹ÙÀ§, º®, ¾ÆÀÌÅÛ, Ç
 		}
 	}
 	int i = 0;
-	for (CO obj : objects) {
-		cout << i << " " << obj.object_type << " " << obj.object_position.x << " " << obj.object_position.y << endl;
-		i++;
-	}
 
-	std::cout << "create_map »ý¼º ¿Ï·á" << std::endl;
 }
 
+void Ingame::rand_player_pos(PP* player)
+{
+	
+	bool object_checker = true;
+	while (1) {
+		player->player_state.player_position.x = player_pos_rand(dre);
+		player->player_state.player_position.y = player_pos_rand(dre);
+		object_checker = true;
+		for (auto& obj : objects)
+		{
+			if (abs(obj.object_position.x - player->player_state.player_position.x) < 100
+				&& abs(obj.object_position.y - player->player_state.player_position.y) < 100)
+			{
+				//µ¹
+				if (obj.object_type == 0)
+				{
+					if (obj.object_position.x - player->player_state.player_position.x < 53 &&
+						obj.object_position.x - player->player_state.player_position.x > -28)
+					{
+						if (obj.object_position.y - player->player_state.player_position.y < 62
+							&& obj.object_position.y - player->player_state.player_position.y > 0) {
+							object_checker = false;
+							player->player_state.velo.y = 0;
+						}
+
+						if (obj.object_position.y - player->player_state.player_position.y > -35
+							&& obj.object_position.y - player->player_state.player_position.y < 0) {
+							object_checker = false;
+							player->player_state.velo.y = 0;
+
+						}
+					}
+					if (obj.object_position.y - player->player_state.player_position.y < 53 &&
+						obj.object_position.y - player->player_state.player_position.y > -28)
+					{
+						if (obj.object_position.x - player->player_state.player_position.x < 62
+							&& obj.object_position.x - player->player_state.player_position.x > 0) {
+							object_checker = false;
+							player->player_state.velo.x = 0;
+
+						}
+						if (obj.object_position.x - player->player_state.player_position.x > -37
+							&& obj.object_position.x - player->player_state.player_position.x < 0) {
+							object_checker = false;
+							player->player_state.velo.x = 0;
+
+						}
+					}
+				}
+				//º®1 ¼¼·Î
+				if (obj.object_type == 1)
+				{
+					//cout << obj.object_position.x << " / " << obj.object_position.y << endl;
+					if (obj.object_position.x - player->player_state.player_position.x < 64 &&
+						obj.object_position.x - player->player_state.player_position.x > 8)
+					{
+						if (obj.object_position.y - player->player_state.player_position.y < 72
+							&& obj.object_position.y - player->player_state.player_position.y > 0) {
+							object_checker = false;
+							player->player_state.velo.y = 0;
+						}
+
+						if (obj.object_position.y - player->player_state.player_position.y > -72
+							&& obj.object_position.y - player->player_state.player_position.y < 0) {
+							object_checker = false;
+							player->player_state.velo.y = 0;
+
+						}
+					}
+					if (obj.object_position.y - player->player_state.player_position.y < 64 &&
+						obj.object_position.y - player->player_state.player_position.y > -64)
+
+					{
+						if (obj.object_position.x - player->player_state.player_position.x < 72
+							&& obj.object_position.x - player->player_state.player_position.x > 30) {
+							object_checker = false;
+							player->player_state.velo.x = 0;
+						}
+						if (obj.object_position.x - player->player_state.player_position.x > 0
+							&& obj.object_position.x - player->player_state.player_position.x < 20) {
+							object_checker = false;
+							player->player_state.velo.x = 0;
+						}
+					}
+				}
+				//º®2 °¡·Î
+				if (obj.object_type == 2)
+				{
+					if (obj.object_position.y - player->player_state.player_position.y < 64 &&
+						obj.object_position.y - player->player_state.player_position.y > 8)
+					{
+						if (obj.object_position.x - player->player_state.player_position.x < 72
+							&& obj.object_position.x - player->player_state.player_position.x > 57) {
+							object_checker = false;
+							player->player_state.velo.x = 0;
+						}
+						if (obj.object_position.x - player->player_state.player_position.x > -72
+							&& obj.object_position.x - player->player_state.player_position.x < -57) {
+							object_checker = false;
+							player->player_state.velo.x = 0;
+
+						}
+					}
+					if (obj.object_position.x - player->player_state.player_position.x < 64 &&
+						obj.object_position.x - player->player_state.player_position.x > -64)
+					{
+						if (obj.object_position.y - player->player_state.player_position.y < 72
+							&& obj.object_position.y - player->player_state.player_position.y > 30) {
+							object_checker = false;
+							player->player_state.velo.y = 0;
+						}
+						if (obj.object_position.y - player->player_state.player_position.y > 0
+							&& obj.object_position.y - player->player_state.player_position.y < 20) {
+							object_checker = false;
+							player->player_state.velo.y = 0;
+						}
+					}
+				}
+			}
+			
+		}
+		if (object_checker)
+			return;
+
+	}
+}
 void Ingame::character_movement(CI input, TF &pos, TF &velo)
 {
 	//cout << "W: " << w_pressed << ", A: " << a_pressed << ", S: " << s_pressed << ", D: " << d_pressed << endl;
