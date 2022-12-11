@@ -20,6 +20,7 @@ public:
 	float bullet_angle{};
 	TF bulletVelo{};
 	void rand_player_pos(PP*);
+	void init_player(PP*);
 	// void mouseEvent_ingame();
 
 private:

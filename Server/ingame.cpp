@@ -213,6 +213,16 @@ void Ingame::rand_player_pos(PP* player)
 
 	}
 }
+
+void Ingame::init_player(PP* player)
+{
+	player->player_state.hp = 100;
+	for (int i = 1; i < 3; ++i)
+	{
+		player->player_state.bullet[i] = 0;
+	}
+
+}
 void Ingame::character_movement(CI input, TF &pos, TF &velo)
 {
 	//cout << "W: " << w_pressed << ", A: " << a_pressed << ", S: " << s_pressed << ", D: " << d_pressed << endl;

@@ -84,6 +84,7 @@ DWORD WINAPI ingame_thread(LPVOID n)
 	}
 	for (auto& player : player_list) {
 		if (player.second->room_num == room_num) {
+			ingames[room_num].init_player(player.second);
 			ingames[room_num].rand_player_pos(player.second);
 		}
 
