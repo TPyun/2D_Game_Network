@@ -329,10 +329,29 @@ void Game::mouseEvent_ingame()
 
 		//총이 발사되고 타이머 작동시켜서 1초 뒤 다시 발사 가능
 		if (player_fire[0].gun_fired) {
-			if (Timer(fired_time, 700) == 1) {
-				input.clicked = false;
-				player_fire[0].gun_fired = false;
-				fired_time = 0;
+			if (player_list[0].gun_type == 0)
+			{
+				if (Timer(fired_time, 2000) == 1) {
+					input.clicked = false;
+					player_fire[0].gun_fired = false;
+					fired_time = 0;
+				}
+			}
+			else if (player_list[0].gun_type == 1)
+			{
+				if (Timer(fired_time, 1000) == 1) {
+					input.clicked = false;
+					player_fire[0].gun_fired = false;
+					fired_time = 0;
+				}
+			}
+			else if (player_list[0].gun_type == 2)
+			{
+				if (Timer(fired_time, 3000) == 1) {
+					input.clicked = false;
+					player_fire[0].gun_fired = false;
+					fired_time = 0;
+				}
 			}
 			else {
 
