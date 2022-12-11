@@ -212,9 +212,14 @@ void Game::drawBullet(int i,float char_angle, TF pos)
 			player_fire[i].show_bullet = false;
 			//cout << player_fire[i].bulletPos.x << " " << player_fire[i].bulletPos.y << endl;
 		}
+		else if (player_list[i].collide == true)
+		{
+			player_fire[i].show_bullet = false;
+		}
 	}
 	//총알이 보이지 않을 때
 	else {
+		player_list[i].collide = false;
 		player_fire[i].bulletPos.x = WIDTH / 2 + cos(player_fire[i].bullet_angle) * 75 + pos.x - MyCharPos.x;
 		player_fire[i].bulletPos.y = HEIGHT / 2 + sin(player_fire[i].bullet_angle) * 75 + pos.y - MyCharPos.y;
 		player_fire[i].fired_pos.x = MyCharPos.x;
