@@ -350,7 +350,7 @@ DWORD WINAPI process_client(LPVOID arg)
 			}
 			else if (player_profile.player_state.gun_fired == false && bullet_check == false) {
 				bullet_check = true;
-
+				player_profile.player_state.collide = false;
 			}
 			//cout << player_profile.player_state.player_rotation << endl;
 

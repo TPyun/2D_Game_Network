@@ -540,8 +540,6 @@ void Ingame::collide_check(PP* player, CI* input)
 			}
 		}
 
-
-
 		// bullet과 objects 간의 collide_check
 		for (auto& obj : objects)
 		{
@@ -601,8 +599,6 @@ void Ingame::collide_check(PP* player, CI* input)
 			}
 		}
 	}
-	else
-		player->player_state.collide = false;
 }
 
 
@@ -616,7 +612,6 @@ void Ingame::bullet_movement(float fired_angle, PP* player)
 		player->player_state.bullet_pos.y += bulletVelo.y;
 		cout << "날으는 총알 x : " << player->player_state.bullet_pos.x << "\t y : " << player->player_state.bullet_pos.y << endl;
 		
-		
 		if (player->player_state.bullet_pos.x > ground_size / 2 ||
 			player->player_state.bullet_pos.x < -(ground_size / 2) ||
 			player->player_state.bullet_pos.y > ground_size / 2 ||
@@ -626,12 +621,10 @@ void Ingame::bullet_movement(float fired_angle, PP* player)
 			show_bullet = false;
 			player->player_state.bullet_pos.x = -float(ground_size);
 			player->player_state.bullet_pos.y = -float(ground_size);
-			
 		}
 	}
 	else if (player->player_state.gun_fired == false && show_bullet == false)
 	{
-		player->player_state.collide = false;
 		show_bullet = true;
 	}
 }
