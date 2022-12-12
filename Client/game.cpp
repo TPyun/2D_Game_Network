@@ -320,7 +320,8 @@ void Game::mouseEvent_ingame()
 				input.unconditional_fired_pos_input = player_fire[0].unconditional_fired_pos;
 				input.clicked_mouse_rotation = my_char_angle;
 				cout << "클릭 마우스 rotation : " << input.clicked_mouse_rotation << endl;
-				cout << "총알 시작위치 x : " << input.unconditional_fired_pos_input.x << "\ty :" << input.unconditional_fired_pos_input.y << endl;
+				cout << "플레이어 위치 x : " << player_list[0].player_position.x << "\ty : " << player_list[0].player_position.y << endl;
+				cout << "총알 시작위치 x : " << input.unconditional_fired_pos_input.x << "\ty : " << input.unconditional_fired_pos_input.y << endl;
 				cout << "화면상의 위치 x : " << player_fire[0].bulletPos.x << "\ty : " << player_fire[0].bulletPos.y << endl;
 				player_fire[0].gun_fired = true;
 				fired_time = clock();

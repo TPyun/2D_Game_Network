@@ -223,6 +223,7 @@ void Ingame::init_player(PP* player)
 	}
 
 }
+
 void Ingame::character_movement(CI input, TF &pos, TF &velo)
 {
 	//cout << "W: " << w_pressed << ", A: " << a_pressed << ", S: " << s_pressed << ", D: " << d_pressed << endl;
@@ -243,8 +244,8 @@ void Ingame::character_movement(CI input, TF &pos, TF &velo)
 		velo.x += minimun_movement;
 	}
 	
-	float MaxVelo = 3.f;
-	float MinVelo = -3.f;
+	float MaxVelo = 1.15f;
+	float MinVelo = -1.15f;
 
 	//Limit Velocity
 	if (velo.x > MaxVelo) {
@@ -424,11 +425,10 @@ void Ingame::collide_check(PP* player, CI* input)
 					if (obj.object_position.y - player->player_state.player_position.y > 0
 						&& obj.object_position.y - player->player_state.player_position.y < 20) {
 						input->w_Pressed = false;
-						player->player_state.velo.y = 0;
+player->player_state.velo.y = 0;
 					}
 				}
 			}
-
 			//rifle
 			if (obj.object_type == 3)
 			{
@@ -459,7 +459,6 @@ void Ingame::collide_check(PP* player, CI* input)
 					}
 				}
 			}
-
 			//sniper
 			if (obj.object_type == 4)
 			{
@@ -490,18 +489,16 @@ void Ingame::collide_check(PP* player, CI* input)
 					}
 				}
 			}
-
-
 		}
 	}
 
-	
+
 	// 플레이어와 bullet 간의 collide_check
 	int my_room_num = player->room_num;
 	char my_name[50];
 	strcpy(my_name, player->player_info.name[0]);
 	PP* another_player[MAX_CLIENT_IN_ROOM]{};
-	int cnt{1};
+	int cnt{ 1 };
 	for (auto& player : player_list) {
 		//cout << player.first << endl;
 		if (player.second == nullptr) {
@@ -512,17 +509,37 @@ void Ingame::collide_check(PP* player, CI* input)
 		}
 		if (strcmp(player.second->player_info.name[0], my_name) != 0 && player.second->room_num == my_room_num) {
 			if (cnt < MAX_CLIENT_IN_ROOM) {
-				another_player[cnt-1] = player.second;
+				another_player[cnt - 1] = player.second;
 				cnt++;
 			}
 		}
 	}
-	
-	if (show_bullet == true)
+
+	if (player->player_state.gun_fired == true && show_bullet == true)
 	{
 		for (int i = 0; i < cnt - 1; ++i)
 		{
 			if (another_player[i]->player_state.hp > 0 &&
+				abs(player->player_state.player_position.x - another_player[i]->player_state.player_position.x) < 75 &&
+				abs(player->player_state.player_position.y - another_player[i]->player_state.player_position.y) < 75)
+			{
+				if (abs(player->player_state.bullet_pos.x - another_player[i]->player_state.player_position.x) < 95
+					&& abs(player->player_state.bullet_pos.y - another_player[i]->player_state.player_position.y) < 95)
+					{
+					show_bullet = false;
+					cout << "collide 닝겐!" << endl;
+					player->player_state.collide = true;
+					player->player_state.bullet_pos.x = -float(ground_size);
+					player->player_state.bullet_pos.y = -float(ground_size);
+					if (player->player_state.gun_type == 0)
+						another_player[i]->player_state.hp -= 5;
+					else if (player->player_state.gun_type == 1)
+						another_player[i]->player_state.hp -= 10;
+					else if (player->player_state.gun_type == 2)
+						another_player[i]->player_state.hp -= 20;
+				}
+			}
+			else if (another_player[i]->player_state.hp > 0 &&
 				abs(player->player_state.bullet_pos.x - another_player[i]->player_state.player_position.x) < 20
 				&& abs(player->player_state.bullet_pos.y - another_player[i]->player_state.player_position.y) < 20)
 			{
@@ -538,11 +555,114 @@ void Ingame::collide_check(PP* player, CI* input)
 				else if (player->player_state.gun_type == 2)
 					another_player[i]->player_state.hp -= 20;
 			}
+			
 		}
 
 		// bullet과 objects 간의 collide_check
 		for (auto& obj : objects)
 		{
+			// bullet과 objects가 너무 가까울 때.
+			if (obj.object_type == 0) 
+			{
+				if (abs(player->player_state.player_position.x - obj.object_position.x) < 100 &&
+					abs(player->player_state.player_position.y - obj.object_position.y) < 100)
+				{
+					if (0 < player->player_state.bullet_pos.x - obj.object_position.x &&
+						player->player_state.bullet_pos.x - obj.object_position.x < 45 &&
+						-60 < obj.object_position.y - player->player_state.bullet_pos.y &&
+						obj.object_position.y - player->player_state.bullet_pos.y < 60)
+					{
+						cout << "too close to rock." << endl;
+						show_bullet = false;
+						player->player_state.collide = true;
+						player->player_state.bullet_pos.x = -float(ground_size);
+						player->player_state.bullet_pos.y = -float(ground_size);
+					}
+					else if (45 < obj.object_position.x - player->player_state.bullet_pos.x &&
+						obj.object_position.x - player->player_state.bullet_pos.x < 70 &&
+						-22 < obj.object_position.y - player->player_state.bullet_pos.y &&
+						obj.object_position.y - player->player_state.bullet_pos.y < 52)
+					{
+						cout << "too close to rock." << endl;
+						show_bullet = false;
+						player->player_state.collide = true;
+						player->player_state.bullet_pos.x = -float(ground_size);
+						player->player_state.bullet_pos.y = -float(ground_size);
+					}
+				}
+			}
+			else if (obj.object_type == 1)
+			{
+				if (abs(player->player_state.player_position.x - obj.object_position.x) < 100 &&
+					abs(player->player_state.player_position.y - obj.object_position.y) < 100)
+				{
+					if (-110 < player->player_state.bullet_pos.x - obj.object_position.x &&
+						player->player_state.bullet_pos.x - obj.object_position.x < -30 &&
+						-55 < player->player_state.bullet_pos.y - obj.object_position.y &&
+						player->player_state.bullet_pos.y - obj.object_position.y < 50)
+					{
+						cout << "too close to 세로벽." << endl;
+						show_bullet = false;
+						player->player_state.collide = true;
+						player->player_state.bullet_pos.x = -float(ground_size);
+						player->player_state.bullet_pos.y = -float(ground_size);
+					}
+					else if (-10 < player->player_state.bullet_pos.x - obj.object_position.x &&
+						player->player_state.bullet_pos.x - obj.object_position.x < 35 &&
+						-63 < player->player_state.bullet_pos.y - obj.object_position.y &&
+						player->player_state.bullet_pos.y - obj.object_position.y < 51)
+					{
+						cout << "too close to 세로벽." << endl;
+						show_bullet = false;
+						player->player_state.collide = true;
+						player->player_state.bullet_pos.x = -float(ground_size);
+						player->player_state.bullet_pos.y = -float(ground_size);
+					}
+				}
+			}
+			else if (obj.object_type == 2)
+			{
+				if (abs(player->player_state.player_position.x - obj.object_position.x) < 150 &&
+					abs(player->player_state.player_position.y - obj.object_position.y) < 150)
+				{
+					cout << endl << "close to 가로벽." << endl;
+					cout << "총알x : " << player->player_state.bullet_pos.x << endl;
+					cout << "옵젝x : " << obj.object_position.x << endl;
+					cout << "총 - 옵x : " << player->player_state.bullet_pos.x - obj.object_position.x << endl;
+					cout << "옵 - 총x : " << obj.object_position.x - player->player_state.bullet_pos.x << endl << endl;
+
+					cout << "총알y : " << player->player_state.bullet_pos.y << endl;
+					cout << "옵젝y : " << obj.object_position.y << endl;
+					cout << "총 - 옵y : " << player->player_state.bullet_pos.y - obj.object_position.y << endl;
+					cout << "옵 - 총y : " << obj.object_position.y - player->player_state.bullet_pos.y << endl;
+					
+					if (-85 < player->player_state.bullet_pos.x - obj.object_position.x &&
+						player->player_state.bullet_pos.x - obj.object_position.x < 20 &&
+						-110 < player->player_state.bullet_pos.y - obj.object_position.y &&
+						player->player_state.bullet_pos.y - obj.object_position.y < -20)
+					{
+						cout << "too close to 가로벽." << endl;
+						show_bullet = false;
+						player->player_state.collide = true;
+						player->player_state.bullet_pos.x = -float(ground_size);
+						player->player_state.bullet_pos.y = -float(ground_size);
+					}
+					else if (-85 < player->player_state.bullet_pos.x - obj.object_position.x &&
+						player->player_state.bullet_pos.x - obj.object_position.x < 20 &&
+						0 < player->player_state.bullet_pos.y - obj.object_position.y &&
+						player->player_state.bullet_pos.y - obj.object_position.y < 33)
+					{
+						cout << "too close to 가로벽." << endl;
+						show_bullet = false;
+						player->player_state.collide = true;
+						player->player_state.bullet_pos.x = -float(ground_size);
+						player->player_state.bullet_pos.y = -float(ground_size);
+					}
+				}
+			}
+
+
+			// bullet과 objects가 거리가 있을 때.
 			if (abs(obj.object_position.x - player->player_state.bullet_pos.x) < 50
 				&& abs(obj.object_position.y - player->player_state.bullet_pos.y) < 50)
 			{
@@ -601,7 +721,6 @@ void Ingame::collide_check(PP* player, CI* input)
 	}
 }
 
-
 void Ingame::bullet_movement(float fired_angle, PP* player)
 {
 	float bullet_angle = 3.14159265 * 2 * fired_angle / 360;
@@ -617,7 +736,7 @@ void Ingame::bullet_movement(float fired_angle, PP* player)
 			player->player_state.bullet_pos.y > ground_size / 2 ||
 			player->player_state.bullet_pos.y < -(ground_size / 2) )
 		{			
-			cout << "bullet out" << endl;
+			cout << endl << endl << "bullet out" << endl << endl;
 			show_bullet = false;
 			player->player_state.bullet_pos.x = -float(ground_size);
 			player->player_state.bullet_pos.y = -float(ground_size);
