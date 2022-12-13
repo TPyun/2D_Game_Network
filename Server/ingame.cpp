@@ -244,8 +244,8 @@ void Ingame::character_movement(CI input, TF &pos, TF &velo)
 		velo.x += minimun_movement;
 	}
 	
-	float MaxVelo = 1.15f;
-	float MinVelo = -1.15f;
+	float MaxVelo = 3.f;
+	float MinVelo = -3.f;
 
 	//Limit Velocity
 	if (velo.x > MaxVelo) {

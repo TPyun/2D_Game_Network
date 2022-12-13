@@ -2,7 +2,7 @@
 #include "global.h"
 #include "ingame.h"
 #include "matching.h"
-#define FPS 200
+#define FPS 120
 using namespace std;
 
 int len = 0;
