@@ -8,7 +8,7 @@
 
 using namespace std;
 
-#define MAX_CLIENT_IN_ROOM 2
+#define MAX_CLIENT_IN_ROOM 3
 
 #define SERVERPORT	9000
 #define BUFSIZE		4096
@@ -71,7 +71,6 @@ typedef struct created_object
 	int object_type;	// 0: 바위, 1:세로 벽, 2:가로 벽, 3: rifle, 4:sniper, -1 : 빈오브젝트
 	TI object_position;
 }CO;
-
 
 extern map<int, char*> client_thread_list;
 extern map<int, PP*> player_list;

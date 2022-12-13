@@ -3,7 +3,7 @@
 #include "ingame.h"
 #include "matching.h"
 #include"tbb/spin_rw_mutex.h"
-#define FPS 120
+#define FPS 144
 using namespace std;
 
 int len = 0;

@@ -3,25 +3,13 @@
 #include "game.h"
 #include "client.h"
 #include <sstream>
-
-
 #include <crtdbg.h>
 
-#if _DEBUG
-#define new new(_NORMAL_BLOCK,__FILE__,__LINE__)
-#define malloc(s) _malloc_dbg(s,_NORMAL_BLOCK,__FILE__,__LINE__)
-#endif
-
-
-#define FPS 120
+#define FPS 80
 #define SERVERPORT 9000
 #define BUFSIZE    1024
 
 using namespace std;
-//char* SERVERIP = (char*)"127.0.0.1";
-//Game game;
-//서버 송수신용 스레드
-
 
 DWORD WINAPI server_thread(LPVOID arg)
 {
@@ -32,7 +20,6 @@ DWORD WINAPI server_thread(LPVOID arg)
 	SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (sock == INVALID_SOCKET) {
 		err_quit("socket()");
-
 	}
 	
 	game.p1_shoot_check = true;
@@ -107,7 +94,6 @@ DWORD WINAPI server_thread(LPVOID arg)
 				cout << game.player_list[1].game_state << endl;
 				cout << game.player_list[2].game_state << endl;
 				
-
 				game.weapon_type = 0;
 				game.curr_state = 1;
 			}
@@ -157,7 +143,6 @@ DWORD WINAPI server_thread(LPVOID arg)
 int SDL_main(int argc, char* argv[])
 {
 	cout << "Start" << endl;
-
 	int startTime, endTime;
 
 	//game 화면 강제 전환 (임시)

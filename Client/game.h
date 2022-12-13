@@ -121,6 +121,7 @@ private:
 	SDL_Texture* wall2_Tex;
 
 	Mix_Chunk* gunsound;
+	Mix_Chunk* big_gun_sound;
 
 	SDL_AudioSpec wavSpec;
 	Uint32 wavLength;

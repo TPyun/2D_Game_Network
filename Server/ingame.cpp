@@ -74,13 +74,14 @@ void Ingame::create_object()		// ÃÊ±â ¸Ê ·£´ı »ı¼ºÇÏ´Â ÇÔ¼ö (¹ÙÀ§, º®, ¾ÆÀÌÅÛ, Ç
 		}
 		changed_obj.clear();
 		for (int i = 0; i < MAXITEM - 1; ++i) {
-			for (int j = i + 1; j <= MAXITEM; ++j)
+			for (int j = i + 1; j <= MAXITEM; ++j) {
 				if (objects[i].object_position.x == objects[j].object_position.x &&
 					objects[i].object_position.y == objects[j].object_position.y) {
 					changed_obj.push_back(i);
 					objects[i].object_position.x = uid(dre) * OBJ_DISTANCE;
 					objects[i].object_position.y = uid(dre) * OBJ_DISTANCE;
 				}
+			}
 		}
 	}
 	int i = 0;
@@ -210,18 +211,15 @@ void Ingame::rand_player_pos(PP* player)
 		}
 		if (object_checker)
 			return;
-
 	}
 }
 
 void Ingame::init_player(PP* player)
 {
 	player->player_state.hp = 100;
-	for (int i = 1; i < 3; ++i)
-	{
+	for (int i = 1; i < 3; ++i){
 		player->player_state.bullet[i] = 0;
 	}
-
 }
 
 void Ingame::character_movement(CI input, TF &pos, TF &velo)
@@ -532,11 +530,11 @@ player->player_state.velo.y = 0;
 					player->player_state.bullet_pos.x = -float(ground_size);
 					player->player_state.bullet_pos.y = -float(ground_size);
 					if (player->player_state.gun_type == 0)
-						another_player[i]->player_state.hp -= 5;
-					else if (player->player_state.gun_type == 1)
 						another_player[i]->player_state.hp -= 10;
-					else if (player->player_state.gun_type == 2)
+					else if (player->player_state.gun_type == 1)
 						another_player[i]->player_state.hp -= 20;
+					else if (player->player_state.gun_type == 2)
+						another_player[i]->player_state.hp -= 40;
 				}
 			}
 			else if (another_player[i]->player_state.hp > 0 &&
@@ -549,13 +547,12 @@ player->player_state.velo.y = 0;
 				player->player_state.bullet_pos.x = -float(ground_size);
 				player->player_state.bullet_pos.y = -float(ground_size);
 				if (player->player_state.gun_type == 0)
-					another_player[i]->player_state.hp -= 5;
-				else if (player->player_state.gun_type == 1)
 					another_player[i]->player_state.hp -= 10;
-				else if (player->player_state.gun_type == 2)
+				else if (player->player_state.gun_type == 1)
 					another_player[i]->player_state.hp -= 20;
+				else if (player->player_state.gun_type == 2)
+					another_player[i]->player_state.hp -= 40;
 			}
-			
 		}
 
 		// bullet°ú objects °£ÀÇ collide_check
@@ -747,44 +744,3 @@ void Ingame::bullet_movement(float fired_angle, PP* player)
 		show_bullet = true;
 	}
 }
-
-//void Ingame::mouseEvent_ingame()
-//{
-//	//get mouse coordinates 
-//	SDL_GetGlobalMouseState(&mouse_X, &mouse_Y);
-//
-//	mouse_point.x = mouse_X;
-//	mouse_point.y = mouse_Y;
-//
-//	//¸ğ´ÏÅÍ ÇØ»óµµ ÁÂÇ¥¸¦ °ÔÀÓ °ÔÀÓ Ã¢ ÁÂÇ¥ ±âÁØÀ¸·Î º¯È¯½ÃÅ´
-//	SDL_GetWindowPosition(window, &window_moved_x, &window_moved_y);
-//	mouse_point.x -= window_moved_x;
-//	mouse_point.y -= window_moved_y;
-//
-//	//Get Character Angle by Mouse's Coordinates
-//	my_char_angle = calcAngleFromPoints(mouse_point, middle_pos);
-//
-//	//¼­¹ö¿¡ Àü¼ÛÇÒ struct º¯¼ö¿¡ ¸¶¿ì½º ÁÂÇ¥ ÀúÀå, clicked
-//	input.mouse_rotation = my_char_angle;
-//	//¸¶¿ì½º ¿Ş ¹öÆ° ´©¸£¸é ¹ß»ç
-//	if (event.type == SDL_MOUSEBUTTONDOWN) {
-//		input.clicked = true;
-//		if (event.button.button == SDL_BUTTON_LEFT && gun_fired == false) {
-//			gun_fired = true;
-//			fired_time = clock();
-//
-//			show_bullet = true;
-//			gun_flash = true;
-//
-//			Mix_PlayChannel(-1, gunsound, 0);
-//		}
-//	}
-//
-//	//ÃÑÀÌ ¹ß»çµÇ°í Å¸ÀÌ¸Ó ÀÛµ¿½ÃÄÑ¼­ 1ÃÊ µÚ ´Ù½Ã ¹ß»ç °¡´Éawd
-//	if (gun_fired) {
-//		if (Timer(fired_time, 100) == 1) {
-//			gun_fired = false;
-//			fired_time = 0;
-//		}
-//	}
-//}

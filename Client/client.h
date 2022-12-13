@@ -61,17 +61,6 @@ void send_name(SOCKET sock, Game* game)	// 플레이어 이름 보내기
 		err_display("send_name()");
 	}
 }
-//
-//void gun_change(SOCKET sock, int gun)	// 총 종류 보내기
-//{
-//	char cgun = gun + '0';
-//	cout << "건 타입은 " << cgun << endl;
-//	retval = send(sock, (char*)&cgun, sizeof(char), 0);
-//	if (retval == SOCKET_ERROR) {
-//		err_display("gun_change()");
-//	}
-//	gun_type = gun;
-//}
 
 void recv_created_object(SOCKET sock)
 {
