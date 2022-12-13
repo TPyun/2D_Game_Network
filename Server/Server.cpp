@@ -386,7 +386,16 @@ DWORD WINAPI process_client(LPVOID arg)
 			}
 		}
 	}
-	
+	player_profile.player_state.hp = 0;
+	while (1) {
+		if (ingames.find(player_profile.room_num) == ingames.end())
+		{
+			p_lock.lock();
+			player_list.erase(port);
+			p_lock.unlock();
+			break;
+		}
+	}
 	p_lock.lock();
 	player_list.erase(port);
 	p_lock.unlock();
