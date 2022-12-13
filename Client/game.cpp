@@ -522,7 +522,7 @@ void Game::drawMenu()
 			text_in = "";
 		}
 		//Press button to add text
-		else if (event.type == SDL_TEXTINPUT && strlen(text_in.c_str()) < 10) {
+		else if (event.type == SDL_TEXTINPUT && strlen(text_in.c_str()) < 20) {
 			text_in += event.text.text;
 			if (text_in_height == 100) {
 				strcpy(IPAdress, text_in.c_str());
