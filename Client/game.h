@@ -40,12 +40,10 @@ typedef struct players_state {
 	bool gun_fired{};
 	int game_state{};
 	bool collide = false;
-	TF bullet_pos{};
 }PS;
 
 typedef struct players_info
 {
-	int player_color[3];
 	char name[3][20];
 }PI;
 

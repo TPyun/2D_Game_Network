@@ -8,7 +8,7 @@
 
 using namespace std;
 
-#define MAX_CLIENT_IN_ROOM 3
+#define MAX_CLIENT_IN_ROOM 2
 
 #define SERVERPORT	9000
 #define BUFSIZE		4096
@@ -36,13 +36,11 @@ typedef struct players_state {
 	TF player_position{};
 	float player_rotation{};
 	bool gun_fired = false;
-	int game_state{};		// 0:main, 1:find_match, 2:in_game, 3:lose, 4:win
+	int game_state{};
 	bool collide = false;
-	TF bullet_pos{};
 }PS;
 
 typedef struct players_info {
-	int player_color[3]{0};
 	char name[3][20]{ 0 };
 }PI;
 
@@ -54,7 +52,7 @@ typedef struct client_input {
 	bool clicked;
 	float mouse_rotation;
 	float clicked_mouse_rotation;
-	TF uncounditional_fired_pos_input{};
+	TF unconditional_fired_pos_input{};
 	int gun_type;
 }CI;
 
@@ -64,6 +62,7 @@ typedef struct players_profile {
 	PS player_state;
 	CI input;
 	TF unconditinal_fired_pos;
+	TF bullet_pos{};
 }PP;
 
 typedef struct created_object
@@ -72,6 +71,5 @@ typedef struct created_object
 	TI object_position;
 }CO;
 
-extern map<int, char*> client_thread_list;
 extern map<int, PP*> player_list;
 extern PP null_temp;

@@ -8,15 +8,11 @@ using namespace std;
 
 int len = 0;
 char buffer[BUFSIZE]; // 가변 길이 데이터
-//std::mutex mylock;
-//mutex find_lock;
-//들어온 순서
 int hostnum;
 
 map<int,Ingame> ingames;
 Matching matching;
 tbb::spin_rw_mutex p_lock;
-//map<int, char*> client_thread_list;
 map<int, PP*> player_list;
 PP null_temp;
 
@@ -231,24 +227,19 @@ DWORD WINAPI process_client(LPVOID arg)
 			for (auto& player : player_list) {
 				cout << "존재하는 포트번호 " << (int)player.first << endl;
 
-				if (player.second->room_num == player_profile.room_num)		//같은 방에 있는 사람
-					player.second->player_info.player_color[other_player_num] = other_player_num;		//색깔 넣기
-				if (player.second->player_info.name[0] != player_profile.player_info.name[0]) {		//본인은 [0]에 있으니 제외
-					strcpy(player_profile.player_info.name[other_player_num + 1], (char*)player.second->player_info.name);
-					other_player_num++;
-				}
-				if (other_player_num == MAX_CLIENT_IN_ROOM - 1) {
-					break;
-				}
+				if (player.second->room_num == player_profile.room_num) {//같은 방에 있는 사람
+					if (player.second->player_info.name[0] != player_profile.player_info.name[0]) {		//본인은 [0]에 있으니 제외
+						strcpy(player_profile.player_info.name[other_player_num + 1], (char*)player.second->player_info.name);
+						other_player_num++;
+					}
+					if (other_player_num == MAX_CLIENT_IN_ROOM - 1) {
+						break;
+					}
+				}	
+				
 			}
 			p_lock.unlock_shared();
 
-			//같은 방 사람 출력
-			cout << endl << "같은 방에 있는 사람 목록" << endl;
-			for (int i = 0; i < MAX_CLIENT_IN_ROOM; ++i) {
-				cout << "이름: " << player_profile.player_info.name[i] << ", 색: " << player_profile.player_info.player_color[i];
-			}
-			cout << endl;
 
 			//같은 방 사람 정보 보내기
 			retval = send(client_sock, (char*)&player_profile.player_info, sizeof(PI), 0);
@@ -314,13 +305,13 @@ DWORD WINAPI process_client(LPVOID arg)
 			// 마우스 클릭 확인 출력
 			player_profile.player_state.gun_fired = player_profile.input.clicked;
 			player_profile.player_state.player_rotation = player_profile.input.mouse_rotation;
-			player_profile.unconditinal_fired_pos = player_profile.input.uncounditional_fired_pos_input;
+			player_profile.unconditinal_fired_pos = player_profile.input.unconditional_fired_pos_input;
 
 			if (player_profile.player_state.gun_fired == true && bullet_check == true) {
 				player_profile.player_state.player_rotation = player_profile.input.mouse_rotation;
 				cout << player_profile.player_state.player_rotation << endl;
-				player_profile.player_state.bullet_pos = player_profile.unconditinal_fired_pos;
-				cout << player_profile.player_state.bullet_pos.x << "\t" << player_profile.player_state.bullet_pos.y << endl;
+				player_profile.bullet_pos = player_profile.unconditinal_fired_pos;
+				cout << player_profile.bullet_pos.x << "\t" << player_profile.bullet_pos.y << endl;
 				cout << "총알 위치 x: " << player_profile.unconditinal_fired_pos.x << "\ty : " <<
 					player_profile.unconditinal_fired_pos.y << endl;
 

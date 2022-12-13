@@ -521,14 +521,14 @@ player->player_state.velo.y = 0;
 				abs(player->player_state.player_position.x - another_player[i]->player_state.player_position.x) < 75 &&
 				abs(player->player_state.player_position.y - another_player[i]->player_state.player_position.y) < 75)
 			{
-				if (abs(player->player_state.bullet_pos.x - another_player[i]->player_state.player_position.x) < 95
-					&& abs(player->player_state.bullet_pos.y - another_player[i]->player_state.player_position.y) < 95)
+				if (abs(player->bullet_pos.x - another_player[i]->player_state.player_position.x) < 95
+					&& abs(player->bullet_pos.y - another_player[i]->player_state.player_position.y) < 95)
 					{
 					show_bullet = false;
 					cout << "collide ´×°Õ!" << endl;
 					player->player_state.collide = true;
-					player->player_state.bullet_pos.x = -float(ground_size);
-					player->player_state.bullet_pos.y = -float(ground_size);
+					player->bullet_pos.x = -float(ground_size);
+					player->bullet_pos.y = -float(ground_size);
 					if (player->player_state.gun_type == 0)
 						another_player[i]->player_state.hp -= 10;
 					else if (player->player_state.gun_type == 1)
@@ -538,14 +538,14 @@ player->player_state.velo.y = 0;
 				}
 			}
 			else if (another_player[i]->player_state.hp > 0 &&
-				abs(player->player_state.bullet_pos.x - another_player[i]->player_state.player_position.x) < 20
-				&& abs(player->player_state.bullet_pos.y - another_player[i]->player_state.player_position.y) < 20)
+				abs(player->bullet_pos.x - another_player[i]->player_state.player_position.x) < 20
+				&& abs(player->bullet_pos.y - another_player[i]->player_state.player_position.y) < 20)
 			{
 				show_bullet = false;
 				cout << "collide ´×°Õ!" << endl;
 				player->player_state.collide = true;
-				player->player_state.bullet_pos.x = -float(ground_size);
-				player->player_state.bullet_pos.y = -float(ground_size);
+				player->bullet_pos.x = -float(ground_size);
+				player->bullet_pos.y = -float(ground_size);
 				if (player->player_state.gun_type == 0)
 					another_player[i]->player_state.hp -= 10;
 				else if (player->player_state.gun_type == 1)
@@ -564,27 +564,27 @@ player->player_state.velo.y = 0;
 				if (abs(player->player_state.player_position.x - obj.object_position.x) < 100 &&
 					abs(player->player_state.player_position.y - obj.object_position.y) < 100)
 				{
-					if (0 < player->player_state.bullet_pos.x - obj.object_position.x &&
-						player->player_state.bullet_pos.x - obj.object_position.x < 45 &&
-						-60 < obj.object_position.y - player->player_state.bullet_pos.y &&
-						obj.object_position.y - player->player_state.bullet_pos.y < 60)
+					if (0 < player->bullet_pos.x - obj.object_position.x &&
+						player->bullet_pos.x - obj.object_position.x < 45 &&
+						-60 < obj.object_position.y - player->bullet_pos.y &&
+						obj.object_position.y - player->bullet_pos.y < 60)
 					{
 						cout << "too close to rock." << endl;
 						show_bullet = false;
 						player->player_state.collide = true;
-						player->player_state.bullet_pos.x = -float(ground_size);
-						player->player_state.bullet_pos.y = -float(ground_size);
+						player->bullet_pos.x = -float(ground_size);
+						player->bullet_pos.y = -float(ground_size);
 					}
-					else if (45 < obj.object_position.x - player->player_state.bullet_pos.x &&
-						obj.object_position.x - player->player_state.bullet_pos.x < 70 &&
-						-22 < obj.object_position.y - player->player_state.bullet_pos.y &&
-						obj.object_position.y - player->player_state.bullet_pos.y < 52)
+					else if (45 < obj.object_position.x - player->bullet_pos.x &&
+						obj.object_position.x - player->bullet_pos.x < 70 &&
+						-22 < obj.object_position.y - player->bullet_pos.y &&
+						obj.object_position.y - player->bullet_pos.y < 52)
 					{
 						cout << "too close to rock." << endl;
 						show_bullet = false;
 						player->player_state.collide = true;
-						player->player_state.bullet_pos.x = -float(ground_size);
-						player->player_state.bullet_pos.y = -float(ground_size);
+						player->bullet_pos.x = -float(ground_size);
+						player->bullet_pos.y = -float(ground_size);
 					}
 				}
 			}
@@ -593,27 +593,27 @@ player->player_state.velo.y = 0;
 				if (abs(player->player_state.player_position.x - obj.object_position.x) < 100 &&
 					abs(player->player_state.player_position.y - obj.object_position.y) < 100)
 				{
-					if (-110 < player->player_state.bullet_pos.x - obj.object_position.x &&
-						player->player_state.bullet_pos.x - obj.object_position.x < -30 &&
-						-55 < player->player_state.bullet_pos.y - obj.object_position.y &&
-						player->player_state.bullet_pos.y - obj.object_position.y < 50)
+					if (-110 < player->bullet_pos.x - obj.object_position.x &&
+						player->bullet_pos.x - obj.object_position.x < -30 &&
+						-55 < player->bullet_pos.y - obj.object_position.y &&
+						player->bullet_pos.y - obj.object_position.y < 50)
 					{
 						cout << "too close to ¼¼·Îº®." << endl;
 						show_bullet = false;
 						player->player_state.collide = true;
-						player->player_state.bullet_pos.x = -float(ground_size);
-						player->player_state.bullet_pos.y = -float(ground_size);
+						player->bullet_pos.x = -float(ground_size);
+						player->bullet_pos.y = -float(ground_size);
 					}
-					else if (-10 < player->player_state.bullet_pos.x - obj.object_position.x &&
-						player->player_state.bullet_pos.x - obj.object_position.x < 35 &&
-						-63 < player->player_state.bullet_pos.y - obj.object_position.y &&
-						player->player_state.bullet_pos.y - obj.object_position.y < 51)
+					else if (-10 < player->bullet_pos.x - obj.object_position.x &&
+						player->bullet_pos.x - obj.object_position.x < 35 &&
+						-63 < player->bullet_pos.y - obj.object_position.y &&
+						player->bullet_pos.y - obj.object_position.y < 51)
 					{
 						cout << "too close to ¼¼·Îº®." << endl;
 						show_bullet = false;
 						player->player_state.collide = true;
-						player->player_state.bullet_pos.x = -float(ground_size);
-						player->player_state.bullet_pos.y = -float(ground_size);
+						player->bullet_pos.x = -float(ground_size);
+						player->bullet_pos.y = -float(ground_size);
 					}
 				}
 			}
@@ -623,94 +623,94 @@ player->player_state.velo.y = 0;
 					abs(player->player_state.player_position.y - obj.object_position.y) < 150)
 				{
 					cout << endl << "close to °¡·Îº®." << endl;
-					cout << "ÃÑ¾Ëx : " << player->player_state.bullet_pos.x << endl;
+					cout << "ÃÑ¾Ëx : " << player->bullet_pos.x << endl;
 					cout << "¿ÉÁ§x : " << obj.object_position.x << endl;
-					cout << "ÃÑ - ¿Éx : " << player->player_state.bullet_pos.x - obj.object_position.x << endl;
-					cout << "¿É - ÃÑx : " << obj.object_position.x - player->player_state.bullet_pos.x << endl << endl;
+					cout << "ÃÑ - ¿Éx : " << player->bullet_pos.x - obj.object_position.x << endl;
+					cout << "¿É - ÃÑx : " << obj.object_position.x - player->bullet_pos.x << endl << endl;
 
-					cout << "ÃÑ¾Ëy : " << player->player_state.bullet_pos.y << endl;
+					cout << "ÃÑ¾Ëy : " << player->bullet_pos.y << endl;
 					cout << "¿ÉÁ§y : " << obj.object_position.y << endl;
-					cout << "ÃÑ - ¿Éy : " << player->player_state.bullet_pos.y - obj.object_position.y << endl;
-					cout << "¿É - ÃÑy : " << obj.object_position.y - player->player_state.bullet_pos.y << endl;
+					cout << "ÃÑ - ¿Éy : " << player->bullet_pos.y - obj.object_position.y << endl;
+					cout << "¿É - ÃÑy : " << obj.object_position.y - player->bullet_pos.y << endl;
 					
-					if (-85 < player->player_state.bullet_pos.x - obj.object_position.x &&
-						player->player_state.bullet_pos.x - obj.object_position.x < 20 &&
-						-110 < player->player_state.bullet_pos.y - obj.object_position.y &&
-						player->player_state.bullet_pos.y - obj.object_position.y < -20)
+					if (-85 < player->bullet_pos.x - obj.object_position.x &&
+						player->bullet_pos.x - obj.object_position.x < 20 &&
+						-110 < player->bullet_pos.y - obj.object_position.y &&
+						player->bullet_pos.y - obj.object_position.y < -20)
 					{
 						cout << "too close to °¡·Îº®." << endl;
 						show_bullet = false;
 						player->player_state.collide = true;
-						player->player_state.bullet_pos.x = -float(ground_size);
-						player->player_state.bullet_pos.y = -float(ground_size);
+						player->bullet_pos.x = -float(ground_size);
+						player->bullet_pos.y = -float(ground_size);
 					}
-					else if (-85 < player->player_state.bullet_pos.x - obj.object_position.x &&
-						player->player_state.bullet_pos.x - obj.object_position.x < 20 &&
-						0 < player->player_state.bullet_pos.y - obj.object_position.y &&
-						player->player_state.bullet_pos.y - obj.object_position.y < 33)
+					else if (-85 < player->bullet_pos.x - obj.object_position.x &&
+						player->bullet_pos.x - obj.object_position.x < 20 &&
+						0 < player->bullet_pos.y - obj.object_position.y &&
+						player->bullet_pos.y - obj.object_position.y < 33)
 					{
 						cout << "too close to °¡·Îº®." << endl;
 						show_bullet = false;
 						player->player_state.collide = true;
-						player->player_state.bullet_pos.x = -float(ground_size);
-						player->player_state.bullet_pos.y = -float(ground_size);
+						player->bullet_pos.x = -float(ground_size);
+						player->bullet_pos.y = -float(ground_size);
 					}
 				}
 			}
 
 
 			// bullet°ú objects°¡ °Å¸®°¡ ÀÖÀ» ¶§.
-			if (abs(obj.object_position.x - player->player_state.bullet_pos.x) < 50
-				&& abs(obj.object_position.y - player->player_state.bullet_pos.y) < 50)
+			if (abs(obj.object_position.x - player->bullet_pos.x) < 50
+				&& abs(obj.object_position.y - player->bullet_pos.y) < 50)
 			{
 				if (obj.object_type != 3 && obj.object_type != 4)
 				{
 					if (obj.object_type == 0) // µ¹
 					{
-						if (player->player_state.bullet_pos.x - obj.object_position.x > 25) {
+						if (player->bullet_pos.x - obj.object_position.x > 25) {
 							continue;
 						}
-						else if (player->player_state.bullet_pos.y - obj.object_position.y > 20) {
+						else if (player->bullet_pos.y - obj.object_position.y > 20) {
 							continue;
 						}
 						else {
 							show_bullet = false;
 							cout << "collide rock!" << endl;
-							cout << player->player_state.bullet_pos.x << " " << player->player_state.bullet_pos.y << endl;
+							cout << player->bullet_pos.x << " " << player->bullet_pos.y << endl;
 							cout << obj.object_position.x << " " << obj.object_position.y << endl;
 							cout << "=============================" << endl;
 							player->player_state.collide = true;
-							player->player_state.bullet_pos.x = -float(ground_size);
-							player->player_state.bullet_pos.y = -float(ground_size);
+							player->bullet_pos.x = -float(ground_size);
+							player->bullet_pos.y = -float(ground_size);
 						}
 					}
 					else if (obj.object_type == 1)	// ¼¼·Î º®
 					{
-						if (player->player_state.bullet_pos.x - obj.object_position.x > 1) {
+						if (player->bullet_pos.x - obj.object_position.x > 1) {
 							continue;
 						}
 						show_bullet = false;
 						cout << "collide ¼¼·Îº®!" << endl;
-						cout << player->player_state.bullet_pos.x << " " << player->player_state.bullet_pos.y << endl;
+						cout << player->bullet_pos.x << " " << player->bullet_pos.y << endl;
 						cout << obj.object_position.x << " " << obj.object_position.y << endl;
 						cout << "=============================" << endl;
 						player->player_state.collide = true;
-						player->player_state.bullet_pos.x = -float(ground_size);
-						player->player_state.bullet_pos.y = -float(ground_size);
+						player->bullet_pos.x = -float(ground_size);
+						player->bullet_pos.y = -float(ground_size);
 					}
 					else if (obj.object_type == 2)	// °¡·Î º®
 					{
-						if (player->player_state.bullet_pos.y - obj.object_position.y > 1) {
+						if (player->bullet_pos.y - obj.object_position.y > 1) {
 							continue;
 						}
 						show_bullet = false;
 						cout << "collide °¡·Îº®!" << endl;
-						cout << player->player_state.bullet_pos.x << " " << player->player_state.bullet_pos.y << endl;
+						cout << player->bullet_pos.x << " " << player->bullet_pos.y << endl;
 						cout << obj.object_position.x << " " << obj.object_position.y << endl;
 						cout << "=============================" << endl;
 						player->player_state.collide = true;
-						player->player_state.bullet_pos.x = -float(ground_size);
-						player->player_state.bullet_pos.y = -float(ground_size);
+						player->bullet_pos.x = -float(ground_size);
+						player->bullet_pos.y = -float(ground_size);
 					}
 				}
 			}
@@ -724,19 +724,19 @@ void Ingame::bullet_movement(float fired_angle, PP* player)
 	if (player->player_state.gun_fired == true && show_bullet == true) {
 		bulletVelo.x = cos(bullet_angle) * 30;
 		bulletVelo.y = sin(bullet_angle) * 30;
-		player->player_state.bullet_pos.x += bulletVelo.x;
-		player->player_state.bullet_pos.y += bulletVelo.y;
-		cout << "³¯À¸´Â ÃÑ¾Ë x : " << player->player_state.bullet_pos.x << "\t y : " << player->player_state.bullet_pos.y << endl;
+		player->bullet_pos.x += bulletVelo.x;
+		player->bullet_pos.y += bulletVelo.y;
+		cout << "³¯À¸´Â ÃÑ¾Ë x : " << player->bullet_pos.x << "\t y : " << player->bullet_pos.y << endl;
 		
-		if (player->player_state.bullet_pos.x > ground_size / 2 ||
-			player->player_state.bullet_pos.x < -(ground_size / 2) ||
-			player->player_state.bullet_pos.y > ground_size / 2 ||
-			player->player_state.bullet_pos.y < -(ground_size / 2) )
+		if (player->bullet_pos.x > ground_size / 2 ||
+			player->bullet_pos.x < -(ground_size / 2) ||
+			player->bullet_pos.y > ground_size / 2 ||
+			player->bullet_pos.y < -(ground_size / 2) )
 		{			
 			cout << endl << endl << "bullet out" << endl << endl;
 			show_bullet = false;
-			player->player_state.bullet_pos.x = -float(ground_size);
-			player->player_state.bullet_pos.y = -float(ground_size);
+			player->bullet_pos.x = -float(ground_size);
+			player->bullet_pos.y = -float(ground_size);
 		}
 	}
 	else if (player->player_state.gun_fired == false && show_bullet == false)

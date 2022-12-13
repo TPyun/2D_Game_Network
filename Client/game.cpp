@@ -19,7 +19,7 @@ void Game::updateRenderer()
 
 void Game::initVariables()
 {
-
+	
 }
 void Game::initWindow()
 {
@@ -150,7 +150,7 @@ void Game::drawCharacter(int playing, SDL_Texture* tex, TF pos, float rot, bool 
 	destR.x = WIDTH / 2 - player_size / 2 + pos.x - MyCharPos.x;
 	destR.y = HEIGHT / 2 - player_size / 2 + pos.y - MyCharPos.y;
 
-	if (dead) {
+	if (dead){
 		tex = blood_Tex;
 		rot = -90;
 		destR.w = 50;
@@ -176,7 +176,7 @@ void Game::drawHealthbar(int playing, int health, TF pos)
 	else {
 		SDL_RenderCopy(renderer, redTex, NULL, &destR);
 	}
-
+	
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 
 	if (health > 0) {
@@ -184,7 +184,7 @@ void Game::drawHealthbar(int playing, int health, TF pos)
 		SDL_RenderDrawRect(renderer, &r);
 	}
 }
-void Game::drawBullet(int i, float char_angle, TF pos)
+void Game::drawBullet(int i,float char_angle, TF pos)
 {
 	player_fire[i].bullet_angle = 3.14159265 * 2 * player_fire[i].fired_angle / 360;
 	//총알이 보일 때
@@ -193,7 +193,7 @@ void Game::drawBullet(int i, float char_angle, TF pos)
 		player_fire[i].bulletVelo.y = sin(player_fire[i].bullet_angle) * 60;
 		player_fire[i].bulletPos.x += (player_fire[i].bulletVelo.x);// +MyVelo.x);
 		player_fire[i].bulletPos.y += (player_fire[i].bulletVelo.y);// +MyVelo.y);
-
+		
 		destR.w = bullet_size;
 		destR.h = bullet_size;
 		destR.x = (player_fire[i].bulletPos.x - bullet_size / 2) - MyCharPos.x + player_fire[i].fired_pos.x;
@@ -206,9 +206,9 @@ void Game::drawBullet(int i, float char_angle, TF pos)
 		SDL_RenderCopyEx(renderer, bulletTex, NULL, &destR, player_fire[i].fired_angle, &center, SDL_FLIP_NONE);
 
 		if (player_fire[i].bulletPos.x > WIDTH / 2 + ground_size / 2 - MyCharPos.x ||
-			player_fire[i].bulletPos.x <  WIDTH / 2 - ground_size / 2 - MyCharPos.x ||
+			player_fire[i].bulletPos.x <  WIDTH / 2 - ground_size / 2 - MyCharPos.x || 
 			player_fire[i].bulletPos.y > HEIGHT / 2 + ground_size / 2 - MyCharPos.y ||
-			player_fire[i].bulletPos.y < HEIGHT / 2 - ground_size / 2 - MyCharPos.y)
+			player_fire[i].bulletPos.y < HEIGHT / 2 - ground_size / 2 - MyCharPos.y) 
 		{
 			player_fire[i].show_bullet = false;
 			//cout << player_fire[i].bulletPos.x << " " << player_fire[i].bulletPos.y << endl;
@@ -267,15 +267,15 @@ void Game::drawFlash(int i, float char_angle, TF pos)
 
 		SDL_RenderCopyEx(renderer, flashTex, &srcR, &destR, player_fire[i].fired_angle, &center, SDL_FLIP_NONE);
 	}
-	else if (!player_fire[i].gun_flash) {
+	else if(!player_fire[i].gun_flash) {
 		player_fire[i].flash_angle = char_angle;
 	}
 }
-void Game::drawLog()
+void Game::drawLog() 
 {
 	SDL_Color color = { 0, 0, 0 };
 	char state[30]{};
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 3; i++){
 		if (player_list[i].game_state != 3) {
 			strcpy(state, "UNKNOWN : NOT EXSIST");
 		}
@@ -330,17 +330,8 @@ void Game::mouseEvent_ingame()
 				player_fire[0].show_bullet = true;
 				player_fire[0].gun_flash = true;
 
-				if (player_list[0].gun_type == 0) {
-					Mix_PlayChannel(-1, gunsound, 0);
-				}
-				else if (player_list[0].gun_type == 1) {
-					Mix_PlayChannel(-1, big_gun_sound, 0);
+				Mix_PlayChannel(-1, gunsound, 0);
 
-				}
-				else if (player_list[0].gun_type == 2) {
-					Mix_PlayChannel(-1, big_gun_sound, 0);
-
-				}
 			}
 		}
 
@@ -381,24 +372,16 @@ void Game::draw_enemy_fire(bool* shoot_check, int i)
 {
 	if (player_list[i].gun_fired == true && *shoot_check == true) {
 		cout << "shoot check : " << *shoot_check << endl;
-		if (player_list[i].gun_type == 0) {
-			Mix_PlayChannel(-1, gunsound, 0);
-		}
-		else if (player_list[i].gun_type == 1) {
-			Mix_PlayChannel(-1, big_gun_sound, 0);
 
-		}
-		else if (player_list[i].gun_type == 2) {
-			Mix_PlayChannel(-1, big_gun_sound, 0);
-
-		}
-
+		Mix_PlayChannel(-1, gunsound, 0);
+		
+		
 		// 아래 한 줄 지우고 이 곳에 총 그리기 - game.player_list[1].player_rotation
 		cout << player_list[i].player_rotation << endl;
 
 		player_fire[i].show_bullet = true;
 		player_fire[i].gun_flash = true;
-
+		
 		*shoot_check = false;
 	}
 
@@ -434,7 +417,7 @@ void Game::drawText(int x, int y, char text[], SDL_Color color)
 
 	SDL_Rect r = { x, y, surface->w, surface->h };
 	SDL_RenderCopy(renderer, texture, NULL, &r);
-
+	
 	SDL_DestroyTexture(texture);
 }
 void Game::drawWeaponList()
@@ -452,12 +435,12 @@ void Game::drawWeaponList()
 	}
 	destR.y = HEIGHT - 100;
 	SDL_RenderCopy(renderer, whiteTex, NULL, &destR);
-
-
+	
+	
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 	SDL_Rect r = { WIDTH / 2 - 151, HEIGHT - 100, 100, 100 };
 	SDL_RenderDrawRect(renderer, &r);
-	r = { WIDTH / 2 - 50, HEIGHT - 100, 100, 100 };
+	r = { WIDTH / 2 - 50, HEIGHT - 100, 100, 100 }; 
 	SDL_RenderDrawRect(renderer, &r);
 	r = { WIDTH / 2 + 51, HEIGHT - 100, 100, 100 };
 	SDL_RenderDrawRect(renderer, &r);
@@ -471,14 +454,14 @@ void Game::drawWeaponList()
 	destR.x = WIDTH / 2 + 51;
 	destR.y = HEIGHT - 100;
 	SDL_RenderCopy(renderer, sniperTex, NULL, &destR);
-
-
+	
+	
 	destR.w = 20;
 	destR.h = 20;
 	destR.x = WIDTH / 2 - 140;
 	destR.y = HEIGHT - 100;
 	SDL_RenderCopy(renderer, infinity_Tex, NULL, &destR);
-
+	
 	SDL_Color color = { 0, 0, 0 };
 	string tmp = to_string(player_list[0].bullet[1]);
 	char const* num_char = tmp.c_str();
@@ -492,7 +475,7 @@ void Game::drawObstacle()
 	for (int i = 0; i < MAXITEM; i++) {
 		destR.x = WIDTH / 2 - 100 / 2 - MyCharPos.x + created_objects[i].object_position.x;
 		destR.y = HEIGHT / 2 - 100 / 2 - MyCharPos.y + created_objects[i].object_position.y;
-
+		
 		//cout << created_objects[i].object_position.x << " | " << created_objects[i].object_position.y << endl;
 		//cout << MyCharPos.x << " / " << MyCharPos.y << endl;
 		if (created_objects[i].object_type == 0) {		//rock
@@ -502,10 +485,10 @@ void Game::drawObstacle()
 		}
 		else if (created_objects[i].object_type == 1) {		//wall 1
 			destR.w = 30;
-			destR.h = 100;
+			destR.h = 100;			
 			SDL_RenderCopy(renderer, wall1_Tex, NULL, &destR);
 		}
-		else if (created_objects[i].object_type == 2) {		//wall 2
+		else if (created_objects[i].object_type == 2){		//wall 2
 			destR.w = 100;
 			destR.h = 30;
 			SDL_RenderCopy(renderer, wall2_Tex, NULL, &destR);
@@ -552,7 +535,7 @@ void Game::drawMenu()
 				strcpy(Port, text_in.c_str());
 			}
 			else if (text_in_height == 300) {
-				if (strlen(Name) < 10)
+				if(strlen(Name) < 10)
 					strcpy(Name, text_in.c_str());
 			}
 		}
@@ -591,7 +574,7 @@ void Game::drawMenu()
 		drawText(200, 100, (char*)IPAdress, color);
 		drawText(200, 200, (char*)Port, color);
 		drawText(200, 300, (char*)Name, color);
-
+		
 		drawText(170, 400, (char*)"Enter to connect", color);
 	}
 	else {
@@ -628,7 +611,7 @@ void Game::drawIngame()
 	drawFlash(0, my_char_angle, MyCharPos);
 	drawFlash(1, player_list[1].player_rotation, player_list[1].player_position);
 	drawFlash(2, player_list[2].player_rotation, player_list[2].player_position);
-
+	
 	drawCharacter(player_list[0].game_state, black_playerTex, MyCharPos, my_char_angle, player_list[0].hp <= 0);
 	drawCharacter(player_list[1].game_state, red_playerTex, player_list[1].player_position, player_list[1].player_rotation, player_list[1].hp <= 0);
 	drawCharacter(player_list[2].game_state, blue_playerTex, player_list[2].player_position, player_list[2].player_rotation, player_list[2].hp <= 0);
@@ -651,13 +634,13 @@ void Game::drawEndgame()
 			drawText(200, 200, (char*)"Winner :  ", color);
 			drawText(200, 200 + 30, player_info.name[i], color);
 		}
-		else if (player_list[i].game_state == 4) {
+		else if(player_list[i].game_state == 4) {
 			drawText(200, 300, (char*)"Loser :  ", color);
 			drawText(200, 330 + 30 * shown_player, player_info.name[i], color);
 			shown_player++;
 		}
-	}
-
+	}		
+	
 	if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN) {
 		curr_state = 0;
 	}
@@ -670,7 +653,7 @@ void Game::update()
 		done = 1;
 	}
 	clearRenderer();
-
+	
 	if (curr_state == 0) {
 		drawMenu();
 	}
@@ -696,24 +679,24 @@ Game::Game()
 	black_playerTex = this->loadImage("Images/Player_Black.png");
 	red_playerTex = this->loadImage("Images/Player_Red.png");
 	blue_playerTex = this->loadImage("Images/Player_Blue.png");
-
+	
 	blood_Tex = this->loadImage("Images/Blood.png");
-
+	
 	targetTex = this->loadImage("Images/Target.png");
 	backTex = this->loadImage("Images/Space.jpg");
 	groundTex = this->loadImage("Images/Ground.png");
 	bulletTex = this->loadImage("Images/Bullet.png");
 	flashTex = this->loadImage("Images/Flash.png");
-
+	
 	pistolTex = this->loadImage("Images/Pistol.png");
 	rifleTex = this->loadImage("Images/Rifle.png");
 	sniperTex = this->loadImage("Images/Sniper.png");
-
+	
 	whiteTex = this->loadImage("Images/White.png");
 	greenTex = this->loadImage("Images/Green.png");
 	yellowTex = this->loadImage("Images/Yellow.png");
 	redTex = this->loadImage("Images/Red.png");
-
+	
 	pistol_ammoTex = this->loadImage("Images/Pistol_ammo.png");
 	rifle_ammoTex = this->loadImage("Images/Rifle_ammo.png");
 	sniper_ammoTex = this->loadImage("Images/Sniper_ammo.png");
@@ -723,7 +706,7 @@ Game::Game()
 	rock_Tex = this->loadImage("Images/Rock.png");
 	wall1_Tex = this->loadImage("Images/Wall1.png");
 	wall2_Tex = this->loadImage("Images/Wall2.png");
-
+	
 	this->loadWavs();
 	this->loadFont();
 

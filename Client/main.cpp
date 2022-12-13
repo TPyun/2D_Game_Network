@@ -75,11 +75,6 @@ DWORD WINAPI server_thread(LPVOID arg)
 					//예외처리
 				}
 
-				cout << "\nplayer_info 받은 정보" << endl;
-				for (int i = 0; i < 3; ++i){
-					cout << "플레이어 " << i << " 이름: " << game.player_info.name[i] << " 색: " << game.player_info.player_color[i] << endl;
-				}
-
 				//created_object 수신
 				recv_created_object(sock);
 				
