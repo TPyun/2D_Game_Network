@@ -396,9 +396,6 @@ DWORD WINAPI process_client(LPVOID arg)
 			break;
 		}
 	}
-	p_lock.lock();
-	player_list.erase(port);
-	p_lock.unlock();
 
 	cout << "종료한 플레이어: " << name_buf << endl;
 	printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n", addr, port);
